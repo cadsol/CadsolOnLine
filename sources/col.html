@@ -69,6 +69,7 @@
 			let heuresSolairesGroup,heuresLegalesGroupSA,heuresLegalesGroupWS;
 			let heuresSolairesListeMesh,heuresLegalesListeMeshSA,heuresLegalesListeMeshWS;
 			let CSVtext,CSVephemerid;
+			let fontGeometry;
 			const separateurCSV =";"
 			
             let  cs ={    version:"2022.03.16", 
@@ -262,21 +263,22 @@
 			   scene.add( axeMondeGroup );
 			   scene.add( earthGroup );
 
+			   
+               const TS=TableSol(cs.year);
+
 			   const loader = new FontLoader();
-               EcrireDevise();
-
-			   const TS=TableSol(cs.year);
-
+			   
+			   
+			   EcrireDevise(cs.devise)
+			   
+		
 
 // Devise------------------------------------------------------------   
 
-function EcrireDevise(){
-
+function EcrireDevise(texte){
 	loader.load( './fonts/helvetiker_regular.typeface.json', function ( fonte ) {
-	if (typeof(meshDevise)!=="undefined") {meshDevise.dispose()};
-	console.log(cs.devise)
-	const fontGeometry = new TextGeometry( cs.devise, {
-		    
+    //meshDevise.dispose();
+    fontGeometry = new TextGeometry( texte, {
 			font: fonte,
 			size:10*cs.largeur/600,             //ajuster sur largeur
 			height: 2*cs.largeur/600,           //ajuster sur largeur
@@ -293,7 +295,8 @@ function EcrireDevise(){
  meshDevise.position.x = -cs.largeur/2*0.9;
  meshDevise.position.y = -cs.hauteur/2*0.9;
  meshDevise.position.z = cs.epaisseur/2;
-} );
+} );	
+ 
 }
 //TableSol------------------------
 function TableSol(year) {
@@ -1082,7 +1085,8 @@ const folderGnomon=FolderSundial.addFolder('Style...');
 ///// DEVISE
         const folderDevise=   FolderSundial.addFolder( 'Devise ...' ); 
              folderDevise.add(cs,'devise').name('Texte')
-			    .onFinishChange(function(v){cs.devise=v; EcrireDevise()});
+			    .onFinishChange(function(v){cs.devise=v; EcrireDevise(cs.devise)
+				                            });
  //// COLOR             
  const folderColorsSundial = FolderSundial.addFolder("Colors, opacity, wireframe ...");
 				 	materialCS.color.setStyle(cs.colorCS); 
