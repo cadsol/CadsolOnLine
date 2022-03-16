@@ -1,0 +1,11 @@
+{
+    "configurations": [
+    {
+        "name": "Launch Chrome",
+        "request": "launch",
+        "type": "pwa-chrome",
+        "url": "http://192.168.1.14/CadsolOnLine/sources/col.html",
+        "webRoot": "${workspaceFolder}"
+    }
+    ]
+}

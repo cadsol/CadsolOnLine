@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>CadsolWeb - three.js webgl</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="main.css">
+	
+</head>
+	<body>
+		<div id="container"></div>
+		<div id="info">
+		 CadsolWeb - created with the 3D library <a href="https://threejs.org" target="_blank" rel="noopener">three.js</a>  
+			by <a href="https://cadsol.web-pages.fr/" target="_blank" rel="noopener"> AstreJL </a>
+		    <br/>
+		    <label for="fileinput">  ---Inport Sundial (JSON)---   </label>
+		    <input type="file" id="fileinput"  accept=".json"><br>
+		    <script>
+	        	const docinput = document.querySelector('input');
+                docinput.style.opacity = 0;
+            </script>
+		</div>
+
+
+
+<script type="module">
+
+			import * as THREE from '../build/three.module.js';
+			import Stats from './jsm/libs/stats.module.js';
+			import { GUI } from './jsm/libs/dat.gui.module.js';
+			import { Curves } from './jsm/curves/CurveExtras.js';
+			import { OrbitControls } from './jsm/controls/OrbitControls.js';
+			 			
+
+            document.querySelector("input").addEventListener('change', function() {loadJsonFile() });
+
+			let container, stats;
+			let camera, scene, renderer,cube,gnomon,csgroup,posGnomon,geometryCS;
+            var  cs ={    version:"2022.01.04", 
+                          nameFile:"cadsol",
+				          export:"?",			        
+					      largeur:600,
+				          hauteur:400,
+				          epaisseur:10,
+				          decli:0,
+				          incli:0,
+				          rot:0,
+				          colorCS: "rgb(150,200,150)",
+				          emissiveCS:"rgb(50,70,50)",
+				          specularCS:"rgb(60,60,60)",
+				          opaciteCS:100,
+				          lati:43.2,
+				          longi:3.6,
+				          hgnomon:150,
+				          egnomon:2,
+				          xgnomon:0,
+				          ygnomon:150 }
+	        
+
+			init();
+		
+			animate();
+
+			
+//-----------------------------------------------------------------------------------------------------
+function loadJsonFile() 
+{
+//  const content = document.querySelector('.content');
+  const [file] = document.querySelector('input[type=file]').files;
+  const docinput = document.querySelector('input');
+  docinput.style.opacity = 0;
+  
+  const reader = new FileReader();
+  reader.addEventListener("load", () => 
+    {
+    // this will then display a text file
+   
+    cs=JSON.parse(reader.result); 
+ /*   cs.nameFile=file.name;
+    cs.export='?';*/
+    console.log(JSON.stringify(cs),);
+    cube.scale.x=cs.largeur; 
+	cube.scale.y=cs.hauteur; 
+	cube.scale.z=cs.epaisseur;
+	gnomon.position.z=(cs.hgnomon+cs.epaisseur)/2 ; 
+	Material.color.setStyle(cs.colorCS); 
+    //cube.MeshPhongMaterial.emissive.setStyle(cs.emissiveCS); 
+    //cube.MeshPhongMaterialspecular.setStyle(cs.specularCS); 
+    //render;
+    }, false);
+  if (file) 
+   {
+    reader.readAsText(file);
+   }
+   return reader.result;
+}		
+
+//--------------------------------------------------------------------------------------------------------
+			
+            //function saveString
+            //saveString('uih uihgb iuo huipo','Bidon.txt');
+			const link = document.createElement( 'a' );
+			link.style.display = 'none';
+			document.body.appendChild( link ); // Firefox workaround, see #6594
+			function save( blob, filename ) {
+						link.href = URL.createObjectURL( blob );
+						link.download = filename;
+						link.click();}
+			function saveString( text, filename ) {			       
+               save( new Blob( [ text ], { type: 'text/plain' } ), filename );
+			}
+					
+
+//---------------------------------------------------------------------------------------------------------
+			function init() {
+
+				container = document.getElementById( 'container' );
+                csgroup = new THREE.Group();
+                posGnomon = new THREE.Vector3( );
+				// camera
+
+				camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.01, 10000 );
+				camera.position.set( 1500, 2000, 1000 );
+
+				// scene
+
+				scene = new THREE.Scene();
+				scene.background = new THREE.Color( 0x000000 );
+
+				// light
+
+				const light = new THREE.DirectionalLight( 0xffffff );
+				light.position.set( 3, 2, 1 ).normalize();
+				//Set up shadow properties for the light
+				light.shadow.mapSize.width = 2048*4; // default
+				light.shadow.mapSize.height =2048*4; // default
+				light.shadow.camera.near = -1000; // default
+				light.shadow.camera.far = 1000; // default
+				light.shadow.camera.top = 1000;
+				light.shadow.camera.bottom = -1000;
+				light.shadow.camera.right = 1000;
+				light.shadow.camera.left = -1000;
+				
+
+				light.castShadow = true; // default false
+				scene.add( light );
+
+				
+
+				// renderer
+
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.shadowMap.enabled = true;
+                renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
+				container.appendChild( renderer.domElement );
+
+				// stats
+
+				stats = new Stats();
+				container.appendChild( stats.dom );
+
+                // OrbitControls
+				const controls = new OrbitControls( camera, renderer.domElement );
+				controls.minDistance = 1;
+				controls.maxDistance = 10000;
+
+				//addEventListener
+
+				window.addEventListener( 'resize', onWindowResize );
+
+				// dat.GUI ///////////////////////////////////////////////////////////////////////////////////////
+
+				
+			   const gui = new GUI( { width: 200 } );
+              
+            const folderFiles = gui.addFolder( 'Download' ); 
+
+                folderFiles.add(cs,"nameFile").name("File name").onChange( function  (e) {
+                	cs.nameFile=e;
+                	});
+                folderFiles.add(cs,"export",["?","Sundial(JSON)","Scene(JSON)"]).name("Export").onChange( function  (e) 
+                   {
+                	if (e=="Sundial(JSON)") 
+                               	  {saveString(JSON.stringify(cs,null,'\t'),'SUNDIAL_'+cs.nameFile+'.json'                             	 
+                               	  //saveString(JSON.stringify(gui.getSaveObject()),'SUNDIAL_'+cs.nameFile+'.json'                             	  
+                               	  )};
+                    if (e=="Scene(JSON)")
+                	              {saveString(JSON.stringify(scene.toJSON()),'SCENE_'+cs.nameFile+'.json')};
+                	});
+					               	
+               
+		   const folderGeometry = gui.addFolder( 'Dial' );
+				folderGeometry.add( cs, "largeur", 10, 1000 ).name("Width").onChange(function(v){
+					cs.largeur=v;
+					cube.scale.x=cs.largeur; 
+				});
+				folderGeometry.add( cs, "hauteur", 10, 1000, 0.1 ).name("Height").onChange(function(v){
+					cs.hauteur=v;
+					cube.scale.y=cs.hauteur; 
+				});
+				folderGeometry.add( cs, "epaisseur", 10, 1000, 0.1 ).name("Depth").onChange(function(v){
+					cs.epaisseur=v;
+					cube.scale.z=cs.epaisseur; 
+					gnomon.position.z=(cs.hgnomon+cs.epaisseur)/2 ; 
+				}); 
+                
+              
+           var materialCS = new THREE.MeshPhongMaterial();                
+               materialCS.color.setStyle(cs.colorCS); 
+               materialCS.emissive.setStyle(cs.emissiveCS); 
+               materialCS.specular.setStyle(cs.specularCS); 
+
+           var controlCS = new function () {
+						this.color = materialCS.color.getStyle();
+						this.emissive = materialCS.emissive.getStyle();
+						this.specular = materialCS.specular.getStyle();};
+              
+           var spGui = folderGeometry.addFolder("Phong Material");
+              
+              spGui.addColor(controlCS, 'color').onChange(function (e) {
+                   materialCS.color = new THREE.Color(e);
+                   cs.colorCS=materialCS.color.getStyle();
+                   });
+           
+              spGui.addColor(controlCS, 'emissive').onChange(function (e) {
+                   materialCS.emissive = new THREE.Color(e);
+                   cs.emissiveCS=materialCS.emissive.getStyle();
+                   });
+              spGui.addColor(controlCS, 'specular').onChange(function (e) {
+                   materialCS.specular = new THREE.Color(e);
+                   cs.specularCS=materialCS.specular.getStyle();
+                   });
+              spGui.add(materialCS, 'shininess', 0, 100, )
+              
+               
+              spGui.add(cs,'opaciteCS',0,100,1).name('opacity % ').onChange(function(e){
+              	if (e<100) 
+              	               {materialCS.transparent=true;
+              	               cs.opaciteCS=e;
+                               materialCS.opacity=e/100;} else {materialCS.transparent=false}
+                });
+              spGui.add(materialCS, 'wireframe');
+           
+
+                const gnomongGy=gui.addFolder('Gnomon')
+				gnomongGy.add( cs, "hgnomon", 10, 1000, 0.1 ).name("Length").onChange( function ( ) {});
+				gnomongGy.add( cs, "egnomon", 1, 100, 0.1 ).name("Thickness").onChange( function ( ) {});
+				gnomongGy.add( cs, "xgnomon", -1000, 1000, 0.1 ).name(">").onChange( function (e) {
+					cs.xgnomon=e;gnomon.position.x=cs.xgnomon; });
+				gnomongGy.add( cs, "ygnomon", -1000, 1000, 0.1 ).name("^").onChange( function (e ) {
+					cs.ygnomon=e;gnomon.position.y=cs.ygnomon;
+				});
+
+
+              //generateGeometry;           
+
+              geometryCS = new THREE.BoxGeometry(1,1,1);	
+             
+			  cube = new THREE.Mesh( geometryCS, materialCS ); 
+			  cube.scale.x=cs.largeur; 
+			  cube.scale.y=cs.hauteur; 
+			  cube.scale.z=cs.epaisseur;
+			  cube.receiveShadow = true;
+
+
+               const geometryGnomon = new THREE.CylinderGeometry( cs.egnomon, cs.egnomon, cs.hgnomon, 12 );
+               const materialGnomon = new THREE.MeshBasicMaterial( {color: 0xffffff} );
+               gnomon = new THREE.Mesh( geometryGnomon, materialGnomon );  
+               cube.add(gnomon);
+               //gnomon.position.x=cs.xgnomon; 
+               //gnomon.position.y=cs.ygnomon;
+               gnomon.position.z=(cs.hgnomon+cs.epaisseur)/2 ; 
+             
+               gnomon.rotation.x = Math.PI*0.5;
+
+
+               gnomon.castShadow = true; //default is false
+
+
+               
+			//	csgroup 
+				csgroup.add( cube );
+				csgroup.add( gnomon );
+				scene.add( csgroup );
+				//console.log(JSON.stringify(cube.toJSON()));
+                
+               
+           
+
+            //    csgroup.rotation.y = Math.PI/3;
+       /*       cube.rotation.z = 3.14/3;
+               cube.rotation.x = 3.14/3;
+				cube.rotation.z =  3.14/11;
+				cube.rotation.x =  3.14/6;*/
+				
+            // console.log(cube.face);
+
+             // helpers
+                const axesHelper = new THREE.AxesHelper( 100 );
+               // scene.add(axesHelper);
+				const camHelper = new THREE.CameraHelper( light.shadow.camera );
+                scene.add( camHelper );
+			   
+           //console.log(JSON.stringify(gui.getSaveObject()))   
+			}
+			
+//---------------------------------------------------------------------------------------------------------
+
+			function onWindowResize() {
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+                renderer.setSize( window.innerWidth, window.innerHeight );
+
+			}
+
+			//
+
+			function animate() {
+
+				requestAnimationFrame( animate );
+               // csgroup.rotation.y +=0.01;
+
+				render();
+				stats.update();
+
+			}
+
+			//
+
+			function render() {
+				
+				renderer.render( scene,camera );
+
+			}
+
+		</script>
+	</body>
+</html>
