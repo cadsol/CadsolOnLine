@@ -62,6 +62,15 @@
             
             document.querySelector("input").addEventListener('change', function() {loadJsonFile() });
 
+			let container, stats,button;
+			let camera, scene, renderer;
+			let cadran,gnomon,stylePolaire,sousStylaire,geometryCS ;
+			let meshDevise,cadranSolaireGroup,axeMondeGroup, earthGroup;
+			let heuresSolairesGroup,heuresLegalesGroupSA,heuresLegalesGroupWS;
+			let heuresSolairesListeMesh,heuresLegalesListeMeshSA,heuresLegalesListeMeshWS;
+			let CSVtext,CSVephemerid;
+			//let fontGeometry;
+			const separateurCSV =";"
 			
             let  cs ={    version:"2022.03.16", 
                           nameFile:"mySundial",
@@ -98,8 +107,7 @@
 						  colorHS:"rgb(185,255,75)",
 						  colorHLSummerAutums:"rgb(210,200,230)",
 						  colorHLWinterSpring:"rgb(0,0,200)",
-						  hoursTextSize:1,
-						  equinoxeAndSolstices:false,
+						  equinoxeAndSolstice:false,
 						  colorequinoxeAndSolstice:"rgb(152,0,0)",
 				          devise:"Carpe Diem",
 						  deviseSize:1,
@@ -111,8 +119,7 @@
 					      year:2022
 				          };
 
-				let container, stats,button;
-				let camera, scene, renderer;   
+
 		        container = document.getElementById( 'container' );
                 
 				// camera
@@ -123,6 +130,8 @@
 				// scene
                 scene = new THREE.Scene();
 				scene.background = new THREE.Color( 0x000000 );
+                
+ 
 
 				// light
 
@@ -177,27 +186,13 @@
 				button.addEventListener("click", function() { run() });
 
 
-				
-
-			let cadran,gnomon,stylePolaire,sousStylaire,geometryCS ;
-			let meshDevise,cadranSolaireGroup,axeMondeGroup, earthGroup;
-			let heuresSolairesGroup,heuresLegalesGroupSA,heuresLegalesGroupWS,arcsDiurnesGroup;
-			let heuresSolairesListeMesh,heuresLegalesListeMeshSA,heuresLegalesListeMeshWS,arcsDiurnesListeMesh;
-			let CSVtext,CSVephemerid;
-		
-			
-			
-				const separateurCSV =";"
-
                 cadranSolaireGroup = new THREE.Group();               
                 heuresSolairesGroup=new THREE.Group();
 				heuresLegalesGroupSA=new THREE.Group();
 				heuresLegalesGroupWS=new THREE.Group();
-				arcsDiurnesGroup=new THREE.Group();
 				heuresSolairesListeMesh=[];
                 heuresLegalesListeMeshSA=[];
 				heuresLegalesListeMeshWS=[];
-				arcsDiurnesListeMesh=[];
 
                 const materialHeuresSolaires  = new THREE.MeshLambertMaterial(
 					{transparent:true,opacity:1,side:THREE.DoubleSide,});
@@ -205,17 +200,16 @@
 					{transparent:true,opacity:1,side:THREE.DoubleSide});
 				const materialHeuresLegalesWS = new THREE.MeshLambertMaterial(
 					{transparent:true,opacity:1,side:THREE.DoubleSide});
+               // materialHeuresSolaires.tramage=true; 
+                //materialHeuresSolaires.precision="highp"
                 const materialGnomon = new THREE.MeshLambertMaterial( 
 					{transparent:true,opacity:1,side:THREE.DoubleSide,color: 0xffffff} );
                 const materialCS = new THREE.MeshLambertMaterial(); 
-				const materialArcsDiurnes = new THREE.MeshLambertMaterial(
-					{transparent:true,opacity:1,side:THREE.DoubleSide,color: cs.colorequinoxeAndSolstice}); 
                 //materialCS.depthWrite=false; 
-				// materialHeuresSolaires.tramage=true; 
-                //materialHeuresSolaires.precision="highp"
-               				
-				// Axe de rotation de la terre
-                   const axeMonde = new THREE.ArrowHelper(
+
+               // Axe de rotation de la terre
+               
+               const axeMonde = new THREE.ArrowHelper(
                    new THREE.Vector3( 0, Math.sin(cs.lati*Math.PI/180), -Math.cos(cs.lati*Math.PI/180)),
                    new THREE.Vector3( 0, 0, 0 ), 
                    Math.max(cs.largeur,cs.hauteur,cs.epaisseur), 
@@ -237,7 +231,7 @@
 			    const earthGeometry = new THREE.SphereGeometry( 1, 32, 32 );
 				const earthMaterial = new THREE.MeshPhongMaterial( {
 					specular: 0x333333,
-					emissive:"rgb(5,5,5)",
+				//	emissive:"rgb(50,50,50)",
 					shininess: 5,
 				    map: textureLoader.load( './earth_pm_2048.jpg' ),
 					specularMap: textureLoader.load( 'textures/planets/earth_specular_2048.jpg' ),
@@ -276,16 +270,17 @@
                const TS=TableSol(cs.year);
 
 			   let fontDevise;
-			   loadFontDevise();
+			   loadFont();
 
 
-function loadFontDevise() {
+function loadFont() {
     const loader = new FontLoader();
     loader.load( './fonts/helvetiker_regular.typeface.json', function ( response ) {
-                 fontDevise = response } );
-	}
+    fontDevise = response;	
+} );
 
-// Ecritures------------------------------------------------------------  
+}
+// Devise------------------------------------------------------------  
 function EcrireDevise(texte,x,y){
 
 const fontGeometry = new TextGeometry( texte, {
@@ -307,17 +302,16 @@ meshDevise.position.z = cs.epaisseur/2
 } 
 
 function EcrireTexte(texte,x,y,material,group,listeMesh){
-if (cs.hoursTextSize==0) return;
 
-let mesh
-const fontGeometry = new TextGeometry( texte, {
+ let mesh
+ const fontGeometry = new TextGeometry( texte, {
 			font: fontDevise,
-			size:7*cs.hoursTextSize,             //ajuster sur largeur
-			height: 1*cs.hoursTextSize,           //ajuster sur largeur
+			size:7.5,             //ajuster sur largeur
+			height: 1.5,           //ajuster sur largeur
 			curveSegments: 4,
 			bevelEnabled: true,
-			bevelThickness: 0.5*cs.hoursTextSize, //ajuster sur largeur
-			bevelSize: 0.5*cs.hoursTextSize,      //ajuster sur largeur
+			bevelThickness: 0.5, //ajuster sur largeur
+			bevelSize: 0.5,      //ajuster sur largeur
 			bevelOffset: 0,
 			bevelSegments: 1
 		} );
@@ -325,10 +319,9 @@ const fontGeometry = new TextGeometry( texte, {
  
  group.add(mesh);
  if (listeMesh){listeMesh.push(mesh)};
- if (x>0){x-=10*cs.hoursTextSize}else{x+=2*cs.hoursTextSize}
+ if (x>0){x-=10}
  mesh.position.x = x;
- if (y>0){y-=10*cs.hoursTextSize}else{y+=2*cs.hoursTextSize}
-
+ if (y>0){y-=4}
  mesh.position.y = y;
  mesh.position.z = cs.epaisseur/2;
 
@@ -618,58 +611,7 @@ function TracerHeuresLegalesWS(){
         cadranSolaireGroup.add(heuresLegalesGroupWS); 
 }
 
-//---------------------------------------------------------------------------------------------------------
-function TracerArcsDiurnes ()
-{let a,tubeGeometry,tubeGeometrySP,tubeGeometrySS,mesh,xp,yp,zp,lm,pipeSpline,pipeSplineCRC;
-//Effacement des lignes existantes
-   lm=arcsDiurnesListeMesh.length;
-   for (let i = 0; i < lm; i++)
-                    {
-   	                mesh = arcsDiurnesListeMesh[ i ];
-   	                mesh.geometry.dispose();
-					arcsDiurnesGroup.remove(mesh);
-					}
-   arcsDiurnesListeMesh=[];
-   cadranSolaireGroup.remove(arcsDiurnesGroup);
-   
-   const sunDial=arcsDiurnes
-         (base.toRad(cs.lati),base.toRad(-cs.decli),cs.hgnomon,base.toRad(cs.incli),
-         TS.jdecSunMin,TS.jdecSunMax,false,arcsDiurnesGroup,materialArcsDiurnes,arcsDiurnesListeMesh);
-   CSVtext="Point"+separateurCSV+"x"+separateurCSV+"y"+"\n\n";
-   CSVtext +="CadsolOnLine  Version:"+cs.version+"\n\n";
-   a=base.toDeg(sunDial.angle);
-   CSVtext +="Angle style/plan: "+a.toFixed(3)+"\n\n";
-   // tracé des nouvelles lignes
-   for (let i = 0; i < sunDial.lines.length; i++) {
-   		if (sunDial.lines[i].points.length>1) 
-   		{ 	 CSVtext +="Date: "+sunDial.lines[i].hour.toString()+"\n";
-			 pipeSpline = [];
-			
-			 for (let p = 0; p < sunDial.lines[i].points.length; p++)
-			    {
-			 	xp=sunDial.lines[i].points[p].x+cs.xgnomon;
-   			    yp=sunDial.lines[i].points[p].y+cs.ygnomon;
-   			    zp=(cs.epaisseur+cs.egnomon)/2;
-				if (pointDansCadran(xp,yp))
-				     {pipeSpline.push(new THREE.Vector3(xp,yp,zp));
-				     CSVtext+= "point: "+separateurCSV+xp.toFixed(2)+separateurCSV+yp.toFixed(2)+"\n"}
-				};			
-				if (pipeSpline.length>1) 
-				   {
-				   pipeSplineCRC=[];
-				   pipeSplineCRC = new THREE.CatmullRomCurve3(pipeSpline);
-				   tubeGeometry = new THREE.TubeGeometry( pipeSplineCRC,32, cs.egnomon,8,false );
-				   mesh = new THREE.Mesh( tubeGeometry, materialArcsDiurnes);
-				   mesh.receiveShadow = true;
-				   arcsDiurnesListeMesh.push(mesh);
-				   arcsDiurnesGroup.add(mesh);
-			       }
-   		 }
-   }
-  TracerGnomon(sunDial)
-  cadranSolaireGroup.add(arcsDiurnesGroup); 
-  
-}
+
 
 /**
  * Point return type represents a point to be used in constructing the sundial.
@@ -682,14 +624,9 @@ function Point (x, y) {
 /**
  * Line holds data to draw an hour line on the sundial.
  */
-function LigneHoraire (hour, points) {
+function Line (hour, points) {
   this.hour = hour // 0 to 24
   this.points = points || [] // One or more points corresponding to the hour.
-}
-
-function LigneArc (date, points) {
-  this.date = date // 1 to 365
-  this.points = points || [] // One or more points corresponding to the date.
 }
 
 //const m = [-23.44,-23,-22,-21,-20,-19,-18,-17,-16,-15,-14,-13,-12,-11,-9,-8,-7,-6,-5,-4,-3,-2,-1,
@@ -722,10 +659,11 @@ function Correction(H0,j)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+ 
 
 		  
-function generalAJL (φ, D, a, z,debut,fin,legal,group,material,listeMesh) { 
-	// (φ, D, a, z float64)  (lines []LigneHoraire, center Point, u, ψ float64)
+function generalAJL (φ, D, a, z,debut,fin,legal,group,material,listeMesh) { // (φ, D, a, z float64)  (lines []Line, center Point, u, ψ float64)
 	let H,xp,yp,xm,ym;
 	if (φ*180/Math.PI>89.999999){φ=89.999999*Math.PI/180}
 	const [sφ, cφ] = base.sincos(φ)
@@ -736,66 +674,7 @@ function generalAJL (φ, D, a, z,debut,fin,legal,group,material,listeMesh) {
 	 
 	const lines = []
 	for (let i = 0; i < 24; i++) {
-	  const l = new LigneHoraire(i)
-	  const Hi = (i - 12) * 15 * Math.PI / 180
-	 
-	  let j=debut-1;
-	  while (j!==fin) 
-	  {
-        j++
-		if (j>TS.decSuns.length) {j=1}
-		if (legal) {H=Correction(Hi,j)}else {H=Hi}
-		const aH = Math.abs(H)
-		const [sH, cH] = base.sincos(H)
-		const tδ = Math.tan(TS.decSuns[j])
-
-		const cosH0=-tφ * tδ
-		let  H0 = Math.acos(cosH0)
-		if (cosH0> 1){H0=-Math.PI}  //nuit polaire
-		if (cosH0<=-1){H0= Math.PI}  //j0ur polaire
-
-		if (aH <H0) { // sun above horizon
-			const Q = sD * sz * sH + (cφ * cz + sφ * sz * cD) * cH + P * tδ
-			if (Q > 0) { // sun above plane of sundial         
-			const Nx = cD * sH - sD * (sφ * cH - cφ * tδ)
-			const Ny = cz * sD * sH - (cφ * sz - sφ * cz * cD) * cH - (sφ * sz + cφ * cz * cD) * tδ
-			xp=a * Nx / Q ; yp=a * Ny / Q
-			if (pointDansCadran(xp+cs.xgnomon,yp+cs.ygnomon)) { l.points.push(new Point(xp,yp ));xm=xp+cs.xgnomon;ym=yp+cs.ygnomon }
-		    }
-		}
-	  }
-	  if (l.points.length > 0) {lines.push(l);
-	                            EcrireTexte(i.toString(),xm,ym,material,group,listeMesh)
-							   }
-	}
-	const center = new Point()
-	center.x = a / P * cφ * sD
-	center.y = -a / P * (sφ * sz + cφ * cz * cD)
-	const aP = Math.abs(P)
-	const u = a / aP
-	const ψ = Math.asin(aP)
-  
-	return {
-	  lines: lines,
-	  center: center,
-	  length: u,
-	  angle: ψ
-	}
-  }
-		  
-function arcsDiurnes (φ, D, a, z,debut,fin,legal,group,material,listeMesh) { 
-	// (φ, D, a, z float64)  (lines []LigneHoraire, center Point, u, ψ float64)
-	let H,xp,yp,xm,ym;
-	if (φ*180/Math.PI>89.999999){φ=89.999999*Math.PI/180}
-	const [sφ, cφ] = base.sincos(φ)
-	const tφ = sφ / cφ
-	const [sD, cD] = base.sincos(D)
-	const [sz, cz] = base.sincos(z)
-	const P = sφ * cz - cφ * sz * cD
-	 
-	const lines = []
-	for (let i = 0; i < 24; i++) {
-	  const l = new LigneHoraire(i)
+	  const l = new Line(i)
 	  const Hi = (i - 12) * 15 * Math.PI / 180
 	 
 	  let j=debut-1;
@@ -904,7 +783,7 @@ function loadJsonFile()
 function init() {
 		
 
-                //Effacement de toute la page d'introduction  
+                //Effacement de toute la page d'introduction
 
 		document.getElementById("info").style.display = "none";		
 
@@ -912,8 +791,9 @@ function init() {
 
 				
 	    const gui = new GUI( { width: Math.min(Math.round(window.innerWidth/2),300) } );
-        const  sp="▼ "        	
- const FolderSundial = gui.addFolder( sp+'SUNDIAL' );
+              
+                  	
+ const FolderSundial = gui.addFolder( 'SUNDIAL ...' );
 
 //// ORIENTATION				
 	      	const folderOrientationSundial = FolderSundial.addFolder("Orientation...");     
@@ -1042,14 +922,60 @@ const folderGnomon=FolderSundial.addFolder('Style...');
               folderGeoSundial.add(cs,"dst") 
                    .name("summer time (H)");
                        
- ///// DEVISE
- const folderDevise=   FolderSundial.addFolder( 'Devise ...' ); 
+ 
+                   
+
+                 
+///// HOURS
+        materialHeuresSolaires.color.setStyle(cs.colorHS);     
+		materialHeuresLegalesSA.color.setStyle(cs.colorHLSummerAutums);  
+		materialHeuresLegalesWS.color.setStyle(cs.colorHLWinterSpring);
+		const folderHours = FolderSundial.addFolder( 'Hours...' ); 
+
+			            folderHours.add(cs,'heuresSolaires')
+			              .name('Solars')
+			              .onChange( function  (e){
+			            	cs.heuresSolaires=e;
+			            	if (e) {TracerHeuresSolaires()}else{cadranSolaireGroup.remove(heuresSolairesGroup)}});			     
+			            folderHours.addColor(cs, 'colorHS').name('(local true time)')
+			               .onChange(function (e) {
+                           materialHeuresSolaires.color = new THREE.Color(e);
+                           cs.colorHS=materialHeuresSolaires.color.getStyle()});	
+
+			            folderHours.add(cs,'heuresLegalesSummerAutums')
+			              .name('Legals hours')
+			              .onChange( function  (e){
+			            	cs.heuresLegalesSummerAutums=e;
+			            	if (e) {TracerHeuresLegalesSA()}else{cadranSolaireGroup.remove(heuresLegalesGroupSA)}});			     
+			            folderHours.addColor(cs, 'colorHLSummerAutums')
+						   .name('Summer Autum')
+			               .onChange(function (e) {
+                           materialHeuresLegalesSA.color = new THREE.Color(e);
+                           cs.colorHLSummerAutums=materialHeuresLegalesSA.color.getStyle()});
+
+			            folderHours.add(cs,'heuresLegalesWinterSpring')
+			              .name('Legals hours')
+			              .onChange( function  (e){
+			            	cs.heuresLegalesWinterSpring=e;
+			            	if (e) {TracerHeuresLegalesWS()}else{cadranSolaireGroup.remove(heuresLegalesGroupWS)}});			     
+			            folderHours.addColor(cs, 'colorHLWinterSpring')
+						   .name('Winter Spring')
+			               .onChange(function (e) {
+                           materialHeuresLegalesWS.color = new THREE.Color(e);
+                           cs.colorHLWinterSpring=materialHeuresLegalesWS.color.getStyle()});
+
+				
+///// ARCS
+		const folderArcs=   FolderSundial.addFolder( 'Day arcs ...' ); 
+							folderArcs.add(cs,'equinoxeAndSolstice').name('Equinoxe and solstices')
+///// DEVISE
+        const folderDevise=   FolderSundial.addFolder( 'Devise ...' ); 
              folderDevise.add(cs,'devise').name('Texte')
 			    .onFinishChange(function(v){
 				cs.devise=v;
 				cadranSolaireGroup.remove(meshDevise);
 				EcrireDevise(cs.devise,-cs.largeur/2*0.9,-cs.hauteur/2*0.9) });
-				folderDevise.add(cs,'deviseSize',0.5,5,0.1).name('font size')
+				folderDevise.add(cs,'deviseSize',0.5,5,0.1).name('size')
 			    .onFinishChange(function(v){
 				cs.deviseSize=v;
 				cadranSolaireGroup.remove(meshDevise);
@@ -1087,82 +1013,29 @@ const folderGnomon=FolderSundial.addFolder('Style...');
 									 materialHeuresLegalesWS.wireframe=v
 								 });
 
-                   
-const FolderTime = gui.addFolder( sp+'TIME' );
-                 
-///// HOURS   ☻♪♪♣ ☼◄►→
-        materialHeuresSolaires.color.setStyle(cs.colorHS);     
-		materialHeuresLegalesSA.color.setStyle(cs.colorHLSummerAutums);  
-		materialHeuresLegalesWS.color.setStyle(cs.colorHLWinterSpring);
-		const folderHours = FolderTime.addFolder( 'Hours...' ); 
-
-			            folderHours.add(cs,'heuresSolaires')
-			              .name('Solars')
-			              .onChange( function  (e){
-			            	cs.heuresSolaires=e;
-			            	if (e) {TracerHeuresSolaires()}else{cadranSolaireGroup.remove(heuresSolairesGroup)}});			     
-			            folderHours.addColor(cs, 'colorHS').name('(local true time)')
-			               .onChange(function (e) {
-                           materialHeuresSolaires.color = new THREE.Color(e);
-                           cs.colorHS=materialHeuresSolaires.color.getStyle()});	
-
-			            folderHours.add(cs,'heuresLegalesSummerAutums')
-			              .name('Legals hours')
-			              .onChange( function  (e){
-			            	cs.heuresLegalesSummerAutums=e;
-			            	if (e) {TracerHeuresLegalesSA()}else{cadranSolaireGroup.remove(heuresLegalesGroupSA)}});			     
-			            folderHours.addColor(cs, 'colorHLSummerAutums')
-						   .name('Summer Autum')
-			               .onChange(function (e) {
-                           materialHeuresLegalesSA.color = new THREE.Color(e);
-                           cs.colorHLSummerAutums=materialHeuresLegalesSA.color.getStyle()});
-
-			            folderHours.add(cs,'heuresLegalesWinterSpring')
-			              .name('Legals hours')
-			              .onChange( function  (e){
-			            	cs.heuresLegalesWinterSpring=e;
-			            	if (e) {TracerHeuresLegalesWS()}else{cadranSolaireGroup.remove(heuresLegalesGroupWS)}});			     
-			            folderHours.addColor(cs, 'colorHLWinterSpring')
-						   .name('Winter Spring')
-			               .onChange(function (e) {
-                           materialHeuresLegalesWS.color = new THREE.Color(e);
-                           cs.colorHLWinterSpring=materialHeuresLegalesWS.color.getStyle()});
-						folderHours.add(cs,'deviseSize',0,5,0.1).name('font size')
-			              .onFinishChange(function(v){
-			            	cs.hoursTextSize=v });
-
-				
-///// ARCS
-		const folderArcs=   FolderTime.addFolder( 'Day arcs ...' ); 
-						folderArcs.add(cs,'equinoxeAndSolstices').name('Equinoxe and solstices')
-							.onChange(function(v){});
 
 
-
-
-
-///// VIEW
-    const folderAnimations = gui.addFolder( sp+'VIEW' );            
-           
-		    folderAnimations.add(cs,"axesESZ").name("East,South,Zenith")
-                            .onChange(function(e){cs.axesESZ=e;axesESZHelper.visible=e});	
-            folderAnimations.add(cs,"voirTerre").name("Earth")
-                            .onChange(function(e){
-                            	cs.voirTerre=e;
-                            	PlacerLaTerre()});	
+///// ANIM
+        const folderAnimations = gui.addFolder( 'VIEW ...' );            
+           // const folderSun = folderAnimations.addFolder( 'Sun position...' );  
             folderAnimations.add( cs, "hsol", 0, 24, 0.1 )
                          .name("Hour angle (1/10 h)")
                          .onChange(function(e){cs.hsol=e;PlacerLeSoleil()});
             folderAnimations.add( cs, "decsol", -23.44, 23.44, 0.01 )
                          .name("Declination of the sun (1/100°)")
                          .onChange(function(e){cs.decsol=e;PlacerLeSoleil()}); 
-			
+			folderAnimations.add(cs,"axesESZ").name("East,South,Zenith")
+                            .onChange(function(e){cs.axesESZ=e;axesESZHelper.visible=e});	
+            folderAnimations.add(cs,"voirTerre").name("Earth")
+                            .onChange(function(e){
+                            	cs.voirTerre=e;
+                            	PlacerLaTerre()});	
             folderAnimations.add( cs, "vrotscene", 0, 10, 1 )
                          .name('Rotation scene...')
                          .onChange(function(e){cs.vrotscene=e});
             		
 ///// EXPORT
-        const folderFiles = gui.addFolder( sp+'EXPORT' ); 
+        const folderFiles = gui.addFolder( 'EXPORT ...' ); 
                 
                 folderFiles.add(cs,"nameFile").name("File name").onChange( function  (e) {
                 	cs.nameFile=e;
