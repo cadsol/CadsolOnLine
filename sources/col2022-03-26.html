@@ -14,8 +14,7 @@
 	<div id="container"></div>
 	<div id="info">
 		<h1>CadsolOnLine</h1>
-		<!-- version: <a href="https://cadsol.web-pages.fr/" target="_blank"> 2022.03.29</a></br> -->
-		version:  22.03.29 <a href="https://cadsol.web-pages.fr/" target="_blank"> cadsol.fr</a></br>
+		by: <a href="https://cadsol.web-pages.fr/" target="_blank">Astre JL 2022.03.23</a></br>
 		3D library: <a href="https://threejs.org" target="_blank" rel="noopener">Three.js</a> </br>
 
 		Astronomical library:
@@ -23,7 +22,7 @@
 		<!--  <a href="https://en.wikipedia.org/wiki/Sonia_Keys" target="_blank" rel="noopener">Sonia Keys</a> & 
            <a href="https://github.com/commenthol/astronomia" target="_blank" rel="noopener">commenthol</a></br> -->
 
-		 
+
 
 		</p>
 		<p>
@@ -54,7 +53,8 @@
 		    import * as JULIAN from '../astronomia-master/src/julian.js';		
 		    import * as base from '../astronomia-master/src/base.js';					
             import * as EQTIME from '../astronomia-master/src/eqtime.js';	
-            import * as SEXA from '../astronomia-master/src/sexagesimal.js';
+            import * as SEXA from '../astronomia-master/src/sexagesimal.js';	
+         //   import * as SUNDIAL from '../astronomia-master/src/sundial.js';	
             import { FontLoader } from './jsm/loaders/FontLoader.js';
 			import { TextGeometry } from './jsm/geometries/TextGeometry.js';
             import { CSS2DRenderer, CSS2DObject } from './jsm/renderers/CSS2DRenderer.js';
@@ -101,7 +101,6 @@
 						  hoursTextSize:1,
 						  equinoxeAndSolstices:false,
 						  colorequinoxeAndSolstice:"rgb(152,0,0)",
-						  datesArcsDiurnes:[],
 				          devise:"Carpe Diem",
 						  deviseSize:1,
 				          hsol:12,
@@ -429,10 +428,9 @@ function run() {
 }
 //------------------------------------------------------------------------------------------------------------
 function TracerHeures (){
-   if (cs.heuresSolaires) {TracerHeuresSolaires()}
-   if (cs.heuresLegalesSummerAutums){TracerHeuresLegalesSA()}
-   if (cs.heuresLegalesWinterSpring){TracerHeuresLegalesWS()}
-   TracerArcsDiurnes()
+   if (cs.heuresSolaires==true) {TracerHeuresSolaires()}
+   if (cs.heuresLegalesSummerAutums==true){TracerHeuresLegalesSA()}
+   if (cs.heuresLegalesWinterSpring==true){TracerHeuresLegalesWS()}
 }
 // --------------------------------------------------------------------------------------------------------
 function pointDansCadran(x,y)
@@ -645,7 +643,7 @@ function TracerArcsDiurnes ()
    // tracé des nouvelles lignes
    for (let i = 0; i < sunDial.lines.length; i++) {
    		if (sunDial.lines[i].points.length>1) 
-   		{ 	 CSVtext +="Date: "+sunDial.lines[i].date.toString()+"\n";
+   		{ 	 CSVtext +="Date: "+sunDial.lines[i].hour.toString()+"\n";
 			 pipeSpline = [];
 			
 			 for (let p = 0; p < sunDial.lines[i].points.length; p++)
@@ -661,7 +659,7 @@ function TracerArcsDiurnes ()
 				   {
 				   pipeSplineCRC=[];
 				   pipeSplineCRC = new THREE.CatmullRomCurve3(pipeSpline);
-				   tubeGeometry = new THREE.TubeGeometry( pipeSplineCRC,64, cs.egnomon,8,false );
+				   tubeGeometry = new THREE.TubeGeometry( pipeSplineCRC,32, cs.egnomon,8,false );
 				   mesh = new THREE.Mesh( tubeGeometry, materialArcsDiurnes);
 				   mesh.receiveShadow = true;
 				   arcsDiurnesListeMesh.push(mesh);
@@ -721,7 +719,7 @@ function LigneArc (date, points) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 function Correction(H0,j) 
 {
- return H0+TS.eqtimes[j] - (cs.longi/15 - cs.offset_sec/3600)* Math.PI / 180
+ return H0+TS.eqtimes[j] - (cs.longi - cs.offset_sec/3600)* Math.PI / 180
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -785,12 +783,10 @@ function generalAJL (φ, D, a, z,debut,fin,legal,group,material,listeMesh) {
 	  angle: ψ
 	}
   }
-	  
+		  
 function arcsDiurnes (φ, D, a, z,debut,fin,legal,group,material,listeMesh) { 
 	// (φ, D, a, z float64)  (lines []LigneHoraire, center Point, u, ψ float64)
-	let H,xp,yp,xm,ym,s;
-	const listeDec= [-23.44,0,23.44]
-
+	let H,xp,yp,xm,ym;
 	if (φ*180/Math.PI>89.999999){φ=89.999999*Math.PI/180}
 	const [sφ, cφ] = base.sincos(φ)
 	const tφ = sφ / cφ
@@ -799,17 +795,20 @@ function arcsDiurnes (φ, D, a, z,debut,fin,legal,group,material,listeMesh) {
 	const P = sφ * cz - cφ * sz * cD
 	 
 	const lines = []
-	
-	for (const d of cs.datesArcsDiurnes)
+	for (let i = 0; i < 24; i++) {
+	  const l = new LigneHoraire(i)
+	  const Hi = (i - 12) * 15 * Math.PI / 180
+	 
+	  let j=debut-1;
+	  while (j!==fin) 
 	  {
-	    const l = new LigneArc(d)       
-		for (let i = 0; i < 24*60; i++) {
-	    
-	    const H = (i - 12*60)/60 * 15 * Math.PI / 180	
+        j++
+		if (j>TS.decSuns.length) {j=1}
+		if (legal) {H=Correction(Hi,j)}else {H=Hi}
 		const aH = Math.abs(H)
 		const [sH, cH] = base.sincos(H)
-	//	const tδ = Math.tan(TS.decSuns[j])
-	    const tδ = Math.tan(d[1])
+		const tδ = Math.tan(TS.decSuns[j])
+
 		const cosH0=-tφ * tδ
 		let  H0 = Math.acos(cosH0)
 		if (cosH0> 1){H0=-Math.PI}  //nuit polaire
@@ -826,10 +825,7 @@ function arcsDiurnes (φ, D, a, z,debut,fin,legal,group,material,listeMesh) {
 		}
 	  }
 	  if (l.points.length > 0) {lines.push(l);
-		                        s=d[0]
-								if (d==0){s="e"}
-								if (Math.abs(d)==23.44){s="s"}
-	                            EcrireTexte(s,xm,ym,material,group,listeMesh)
+	                            EcrireTexte(i.toString(),xm,ym,material,group,listeMesh)
 							   }
 	}
 	const center = new Point()
@@ -1089,8 +1085,7 @@ const folderGnomon=FolderSundial.addFolder('Style...');
 									 materialGnomon.wireframe=v;
 									 materialHeuresSolaires.wireframe=v;
 									 materialHeuresLegalesSA.wireframe=v;
-									 materialHeuresLegalesWS.wireframe=v;
-									 materialArcsDiurnes.wireframe=v
+									 materialHeuresLegalesWS.wireframe=v
 								 });
 
                    
@@ -1100,10 +1095,10 @@ const FolderTime = gui.addFolder( sp+'TIME' );
         materialHeuresSolaires.color.setStyle(cs.colorHS);     
 		materialHeuresLegalesSA.color.setStyle(cs.colorHLSummerAutums);  
 		materialHeuresLegalesWS.color.setStyle(cs.colorHLWinterSpring);
-		const folderHours = FolderTime.addFolder( 'Hour...' ); 
+		const folderHours = FolderTime.addFolder( 'Hours...' ); 
 
 			            folderHours.add(cs,'heuresSolaires')
-			              .name('Solar')
+			              .name('Solars')
 			              .onChange( function  (e){
 			            	cs.heuresSolaires=e;
 			            	if (e) {TracerHeuresSolaires()}else{cadranSolaireGroup.remove(heuresSolairesGroup)}});			     
@@ -1113,7 +1108,7 @@ const FolderTime = gui.addFolder( sp+'TIME' );
                            cs.colorHS=materialHeuresSolaires.color.getStyle()});	
 
 			            folderHours.add(cs,'heuresLegalesSummerAutums')
-			              .name('Legal hour')
+			              .name('Legals hours')
 			              .onChange( function  (e){
 			            	cs.heuresLegalesSummerAutums=e;
 			            	if (e) {TracerHeuresLegalesSA()}else{cadranSolaireGroup.remove(heuresLegalesGroupSA)}});			     
@@ -1124,7 +1119,7 @@ const FolderTime = gui.addFolder( sp+'TIME' );
                            cs.colorHLSummerAutums=materialHeuresLegalesSA.color.getStyle()});
 
 			            folderHours.add(cs,'heuresLegalesWinterSpring')
-			              .name('Legal hour')
+			              .name('Legals hours')
 			              .onChange( function  (e){
 			            	cs.heuresLegalesWinterSpring=e;
 			            	if (e) {TracerHeuresLegalesWS()}else{cadranSolaireGroup.remove(heuresLegalesGroupWS)}});			     
@@ -1139,44 +1134,12 @@ const FolderTime = gui.addFolder( sp+'TIME' );
 
 				
 ///// ARCS
-        let dateArc={day:1,month:1,trace:false},j=0,s="";
-		const folderArcs=   FolderTime.addFolder( 'Dayly arcs...' ); 
-		                const folderDate= folderArcs.addFolder('Date')
-						  folderDate.add(dateArc,"month",1,12,1)
-						            .onChange(function(v){dateArc.trace=false;folderDate.updateDisplay()});
-						  folderDate.add(dateArc,"day",1,31,1)
-						            .onChange(function(v){dateArc.trace=false;folderDate.updateDisplay()});
-						  folderDate.add(dateArc,"trace")
-						            .onChange(function(v){
-									j = JULIAN.DayOfYearGregorian(cs.year,dateArc.month,dateArc.day)
-									s=dateArc.day+"/"+dateArc.month+"  "
-									console.log(j,cs.year,dateArc.month,dateArc.day)
-									if (v)  {cs.datesArcsDiurnes.push([s,TS.decSuns[j]])}else
-											{cs.datesArcsDiurnes=cs.datesArcsDiurnes.filter(
-												function(v){return((v[0]=='so.')||(v[0]=='eq.'))})
-											}
-									TracerArcsDiurnes()	
-									console.log(cs.datesArcsDiurnes)
-									})
-						           
+		const folderArcs=   FolderTime.addFolder( 'Day arcs ...' ); 
 						folderArcs.add(cs,'equinoxeAndSolstices')
 						    .name('Equinoxe and solstices')
 							.onChange(function(v){
-								cs.equinoxeAndSolstices=v;
-								if (v) {
-									cs.datesArcsDiurnes.push(['so.',base.toRad(-23.44)])
-									cs.datesArcsDiurnes.push(['so.',base.toRad( 23.44)])
-									cs.datesArcsDiurnes.push(['eq.',0])
-									}
-									else{
-										cs.datesArcsDiurnes=cs.datesArcsDiurnes.filter(function(v){
-											return((v[0]!=='so.')&&(v[0]!=='eq.'))})
-										}
-										//cs.datesArcsDiurnes=[];
-								TracerArcsDiurnes()
-								console.log(cs.datesArcsDiurnes)
-							    })
-						
+								cs.TracerArcsDiurnes=v;
+								if (v) {TracerArcsDiurnes()}else{cadranSolaireGroup.remove(arcsDiurnesGroup)}});
 
 
 
@@ -1273,9 +1236,6 @@ const FolderTime = gui.addFolder( sp+'TIME' );
 // 				const camHelper = new THREE.CameraHelper( light.shadow.camera );
 //                 scene.add(camHelper) 
                EcrireDevise(cs.devise,-cs.largeur/2*0.9,-cs.hauteur/2*0.9)
-
-			   TracerHeures()
-			   TracerArcsDiurnes()
 
 
    }//init
