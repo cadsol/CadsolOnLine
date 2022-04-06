@@ -12,41 +12,35 @@
 
 <body>
 	<div id="container"></div>
-
 	<div id="info">
 		<h1>CadsolOnLine</h1>
 		<!-- version: <a href="https://cadsol.web-pages.fr/" target="_blank"> 2022.03.29</a></br> -->
-		version  20220402  <a href="https://cadsol.web-pages.fr/" target="_blank"> cadsol.fr</a></br>
+		version:  22.03.29 <a href="https://cadsol.web-pages.fr/" target="_blank"> cadsol.fr</a></br>
 		3D library: <a href="https://threejs.org" target="_blank" rel="noopener">Three.js</a> </br>
 
 		Astronomical library:
 		<a href="https://en.wikipedia.org/wiki/Jean_Meeus" target="_blank" rel="noopener">Jean Meeus</a> </br>
 		<!--  <a href="https://en.wikipedia.org/wiki/Sonia_Keys" target="_blank" rel="noopener">Sonia Keys</a> & 
-        <a href="https://github.com/commenthol/astronomia" target="_blank" rel="noopener">commenthol</a></br> -->
-		</p>
-			<img src="./imageMoret.jpg" alt="Image" style="max-width:100%;height:auto">
-		</p></p>
-		<label for="fileinput">. Open Sundial (JSON) . </label>
-		
-		<div id="menu"><br></div>
-		<input type="file" id="fileinput" accept=".json">
-		
+           <a href="https://github.com/commenthol/astronomia" target="_blank" rel="noopener">commenthol</a></br> -->
 
+		 
+
+		</p>
+		<p>
+			<img src="./imageMoret.jpg" alt="Image" style="max-width:100%;height:auto">
+		</p>
+		<label for="fileinput">. Open Sundial (JSON) . </label>
+		<div id="menu"></div>
+		<input type="file" id="fileinput" accept=".json">
+		<br>
 		<script>
 			const docinput = document.querySelector('input');
 			docinput.style.opacity = 0;
-		</script>	
-		
+		</script>
 	</div>
+	<!-- 		 -->
 
-	<div id="time"></div>
-
-
-</body>
-
-	
-	 
-	
+	<!--         <script src="./interface.js"></script> -->
 
 	<script type="module">
 
@@ -64,23 +58,12 @@
             import { FontLoader } from './jsm/loaders/FontLoader.js';
 			import { TextGeometry } from './jsm/geometries/TextGeometry.js';
             import { CSS2DRenderer, CSS2DObject } from './jsm/renderers/CSS2DRenderer.js';
-			//import { DDSLoader } from './jsm/loaders/DDSLoader.js';
 			
             
             document.querySelector("input").addEventListener('change', function() {loadJsonFile() });
 
 			
-            // if (navigator.geolocation) {
-            //   navigator.geolocation.watchPosition(showPosition);
-            // } else { cs.lati = 0;
-            //          cs.longi= 0} ;  
-
-            // function showPosition(position) {
-            //    cs.lati = position.coords.latitude;
-            //    cs.longi= position.coords.longitude}
-
-
-            let  cs ={    version:"220402", 
+            let  cs ={    version:"2022.03.16", 
                           nameFile:"mySundial",
 				          export:"?",			        
 					      largeur:600,
@@ -93,12 +76,12 @@
 				          emissiveCS:"rgb(37,53,37)",
 				     //     specularCS:"rgb(0,0,0)",
 				          opaciteCS:0.5,
-				          lati:48.858893,
-				          longi:2.32004,
+				          lati:48.85,
+				          longi:2.32,
 				          adresse:"",
 				          urlOpenStreet:"",
 				          timezone:"",
-				          offset_sec:0,
+				          offset_sec:3600,
 				          offset_string:"",
 				          now_in_dst:0,
 				          dst:0,
@@ -126,11 +109,8 @@
 				          axesESZ:true,
 				          voirTerre:true,
 				          vrotscene:0,
-					      year:2022,
-						  dayofYear:1
+					      year:2022
 				          };
-				
-				//document.getElementById("ver").innerHTML=cs.version
 
 				let container, stats,buttonNewSundial;
 				let camera, scene, renderer;   
@@ -197,13 +177,7 @@
 			    menu.appendChild( buttonNewSundial );
 				buttonNewSundial.addEventListener("click", function() { run() });
 
-				
-				//Button Clock
-				const labelclock = document.createElement( 'label' );
-			    const labelutc = document.getElementById( 'time' );
-			    labelutc.appendChild( labelclock );
-				const d = '';
-                labelutc.innerHTML = d;
+
 				
 
 			let cadran,gnomon,stylePolaire,sousStylaire,geometryCS ;
@@ -305,35 +279,7 @@
 			   let fontDevise;
 			   loadFontDevise();
 
-			   getLocation();
 
-//------------------------------------------------------------------------------
-// const loader = new DDSLoader();
-// const cubemap2 = loader.load( 'textures/compressed/Mountains_argb_mip.dds', function ( texture ) {
-
-// texture.magFilter = THREE.LinearFilter;
-// texture.minFilter = THREE.LinearFilter;
-// texture.mapping = THREE.CubeReflectionMapping;
-// material5.needsUpdate = true;
-// } ); 
-
-// const material5 = new THREE.MeshBasicMaterial( { envMap: cubemap2 } );
-
-//-----------------------------------------------------------------------------------------------
-// Localisation
-function getLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(showPosition);
-  } else { 
-    alert("Geolocation is not supported by this browser.") ;
-  }
-}
-
-function showPosition(position) {
-  cs.lati = position.coords.latitude ; 
-  cs.longi= position.coords.longitude;
-}
-//----------------------------------------------------------------------------
 function loadFontDevise() {
     const loader = new FontLoader();
     loader.load( './fonts/helvetiker_regular.typeface.json', function ( response ) {
@@ -395,8 +341,8 @@ function TableSol(year) {
   let jde,ae,dec,eqt,jdes,eqts,decs;
   let decSunMin=0,decSunMax=0,jdecSunMin=0,jdecSunMax=0,j=0;
   jdes=[];eqts=[];decs=[]
-  jde= JULIAN.CalendarGregorianToJD(year, 1, 1.5);  //Premier Janvier à 12h
-  while (jde<=JULIAN.CalendarGregorianToJD(year, 12, 31.5))//31 decembre à 12h
+  jde= JULIAN.CalendarGregorianToJD(year, 1, 1);
+  while (jde<=JULIAN.CalendarGregorianToJD(year, 12, 31))
     { 
     ae=apparentEquatorial(jde);
     dec=ae.dec;
@@ -407,7 +353,7 @@ function TableSol(year) {
     jde+=1;j+=1
 	 };
  // console.log(jdecSunMin,jdecSunMax);
-  return {//Tableaux à 365 ou 366 elements, valeurs calculées à 12h
+  return {//Tableaux à 365 ou 366 elements
 	      decSuns:decs,  //radians
           eqtimes:eqts,  //equation of time as an hour angle in radians.
           jdates:jdes,    //jourjulien
@@ -446,9 +392,8 @@ function Ephemerid(year) {
    }
 //-----------------------------------------------------------------------------------------------------				          
 function run() {	        
-	           
+     
 			init();	
-		
 			animate();
 			
             
@@ -616,7 +561,7 @@ function TracerHeuresLegalesSA ()
 				   {
 				   pipeSplineCRC=[];
 				   pipeSplineCRC = new THREE.CatmullRomCurve3(pipeSpline);
-				   tubeGeometry = new THREE.TubeGeometry( pipeSplineCRC,128, cs.egnomon,8,false );
+				   tubeGeometry = new THREE.TubeGeometry( pipeSplineCRC,256, cs.egnomon,8,false );
 				   mesh = new THREE.Mesh( tubeGeometry, materialHeuresLegalesSA);
 				   mesh.receiveShadow = true;
 				   heuresLegalesListeMeshSA.push(mesh);
@@ -666,7 +611,7 @@ function TracerHeuresLegalesWS(){
 						{
 						pipeSplineCRC=[];
 						pipeSplineCRC = new THREE.CatmullRomCurve3(pipeSpline);
-						tubeGeometry = new THREE.TubeGeometry( pipeSplineCRC,128, cs.egnomon,8,false );
+						tubeGeometry = new THREE.TubeGeometry( pipeSplineCRC,256, cs.egnomon,8,false );
 						mesh = new THREE.Mesh( tubeGeometry, materialHeuresLegalesWS);
 						mesh.receiveShadow = true;
 						heuresLegalesListeMeshWS.push(mesh);
@@ -779,7 +724,7 @@ function LigneArc (date, points) {
 function Correction(H0,j) 
 { let c=0
 	c=TS.eqtimes[j] + (cs.longi/15 - cs.offset_sec/3600)* Math.PI / 12;
- return (H0+c);  //angle horaire en radians, de -pi à +pi
+ return (H0+c);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1094,7 +1039,7 @@ const folderGnomon=FolderSundial.addFolder('Style...');
                    	})   
               folderGeoSundial.add(cs,"timezone") 
                    .name("Time zone");
-              folderGeoSundial.add(cs,"offset_sec",-43200,43200,3600) 
+              folderGeoSundial.add(cs,"offset_sec") 
                    .name("offset from UTC (sec)")
                    .onFinishChange(function(v){
                    	    cs.offset_sec=v;
@@ -1102,7 +1047,7 @@ const folderGnomon=FolderSundial.addFolder('Style...');
                        });
               folderGeoSundial.add(cs,"offset_string") 
                    .name(" offset (HHMM)");
-              folderGeoSundial.add(cs,"now_in_dst") 
+              folderGeoSundial.add(cs,"dst") 
                    .name("summer time (H)");
                        
  ///// DEVISE
@@ -1198,7 +1143,7 @@ const FolderTime = gui.addFolder( sp+'TIME' );
 				
 ///// ARCS
         let dateArc={day:1,month:1,trace:false},j=0,s="";
-		const folderArcs=   FolderTime.addFolder( 'Diurnials arcs...' ); 
+		const folderArcs=   FolderTime.addFolder( 'Dayly arcs...' ); 
 		                const folderDate= folderArcs.addFolder('Date')
 						  folderDate.add(dateArc,"month",1,12,1)
 						            .onChange(function(v){dateArc.trace=false;folderDate.updateDisplay()});
@@ -1249,12 +1194,12 @@ const FolderTime = gui.addFolder( sp+'TIME' );
                             .onChange(function(e){
                             	cs.voirTerre=e;
                             	PlacerLaTerre()});	
-            folderAnimations.add( cs, "hsol", 0, 24, 0.01 )
-                         .name("Hour  (1/100 h)")
+            folderAnimations.add( cs, "hsol", 0, 24, 0.1 )
+                         .name("Hour angle (1/10 h)")
                          .onChange(function(e){cs.hsol=e;PlacerLeSoleil()});
-            folderAnimations.add( cs, "dayofYear", 1, 365, 1 )
-                         .name("Day (1-365))")
-                         .onChange(function(e){cs.dayofYear=e;PlacerLeSoleil()}); 
+            folderAnimations.add( cs, "decsol", -23.44, 23.44, 0.01 )
+                         .name("Declination of the sun (1/100°)")
+                         .onChange(function(e){cs.decsol=e;PlacerLeSoleil()}); 
 			
             folderAnimations.add( cs, "vrotscene", 0, 10, 1 )
                          .name('Rotation scene...')
@@ -1266,19 +1211,21 @@ const FolderTime = gui.addFolder( sp+'TIME' );
                 folderFiles.add(cs,"nameFile").name("File name").onChange( function  (e) {
                 	cs.nameFile=e;
                 	});
-                folderFiles.add(cs,"export",["?","Sundial(JSON)","Scene(JSON)","Spreadsheet(CSV)","3D(STL)","Ephemeris(CSV)"])
-				    .name('Save')
-					.onFinishChange( function  (e)  {
+                folderFiles.add(cs,"export",["?","Sundial(JSON)","Scene(JSON)","Spreadsheet(CSV)","3D(STL)","Ephemeris(CSV)"]).name("Save")
+					.onChange( function  (e)  {
                 	if (e=="Sundial(JSON)") 
-                               	  {saveString(JSON.stringify(cs,null,2),cs.nameFile+'.sundial.json')};
+                               	  {saveString(JSON.stringify(cs,null,2),cs.nameFile+'.sundial.json');
+								  cs.export="?"};
                     if (e=="Scene(JSON)")
-                	              {saveString(JSON.stringify(cadranSolaireGroup.toJSON(),null,2),cs.nameFile+'.scene.json')};
+                	              {saveString(JSON.stringify(cadranSolaireGroup.toJSON(),null,2),cs.nameFile+'.scene.json');
+								  cs.export="?"};
                 	if (e=="Spreadsheet(CSV)")
-                	              {saveString(CSVtext,cs.nameFile+'.csv')};
+                	              {saveString(CSVtext,cs.nameFile+'.csv');
+								  cs.export="?";};
 				 	if (e=="Ephemeris(CSV)")
-								  {Ephemerid(cs.year);saveString(CSVephemerid,cs.nameFile+'.ephemerid.csv')};
-					cs.export="?"
-					folderFiles.updateDisplay()
+								  {Ephemerid(cs.year);saveString(CSVephemerid,cs.nameFile+'.ephemerid.csv');
+                	              cs.export="?";
+                	              folderFiles.updateDisplay()}
                 	});
 					         
 
@@ -1399,35 +1346,17 @@ function orienterAxedumonde() {
  function PlacerLeSoleil(){
            	   const k=2*Math.max(cs.largeur,cs.hauteur,cs.epaisseur);
 			   const v3=new THREE.Vector3();
-			   let h,m,dec,j,eqt,date,hsol;
 
-                h=Math.floor(cs.hsol);
-				m=Math.floor((cs.hsol-h)*60); 
-				h = (h < 10) ? "0" + h : h;
-                m = (m < 10) ? "0" + m : m;
-				
-				date=JULIAN.JDToCalendarGregorian(TS.jdates[cs.dayofYear-1]);
-				//jde= JULIAN.CalendarGregorianToJD(cs.year, date.month, date.day); 
-				dec=base.toDeg(TS.decSuns[cs.dayofYear-1]);
-
-				dec=Math.round(dec*1000)/1000;
-				cs.decsol=dec;
-				eqt=Math.round(SEXA.secFromHourAngle(TS.eqtimes[cs.dayofYear-1]));
-
-				hsol=cs.hsol + eqt/3600 +(cs.longi/15 - cs.offset_sec/3600); //correction de l'heure
-				
-		        const sdate=Math.floor(date.day)+"/"+date.month+"/"+date.year;  //date JJ/MM/YYYY
-
-	           sphereSun.position.z=k*Math.cos(base.toRad(cs.decsol))*Math.cos(base.toRad(-(hsol-12)*15));
-			   sphereSun.position.x=k*Math.cos(base.toRad(cs.decsol))*Math.sin(base.toRad(-(hsol-12)*15));
+	           sphereSun.position.z=k*Math.cos(base.toRad(cs.decsol))*Math.cos(base.toRad(-(cs.hsol-12)*15));
+			   sphereSun.position.x=k*Math.cos(base.toRad(cs.decsol))*Math.sin(base.toRad(-(cs.hsol-12)*15));
 			   sphereSun.position.y=k*Math.sin(base.toRad(cs.decsol));
 	        
                sphereSun.getWorldPosition ( v3 );
 			   light.position.set( v3.x,v3.y,v3.z ).normalize();
 			   light.castShadow =(v3.y>0) 
-		    
-			   labelutc.innerHTML=h + ":" + m +"  "+sdate+ "  dec:"+dec+"°  eqt:"+eqt+'s';
-//  helperLight.update()
+		     // sphereSun.visible=false;
+			 //  helperLight.update()
+		
            }
 
 // Terre ---------------------------------------------------------------------------------------------------
