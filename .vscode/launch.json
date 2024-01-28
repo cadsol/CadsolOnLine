@@ -9,7 +9,7 @@
             "type": "chrome",
             "request": "launch",
             "name": "colmod.html",
-            "url": "http://192.168.1.14/CadsolOnLine/sources/colmod.html"
+            "url": "http://192.168.1.14/SauvegardeCOL/CadsolOnLine/sources/colmod.html"
            
         },
         {

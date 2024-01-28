@@ -1,0 +1,69 @@
+1 la couleur de fond des barres du menu sous la souris est rouge sombre
+(elle étaient anciennement gris clair)
+j'ai un peu modifié le css, mon but est de mettre en évidence les temps de calcul (qui peuvent être longs pour les polyèdres) 
+par un changement de couleur des bouton.
+on peut changer ces couleurs très facilement
+
+
+-2. Comment expliquer la vue 2D pour les formes de cadran qui ne sont
+pas des parallélépipèdes, des cônes, des cylindres ou des polyèdres ?
+projection sur le plan xOy
+ 
+-3 Dans le cas des cônes, il serait intéressant d'avoir la délimitation
+de la surface développée (portion de disque).
+oui bien sûr, on verra. A faire. Difficulté en cas de changement d'échelle
+
+-4 Pour les surfaces comme le cylindre et la sphère, il y a une ligne de
+raccordement qui est perturbante car proche de la ligne de midi. En
+faisant tourner le volume on pourrait placer cette ligne à l'opposé du
+porte-ombre où elle serait moins gênante.
+Je ne suis pas encore arrivé à appliquer une texture sur une surface courbe. A faire! 
+pour l'instant je vais tout simplement enlever les textures sur les solides (par défaut)
+
+
+-5 Pour les cadrans en tracé de rayon sur sphère, demi-cylindre, scaphé,
+(fichier PLY, OBJ ?) et surface paramétrique, la position de la Terre se
+décale anormalement dès qu'on modifie la hauteur de la surface
+(paramètre 'Height').
+a améliorer
+ 
+-6 Pour les surfaces polyédriques, la position de la Terre n'est pas
+gérée et elle interfère avec le polyèdre quand on augment son rayon.
+à améliorer
+ 
+-7 La modification de la devise ou son déplacement pour les cadrans
+polyédriques se fait sans effacement de la devise initiale.
+-8 La modification de la hauteur des gnomons ou de leur position pour
+les cadrans polyédriques est curieuse avec l'apparition d'une sphère
+(j'ai une version intermédiaire où ces deux derniers points me semble
+mieux gérés).
+j'ai volontairement  modifié la version qui marchait apparemment bien car pour des raison longues à expliquer, il y avait  d'énormes fuites de mémoire  chaque fois qu'on changeait une position
+j'ai toujours du mal à gérer la mémoire. Les navigateurs (et même js) ont des "garbage collector" qui fonctionnent bizarrement
+
+-9 Pour les cadrans à style polaire, la forme du style devient aberrante
+en augmentant puis diminuant la longueur du style droit.
+gros bug. corrigé (en principe)
+
+-10 Pour les cadrans à tracé de rayon, la position z0z négative du tore
+ne présente pas d'intérêt à mon point de vue (plus généralement, il en
+est de même pour les inclinaisons négatives qui ne sont, à ma
+connaissance, jamais utilisées en gnomonique).
+ça ne mange pas de pain et ça peut servir, on sait jamais. Problèmes dans hémisphère sud?
+
+-11 Pour les polyèdre qui semblent constitué de faces avec une certaine
+épaisseur, l'opacité de 0,8 est perturbante pour l'interprétation
+visuelle. Il me semble qu'une opacité initiale réglée à 1 est préférable
+dans tous les cas.
+OK, je vais le faire
+ 
+-12 Il serait plus réaliste de donner une certaine épaisseur au scaphé,
+comme pour le demi-cylindre du cadran équatorial.
+oui, mais pas facile. on verra plus tard.
+
+-13 La texture n'est pas prise en compte correctement pour les cadrans
+équatoriaux et polyédriques. 
+voir point 4
+
+-14 Pour les cadrans polyédriques, le bouton "facet base" ne semble pas
+fonctionner correctement.
+??? à retester...

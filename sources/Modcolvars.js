@@ -71,7 +71,7 @@ export let cs = {
 	specularCS: "rgb(0,0,0)",
 	metalness: 0.5,
 	roughness:0.5,
-	opaciteCS: 0.8,
+	opaciteCS: 1,
 	wireframe:false,
 	nameTexture:"steel",
 	dataURL:"",
@@ -143,9 +143,9 @@ export let cs = {
 	vrotSun: 0,
 	linkMedia: "",
 	autoCloseMenu: true,
-	//comments:"http://",
-	//backgroundColor
-	background: "rgb(60,100,140)",	
+	background: "rgb(60,100,140)",
+	dampingFactor: 10,	
+	vrotClouds:1,
 	//export
 	unitSVG: 'auto',
 	separateurCSV: ";",
