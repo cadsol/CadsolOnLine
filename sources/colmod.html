@@ -4545,12 +4545,13 @@
 			//rayon
 			const guirayonPoly= guiSectionPoly.add(cs, "rayonPolyedre", 100,1000, 1).name("radius polyedra")
 				.onFinishChange(function (v) {
+				if(NouveauCadran){
 					if (confirm('Reinit sundial?')){
 					  effacerTouteslesfaces()
 					  initPol()	
-					}
+					}}else{	effacerTouteslesfaces()
+					 		initPol()}
 				})
-			helpGui(guirayonPoly, 'beware! Reinit polyhedra')
 			
 
 			guiSectionPoly.close()
