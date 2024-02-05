@@ -106,6 +106,17 @@
  	text-align: left;
  }
 
+ #heureDate {
+	color: #d3d013;
+	position: absolute;
+	bottom: 40px;
+	left: 10px;
+	width: auto;
+	padding: 5px;
+	/*border: 1px solid rgb(221, 240, 116);*/
+	text-align: left;
+}
+
  #slider {
  	cursor: pointer;
  	width: 100%;

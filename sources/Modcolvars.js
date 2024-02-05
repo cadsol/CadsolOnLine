@@ -7,12 +7,9 @@ import {
 	september,
 	december
 } from '../astronomia-master/src/solstice.js';
-//import { POLYHEDRA } from './polyhedra.js';
 
-//export const SP = "Polar or straight style", BF = "Bifilar (vertical)", BFG = 'Bifilar generalised', ANL = 'Analemmatic';///+++
 export const SP = "Polar or straight style", BF = "Bifilar (vertical)", BFG = 'Bifilar generalised', ANL = 'Analemmatic', RTS='Ray tracing sundial';///+++
 
-//export let cadran;
  
 export let cs = {
 	version: "",
