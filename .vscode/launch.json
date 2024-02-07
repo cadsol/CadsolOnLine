@@ -15,15 +15,15 @@
         {
             "type": "chrome",
             "request": "launch",
-            "name": "colmodYM5.html",
-            "url": "http://192.168.1.14/CadsolOnLine/sources/colmodYM5.html"
+            "name": "colmodBak.html",
+            "url": "http://192.168.1.14/SauvegardeCOL/CadsolOnLine/sources/colmodBak.html"
         }
         ,
         {
             "type": "chrome",
             "request": "launch",
-            "name": "colmodJLYM.html",
-            "url": "http://192.168.1.14/CadsolOnLine/sources/colmodJLYM.html"
+            "name": "colmod070224.html",
+            "url": "http://192.168.1.14/SauvegardeCOL/CadsolOnLine/sources/colmod070224.html"
         }
         
     ]
