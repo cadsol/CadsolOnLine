@@ -63,17 +63,14 @@
  	font-size: 0.8rem;
  }
 
- label {
- 	color: #000000;
+ label.open {
 	color: #ffffff;
-	border: 1px  rgb(252, 252, 252); 
- 	cursor: pointer;
- 	background-color: rgb(0, 0, 0);
- 	width: 150;
- 	height: 50;
+	border: 2px outset rgb(88, 88, 88); 
+	/*cursor: pointer;*/
+	background-color: rgb(88, 88, 88);
  }
 
- label:hover {
+ label.open:hover {
  	background-color: rgb(173, 173, 165);
  }
 
@@ -108,6 +105,17 @@
  	border: 1px solid rgb(221, 240, 116);
  	text-align: left;
  }
+
+ #heureDate {
+	color: #d3d013;
+	position: absolute;
+	bottom: 40px;
+	left: 10px;
+	width: auto;
+	padding: 5px;
+	/*border: 1px solid rgb(221, 240, 116);*/
+	text-align: left;
+}
 
  #slider {
  	cursor: pointer;
@@ -148,3 +156,17 @@
  	background: #0415aa;
  	cursor: pointer;
  }
+
+ .lil-gui {
+	--hover-color: #540e0e;
+	--focus-color: #0e2710;
+/*	--background-color: #002b36;
+	--text-color: #b2c2c2;
+	--title-background-color: #001f27;
+	--title-text-color: #b2c2c2;
+	--widget-color: #094e5f;
+	--hover-color: #0a6277;
+	--focus-color: #0b6c84;
+	--number-color: #0f334d;
+	--string-color: #97ad00;*/
+}

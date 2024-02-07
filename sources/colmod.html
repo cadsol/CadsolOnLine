@@ -5,12 +5,17 @@
 <head>
 	<title>CadsolOnLine 3D</title>
 	<link rel="icon" type="image/x-icon" href="./favicon.ico">
+<!-- 
+	<meta http-equiv='cache-control' content='no-cache'>
+	<meta http-equiv='expires' content='0'>
+	<meta http-equiv='pragma' content='no-cache'> -->
+	
 	<meta charset="utf-8">
 	<meta name="viewport"
 		content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0">
 
 	<!--  FICHIER CSS---------------------------------------------------------------------------------------------------------- -->
-	<link type="text/css" rel="stylesheet" href="./mainYM.css">
+	<link type="text/css" rel="stylesheet" href="./main070224.css">
 	<!--  FICHIER CSS------------------------------------------------------------------------------------------------------------->
 
 </head>
@@ -31,7 +36,7 @@
 			Polyhedra database: <a href="https://home.adelphi.edu/~stemkoski" target="_blank" rel="noopener">Lee
 				Stemkoski</a> <br>
 			<p>
-				<img src="./imageMoret.jpg" alt="Image" style="max-width:100%;height:auto">
+				<img src="./images/imageMoret.jpg" alt="Image" style="max-width:100%;height:auto">
 			</p>
 			<label class="open" for="jsoninput"> > Open the Sundial ...</label>
 			</br></br>
@@ -90,7 +95,7 @@
 		import { ConvexGeometry } from 'three/addons/geometries/ConvexGeometry.js';
 
 		// -----------------------------------Modules---------------------------------------------------------------------------------------
-		import { SP, BF, BFG, ANL, RTS, cs, TableSol, RechercheParAdresse, getLocation, HTLM } from './Modcolvars.js';
+		import { SP, BF, BFG, ANL, RTS, cs, TableSol, RechercheParAdresse, getLocation, HTLM } from './Modcolvars070224.js';
 		import { eclair, Rot, EtoC, ddrte, segm } from './ModAnalem.js';
 		import { POLYHEDRA } from './ModPolyhedra.js';
 		// ---------------------------------------------------------------------------------------------------------------------------------	
@@ -108,7 +113,7 @@
 			HPSA = "Planetary (summer, autumn)", HPWS = "Planetary (winter, spring)";
 
 
-		cs.version = "2024-02-04"
+		cs.version = "2024-02-07"
 		console.log('THREE.REVISION :  ', THREE.REVISION)
 		// const cso = structuredClone(cs)
 		// console.log(cso)
@@ -259,7 +264,6 @@
 		arcsDiurnesGroup = new THREE.Group();
 		analemGroup = new THREE.Group();///+++
 		groupAxes = new THREE.Group();
-
 		heuresSolairesListeMesh = [];
 		heuresLegalesListeMeshSA = [];
 		heuresLegalesListeMeshWS = [];
@@ -277,15 +281,15 @@
 
 		// Textures
 
-		const textureAcier = new THREE.TextureLoader().load('./metaltexture.jpg')
+		const textureAcier = new THREE.TextureLoader().load('./images/metaltexture.jpg')
 		textureAcier.name = 'steel'
-		const textureCuivre = new THREE.TextureLoader().load('./metall001-new-tileable.png');
+		const textureCuivre = new THREE.TextureLoader().load('./images/metall001-new-tileable.png');
 		textureCuivre.name = 'copper'
-		const textureFruits = new THREE.TextureLoader().load('./fruits.jpg')
+		const textureFruits = new THREE.TextureLoader().load('./images/fruits.jpg')
 		textureFruits.name = 'fruits'
-		const textureAsphalt = new THREE.TextureLoader().load('./asphalt.jpg')
+		const textureAsphalt = new THREE.TextureLoader().load('./images/asphalt.jpg')
 		textureAsphalt.name = 'asphalt'
-		const texturePierreVerte = new THREE.TextureLoader().load('./greenStone.jpg');
+		const texturePierreVerte = new THREE.TextureLoader().load('./images/greenStone.jpg');
 		texturePierreVerte.name = 'green stone'
 		const textureBois = new THREE.TextureLoader().load('./textures/hardwood2_diffuse.jpg');
 		textureBois.name = 'wood'
@@ -409,7 +413,7 @@
 			specular: 0x333333,
 			emissive: "rgb(5,5,5)",
 			shininess: 5,
-			map: textureLoader.load('./earth_pm_2048.jpg'),
+			map: textureLoader.load('./images/earth_pm_2048.jpg'),
 			specularMap: textureLoader.load('textures/planets/earth_specular_2048.jpg'),
 			normalMap: textureLoader.load('textures/planets/earth_normal_2048.jpg'),
 			normalScale: new THREE.Vector2(1, 1)
@@ -438,7 +442,7 @@
 			//specular: 0x333333,
 			emissive: "rgb(100,100,5)",
 			shininess: 5,
-			map: textureLoader.load('./sun.jpg')
+			map: textureLoader.load('./images/sun.jpg')
 		});
 		const sphereSun = new THREE.Mesh(geometrySun, materialSun);
 		axeMondeGroup.add(sphereSun);
@@ -1847,7 +1851,7 @@
 		function generalAJL(φ, D, a, z, debut, fin, TypeHeure, group, material, listeMesh) {
 			// (φ, D, a, z float64)  (lines []LigneHoraire, center Point, u, ψ float64)
 			let l
-			//let coupe = false
+			let coupe = false; let gauche=false
 			effacelisteMesh(listeMesh, group)
 			let H, xp, yp, zp, xm, ym, zm, chiffreH = 0, sHeure = "";
 			if (φ * 180 / Math.PI > 89.999999) { φ = 89.999999 * Math.PI / 180 }
@@ -1929,13 +1933,13 @@
 									//if (i==6){console.log(j,xp+ cs.xgnomon,yp+ cs.ygnomon)}
 									if (pointDansCadran(xp + cs.xgnomon, yp + cs.ygnomon)) {
 										//if (i==6){console.log("Point dans cadran")}
-										// if (coupe) {
-										// 	if (l.points.length > 0) { lines.push(l) }
-										// 	l = new LigneHoraire(i); coupe = false
-										// }
+										 if (coupe) {
+										 	if (l.points.length > 0) { lines.push(l) }
+											l = new LigneHoraire(i); coupe = false
+										 }
 										l.points.push(new Point(xp, yp, zp)); xm = xp + cs.xgnomon; ym = yp + cs.ygnomon; zm = zp
-									}// else { coupe = true }
-								}
+									} else { coupe = true }
+								}else { coupe = true }
 							}
 						}
 
@@ -1944,6 +1948,8 @@
 				if (presqueEntier(chiffreH)) { sHeure = Math.round(chiffreH).toString() } else { sHeure = "" };
 				if (l.points.length > 0) {
 					lines.push(l);
+					// ((xp + cs.xgnomon)<0)?gauche=false:gauche=true
+					// RTSpolyhedre()?gauche=false:
 					EcrireTexte(sHeure, xm, ym, zm, material, group, listeMesh)
 				}
 			}
@@ -2003,7 +2009,7 @@
 									l.points.push(new Point(xp, yp, zp));
 									xm = xp + cs.xgnomon; ym = yp + cs.ygnomon; coupe = false
 								} else { coupe = true }
-							}
+							}else { coupe = true }
 						}
 					}
 				}
@@ -2211,11 +2217,12 @@
 					console.log(nbJoursAnnee)
 					guiTimeday.name(nbjoursText)
 					guiTimeday.max(nbJoursAnnee)
-					guiTimeday.updateDisplay()
+					guiTimeday.updateDisplay()})
 				.onFinishChange(function(){
 					TS = TableSol(cs.year)
 					TracerHeuresEtArcs()})
-				});
+				.listen()
+				
 
 
 			function TracerCadranRTS(v) {
@@ -4331,15 +4338,19 @@
 
 
 		function tracerTouteslesfaces() {
+			rapellerFace(nfaceActive)
 			for (let f = 0; f < nbFaces; f++) {
 				nfaceActive = f
-				cadran = meshFaces[nfaceActive].clone()
-				rapellerFace(nfaceActive)
-				displayFaces(polyhedre)
+				cadran = meshFaces[nfaceActive].clone()		
+				tracerFaceActive()
 				TracerHeuresEtArcs()
 			}
 			nfaceActive = 0
 			tracerFaceActive()
+		}
+
+		function tracerTouteslesfacesIdentiques() {
+			
 		}
 
 
@@ -4439,7 +4450,8 @@
 						tracerTouteslesfaces()
 						//SudSundial.hide()
 					}
-				}
+				},
+				facesIdentiques(){tracerTouteslesfacesIdentiques()}
 			}
 
 			guiSectionPoly = gui.addFolder("POLYEDRA");
@@ -4488,6 +4500,7 @@
 
 			const BaseSundial = guiSectionPoly.add(rotationFaces, "rotationBase").name("facet -> base")
 			const SudSundial = guiSectionPoly.add(rotationFaces, "rotationSud").name("facet -> sud")
+			//const faceId = guiSectionPoly.add(rotationFaces, "facesIdentiques").name("faces identiques")
 
 			// parametrage gnomon
 			

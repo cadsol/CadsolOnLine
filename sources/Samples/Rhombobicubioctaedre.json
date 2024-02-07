@@ -1,12 +1,12 @@
 {
   "version": "2023-10-16",
-  "hsol": 11.64,
+  "hsol": 14.93,
   "dayofYear": 65,
   "year": 2023,
   "typeCadran": "Ray tracing sundial",
   "typeForme": "polyedric",
-  "largeur": 600,
-  "hauteur": 600,
+  "largeur": 915,
+  "hauteur": 915,
   "epaisseur": 30,
   "decli": 22.499958361426884,
   "incli": 69.05896516477338,
@@ -103,7 +103,7 @@
   "hoursTextSize": 0.6,
   "subDivisions": 1,
   "precisionHours": 5,
-  "equinoxeAndSolstices": true,
+  "equinoxeAndSolstices": false,
   "colorequinoxeAndSolstice": "rgb(152,0,0)",
   "datesArcsDiurnes": [
     []
@@ -121,12 +121,14 @@
   "linkMedia": "https://fr.wikipedia.org/wiki/Luca_Pacioli#/media/Fichier:Pacioli.jpg",
   "autoCloseMenu": true,
   "background": "rgb(60,100,140)",
+  "dampingFactor": 10,
+  "vrotClouds": 1,
   "unitSVG": "auto",
   "separateurCSV": ";",
   "nameFile": "Rhombobicubioctaedre",
   "export": "Sundial(.JSON)",
   "typePolyedre": "Rhombicuboctahedron",
-  "rayonPolyedre": 200,
+  "rayonPolyedre": 366,
   "conicity": 3,
   "polyGx": [
     0,
@@ -493,7 +495,6 @@
     false
   ],
   "polyequinoxeAndSolstices": [
-    true,
     false,
     false,
     false,
@@ -502,13 +503,14 @@
     false,
     false,
     false,
-    true,
     false,
     false,
     false,
     false,
     false,
-    true,
+    false,
+    false,
+    false,
     false,
     false,
     false,
@@ -763,5 +765,6 @@
     1,
     1
   ],
-  "polyDevTextsize": 1
+  "polyDevTextsize": 1,
+  "name": "none"
 }

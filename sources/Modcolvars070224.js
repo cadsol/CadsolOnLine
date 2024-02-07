@@ -15,7 +15,7 @@ export let cs = {
 	version: "",
 	hsol: 13,
 	dayofYear: 105,
-	year: 2023,
+	year: 2000,
 
 	//geometry 
 	typeCadran: SP,// {value:SP,comment:"Sundial type"},

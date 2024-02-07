@@ -1,0 +1,6 @@
+070224
+menu "Sundial time"
+gestion des portions de tracés en dehors du cadran
+gestion des années bissextiles
+creation fichiers images
+

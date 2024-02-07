@@ -1704,9 +1704,8 @@
 							const LS = Math.PI - Math.asin(sδ / sin23p44)
 							const LE = LS + i * 15 * Math.PI / 180; chiffreH = i
 							const DE = Math.asin(Math.sin(LE) * sin23p44)
-							let RE = Math.asin(Math.tan(DE) / tan23p44) // + 2 * Math.PI
-							//if (LE < 3 * Math.PI / 2) { RE = 3 * Math.PI - RE }
-							if (LE < 3 * Math.PI / 2) { RE = Math.PI - RE }
+							let RE = Math.asin(Math.tan(DE) / tan23p44) + 2 * Math.PI
+							if (LE < 3 * Math.PI / 2) { RE = 3 * Math.PI - RE }
 							const T = Math.acos(-Math.tan(φ) * Math.tan(DE))
 							H = -T - RA + RE
 							//if (i==6){console.log(TS.decSuns[j]*180/Math.PI,"RA ° = ",RA*180/Math.PI,"  LE ° = ",LE*180/Math.PI, "   RE ° = ",RE*180/Math.PI)}
