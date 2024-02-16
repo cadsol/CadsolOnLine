@@ -124,6 +124,7 @@ export let cs = {
 
 	//arcs diurnes
 	equinoxeAndSolstices: false,
+	arcsZodiaque:false,
 	colorequinoxeAndSolstice: "rgb(152,0,0)",
 	datesArcsDiurnes: [[]],  // [[date, dec en rad]]  tableau à deux dimensions
 	precisionArcs: 15,   // un point toutes les 15 minutes
@@ -168,6 +169,7 @@ export let cs = {
 	polyheuresPlanetairesWS: [],
 	polyheuresPlanetairesSA: [],
 	polyequinoxeAndSolstices: [],
+	polyarcsZodiaque: [],
 	polydatesArcsDiurnes: [[]], // [[date, dec en rad]]  tableau à deux dimensions
 	polyDev:[],
 	polyDevx:[],

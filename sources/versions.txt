@@ -4,3 +4,10 @@ gestion des portions de tracés en dehors du cadran
 gestion des années bissextiles
 creation fichiers images
 
+160224
+Exemple: Tour des Vents
+Arcs zodiacaux 
+Cercles polaires
+Correction bug style polaire: 
+    toujours appeller TracerHeuresEtArcs AVANT TracerStyle 
+    (calcul de cs.xPole et cs.yPole)

@@ -1,0 +1,479 @@
+{
+  "version": "2024-01-17",
+  "hsol": 15.89,
+  "dayofYear": 105,
+  "year": 2024,
+  "typeCadran": "Ray tracing sundial",
+  "typeForme": "polyedric",
+  "largeur": 500,
+  "hauteur": 500,
+  "epaisseur": 30,
+  "decli": 22.499969546649982,
+  "incli": 69.05897568814164,
+  "rot": 171.57893967292492,
+  "zfxy": "sin(25*sqrt(x*x+y*y))",
+  "hgnomon": 50,
+  "egnomon": 0.52,
+  "xgnomon": 0,
+  "ygnomon": 0,
+  "zgnomon": 0,
+  "vgnomon": true,
+  "vstyle": true,
+  "vsousstyle": true,
+  "angleStyleSousstylaire": 27.40292628258861,
+  "xPole": 32.7715282680162,
+  "yPole": 90.70937083390041,
+  "hgnomonBord": 0,
+  "xdirect": 0,
+  "ydirect": 0,
+  "zdirect": 60,
+  "Hanalem": 200,
+  "Ranalem": 200,
+  "colorAnalem": "rgb(100,10,100)",
+  "Canalem": false,
+  "textSizeANL": 1,
+  "dateAnalem": 21,
+  "subAnalem": 1,
+  "hfilHorizontal": 30,
+  "hfilVertical": 50,
+  "anglefilHorizontal": 0,
+  "anglefilVertical": 90,
+  "hA1": 30,
+  "xA1": -300,
+  "yA1": 100,
+  "hA2": 30,
+  "xA2": 300,
+  "yA2": 100,
+  "hB1": 50,
+  "xB1": 0,
+  "yB1": -200,
+  "hB2": 50,
+  "xB2": 0,
+  "yB2": 200,
+  "colorCS": "rgb(250,250,250)",
+  "emissiveCS": "rgb(55,55,55)",
+  "specularCS": "rgb(0,0,0)",
+  "metalness": 0.5,
+  "roughness": 0.5,
+  "opaciteCS": 1,
+  "wireframe": false,
+  "nameTexture": "steel",
+  "dataURL": "",
+  "typedataURL": "",
+  "lati": 37.9755648,
+  "longi": 23.7348324,
+  "adresse": "Athènes, Περιφερειακή Ενότητα Κεντρικού Τομέα Αθηνών, Grèce",
+  "urlOpenStreet": "https://www.openstreetmap.org/?mlat=37.97556&mlon=23.73483#map=17/37.97556/23.73483",
+  "timezone": "Europe/Athens",
+  "offset_sec": 7200,
+  "offset_string": "+0200",
+  "now_in_dst": 0,
+  "dst": 0,
+  "autoLocation": false,
+  "heuresSolaires": false,
+  "heuresLegalesSummerAutums": false,
+  "heuresLegalesWinterSpring": false,
+  "heuresAntiques": true,
+  "heuresBabyloniques": false,
+  "heuresItaliques": false,
+  "heuresSideralesWS": false,
+  "heuresSideralesSA": false,
+  "heuresPlanetairesWS": false,
+  "heuresPlanetairesSA": false,
+  "colorHS": "rgb(200,0,0)",
+  "colorHLSummerAutums": "rgb(0,200,5)",
+  "colorHLWinterSpring": "rgb(0,0,200)",
+  "colorHeuresAntiques": "rgb(200,0,200)",
+  "colorHeuresBabyloniques": "rgb(0,150,200)",
+  "colorHeuresItaliques": "rgb(0,150,100)",
+  "colorHeuresSDSA": "rgb(100,100,10)",
+  "colorHeuresSDWS": "rgb(102,16,10)",
+  "colorHeuresHPSA": "rgb(250,250,10)",
+  "colorHeuresHPWS": "rgb(1,250,10)",
+  "textSizeHS": 1,
+  "textSizeSA": 1,
+  "textSizeWS": 1,
+  "textSizeHA": 1,
+  "textSizeHB": 1,
+  "textSizeHI": 1,
+  "textSizeSDSA": 1,
+  "textSizeSDWS": 1,
+  "textSizeHPSA": 1,
+  "textSizeHPWS": 1,
+  "hoursTextSize": 1,
+  "subDivisions": 1,
+  "precisionHours": 5,
+  "equinoxeAndSolstices": true,
+  "colorequinoxeAndSolstice": "rgb(152,0,0)",
+  "datesArcsDiurnes": [
+    [
+      "equinoxe",
+      0
+    ],
+    [
+      "solstice",
+      0.40910517666747087
+    ],
+    [
+      "solstice",
+      -0.40910517666747087
+    ]
+  ],
+  "precisionArcs": 15,
+  "devise": "Heures antiques sur toutes les faces",
+  "positionDevisex": -108.3,
+  "positionDevisey": 10,
+  "deviseSize": 0.9,
+  "axesESZ": true,
+  "axesXYZ": false,
+  "voirTerre": true,
+  "vrotscene": 0,
+  "vrotSun": 0,
+  "linkMedia": "https://cadsolonline.web-pages.fr/CadsolOnLine/Documentation/PublicationsCSPT/mag-CSPT-n3-JL_Astre.pdf",
+  "autoCloseMenu": true,
+  "background": "rgb(60,100,140)",
+  "dampingFactor": 10,
+  "vrotClouds": 1,
+  "unitSVG": "auto",
+  "separateurCSV": ";",
+  "nameFile": "TourDesVents",
+  "export": "Sundial(.JSON)",
+  "typePolyedre": "Octagonal Prism",
+  "rayonPolyedre": 200,
+  "conicity": 2,
+  "polyGx": [
+    0,
+    38.4,
+    -36.8,
+    -45.9,
+    43.1,
+    -48.9,
+    56.6,
+    0,
+    0,
+    0
+  ],
+  "polyGy": [
+    66.2,
+    61,
+    58.7,
+    58.7,
+    63.4,
+    58.7,
+    61.1,
+    60.6,
+    0,
+    0
+  ],
+  "polyGz": [
+    13,
+    36.07972687749024,
+    36.07974204993422,
+    36.07974384748752,
+    36.07974537398268,
+    36.079736438273805,
+    36.079735301643005,
+    8.9,
+    0,
+    0
+  ],
+  "polyheuresSolaires": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "polyheuresLegalesSummerAutums": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "polyheuresLegalesWinterSpring": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "polyheuresAntiques": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false
+  ],
+  "polyheuresBabyloniques": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "polyheuresItaliques": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "polyheuresSideralesWS": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "polyheuresSideralesSA": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "polyheuresPlanetairesWS": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "polyheuresPlanetairesSA": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "polyequinoxeAndSolstices": [
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    false,
+    false
+  ],
+  "polydatesArcsDiurnes": [
+    [
+      [
+        "equinoxe",
+        0
+      ],
+      [
+        "solstice",
+        0.40910517666747087
+      ],
+      [
+        "solstice",
+        -0.40910517666747087
+      ]
+    ],
+    [
+      [
+        "equinoxe",
+        0
+      ],
+      [
+        "solstice",
+        0.40910517666747087
+      ],
+      [
+        "solstice",
+        -0.40910517666747087
+      ]
+    ],
+    [
+      [
+        "equinoxe",
+        0
+      ],
+      [
+        "solstice",
+        0.40910517666747087
+      ],
+      [
+        "solstice",
+        -0.40910517666747087
+      ]
+    ],
+    [
+      [
+        "equinoxe",
+        0
+      ],
+      [
+        "solstice",
+        0.40910517666747087
+      ],
+      [
+        "solstice",
+        -0.40910517666747087
+      ]
+    ],
+    [
+      [
+        "equinoxe",
+        0
+      ],
+      [
+        "solstice",
+        0.40910517666747087
+      ],
+      [
+        "solstice",
+        -0.40910517666747087
+      ]
+    ],
+    [
+      [
+        "equinoxe",
+        0
+      ],
+      [
+        "solstice",
+        0.40910517666747087
+      ],
+      [
+        "solstice",
+        -0.40910517666747087
+      ]
+    ],
+    [
+      [
+        "equinoxe",
+        0
+      ],
+      [
+        "solstice",
+        0.40910517666747087
+      ],
+      [
+        "solstice",
+        -0.40910517666747087
+      ]
+    ],
+    [
+      [
+        "equinoxe",
+        0
+      ],
+      [
+        "solstice",
+        0.40910517666747087
+      ],
+      [
+        "solstice",
+        -0.40910517666747087
+      ]
+    ],
+    [],
+    [],
+    []
+  ],
+  "polyDev": [
+    "SUD",
+    "SUD EST",
+    "SUD OUEST",
+    "EST",
+    "OUEST",
+    "NORD EST",
+    "NORD OUEST",
+    "NORD",
+    "Heures antiques sur toutes les faces",
+    ""
+  ],
+  "polyDevx": [
+    -11.1,
+    -38.8,
+    2.8,
+    26.4,
+    -51.9,
+    -67,
+    -7.9,
+    -10,
+    -108.3,
+    -10
+  ],
+  "polyDevy": [
+    -43.3,
+    -38.2,
+    -43.3,
+    57.2,
+    47.6,
+    -39.4,
+    -62.7,
+    10,
+    10,
+    10
+  ],
+  "polysubDivisions": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "polyDevTextsize": 0.9,
+  "name": "none"
+}

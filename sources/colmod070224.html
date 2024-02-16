@@ -113,7 +113,7 @@
 			HPSA = "Planetary (summer, autumn)", HPWS = "Planetary (winter, spring)";
 
 
-		cs.version = "2024-02-05"
+		cs.version = "2024-02-10"
 		console.log('THREE.REVISION :  ', THREE.REVISION)
 		// const cso = structuredClone(cs)
 		// console.log(cso)
@@ -200,7 +200,7 @@
 		// OrbitControls
 		const controls = new OrbitControls(camera, renderer.domElement);
 		controls.minDistance = 1;
-		controls.maxDistance = 10000;
+		controls.maxDistance = 7000;
 		controls.enableDamping = true
 		controls.dampingFactor = cs.dampingFactor/100;
 
@@ -1178,7 +1178,7 @@
 			cadranSolaireGroup.remove(sousStylaire);
 			cadranSolaireGroup.remove(styleAnalem);
 			cadranSolaireGroup.remove(centreAnalem);
-			cadranSolaireGroup.remove(stylePlan);k
+			cadranSolaireGroup.remove(stylePlan);
 			cadranSolaireGroup.remove(styleBord);
 			if (typeof (filHorizontal) !== "undefined") { filHorizontal.geometry.dispose() };
 			if (typeof (filVertical) !== "undefined") { filVertical.geometry.dispose() };
@@ -3540,7 +3540,8 @@
 				myEx18: function () { newSundial('TruncCube.json') },
 				myEx19: function () { newSundial('Jonhson48.json') },
 				myEx20: function () { newSundial('CubeOctaedre.json') },
-				myEx21: function () { newSundial('Rhombobicubioctaedre.json') }
+				myEx21: function () { newSundial('Rhombobicubioctaedre.json') },
+				myEx22: function () { newSundial('TourDesVents.json') }
 			}
 			const CadPolairesEx = folderSamples.addFolder('Polar or straigth style');
 			CadPolairesEx.add(objEx, 'myEx1').name("Bab&Ita-D.Savoie-p278");
@@ -3572,6 +3573,7 @@
 			PolyedreEx.add(objEx, 'myEx20').name("Truncated Cube Octaedre");
 			PolyedreEx.add(objEx, 'myEx21').name("Rhombobicubioctaedre");
 			PolyedreEx.add(objEx, 'myEx19').name("Jonhson 48");
+			PolyedreEx.add(objEx, 'myEx22').name("Tour des vents (Athènes)");
 
 
 			//generateGeometry;   

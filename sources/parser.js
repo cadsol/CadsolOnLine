@@ -912,10 +912,3 @@ var  Parser = (function (scope) {
 	scope.Parser = Parser;
 	return Parser
 })(typeof exports === 'undefined' ? {} : exports);
-
-
-//export  default Parser;
-
-//export {Parser}
-
-//console.log(zFunc(2,3))
