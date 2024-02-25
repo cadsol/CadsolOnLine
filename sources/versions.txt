@@ -1,13 +1,23 @@
-070224
+070224 -> publié
 menu "Sundial time"
 gestion des portions de tracés en dehors du cadran
 gestion des années bissextiles
 creation fichiers images
 
-160224
+160224 -> publié
 Exemple: Tour des Vents
 Arcs zodiacaux 
 Cercles polaires
 Correction bug style polaire: 
     toujours appeller TracerHeuresEtArcs AVANT TracerStyle 
     (calcul de cs.xPole et cs.yPole)
+
+210224
+memorisation de;
+- la position de la camera
+- la vitesse de rotation du soleil
+voie lactée en fond d'écran (sur option)
+
+250224
+-cercles: equatorial et ecliptique
+-point vernal

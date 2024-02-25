@@ -142,8 +142,13 @@ export let cs = {
 	linkMedia: "",
 	autoCloseMenu: true,
 	background: "rgb(60,100,140)",
+	milkyWay:false,
 	dampingFactor: 10,	
 	vrotClouds:1,
+	posCamera:[2000,2000,1500],
+	equatorial:false,
+	ecliptique:false,
+
 	//export
 	unitSVG: 'auto',
 	separateurCSV: ";",
@@ -278,23 +283,24 @@ End
 
 //TableSol------------------------
 export function TableSol(year) {
-	let jde, ae, dec, eqt, jdes, eqts, decs;
+	let jde, ae, dec,ra, eqt, jdes, eqts, decs,rasc;
 	let decSunMin = 0, decSunMax = 0, jdecSunMin = 0, jdecSunMax = 0, j = 0;
-	jdes = []; eqts = []; decs = []
+	jdes = []; eqts = []; decs = [] ;rasc=[]
 	jde = JULIAN.CalendarGregorianToJD(year, 1, 1.5);  //Premier Janvier à 12h
 	while (jde <= JULIAN.CalendarGregorianToJD(year, 12, 31.5))//31 decembre à 12h
 	{
 		ae = apparentEquatorial(jde);
-		dec = ae.dec;
+		dec = ae.dec;ra=ae.ra
 		if (dec > decSunMax) { decSunMax = dec; jdecSunMax = j };
 		if (dec < decSunMin) { decSunMin = dec; jdecSunMin = j };
 		eqt = EQTIME.eSmart(jde);
-		jdes.push(jde); eqts.push(eqt); decs.push(dec)
+		jdes.push(jde); eqts.push(eqt); decs.push(dec);rasc.push(ra)
 		jde += 1; j += 1
 	};
 	// console.log(jdecSunMin,jdecSunMax);
 	return {//Tableaux à 365 ou 366 elements, valeurs calculées à 12h, index: 0...364 ou 0...365
 		decSuns: decs,  //radians
+		ascRights: rasc,
 		eqtimes: eqts,  //equation of time as an hour angle in radians.
 		jdates: jdes,    //jourjulien
 		//jours des solstices

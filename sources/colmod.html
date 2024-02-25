@@ -39,7 +39,6 @@
 
 
 <body>
-	<!-- <script src="./parser.js"></script> -->
 	<div id="container">
 		<div id="info">
 			<h1>CadSolOnLine</h1>
@@ -131,7 +130,7 @@
 			HPSA = "Planetary (summer, autumn)", HPWS = "Planetary (winter, spring)";
 
 
-		cs.version = "2024-02-16"
+		cs.version = "2024-02-25"
 		console.log('THREE.REVISION :  ', THREE.REVISION)
 		// const cso = structuredClone(cs)
 		// console.log(cso)
@@ -155,8 +154,9 @@
 		// camera
 
 		camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 5, 10000);
-		camera.position.set(2000, 2000, 2000);
-		//camera.position.set( 0, 0, 2000 );
+		camera.position.set(cs.posCamera[0],cs.posCamera[1],cs.posCamera[2]);
+		cs.posCamera=camera.position.toArray()
+		//console.log(cs.posCamera)
 
 		// scene
 		scene = new THREE.Scene();
@@ -189,8 +189,6 @@
 		//const helperLight = new THREE.DirectionalLightHelper( light, 100 );
 		//scene.add( helperLight );
 
-		// renderer
-		//THREE.ColorManagement.legacyMode = false;
 		renderer = new THREE.WebGLRenderer({ antialias: true });
 		renderer.setPixelRatio(window.devicePixelRatio);
 		renderer.setSize(window.innerWidth, window.innerHeight);
@@ -250,7 +248,7 @@
 
 		let cadranSolaireGroup, axeMondeGroup, earthGroup;
 
-		let gnomon, gnomonTore, meshDevise, stylePolaire, sousStylaire, stylePlan, styleBord, BoutStyle, FinStyle,
+		let gnomon, gnomonTore, meshDevise, stylePolaire, sousStylaire, stylePlan, styleBord, BoutStyle, FinStyle,ellipseEq,spherePV,ellipseEclip,
 			styleAnalem, centreAnalem, styleTorique, filHorizontal, filVertical, pilierH1, pilierH2, pilierH3, pilierH4;
 
 		let heuresSolairesGroup, heuresLegalesGroupSA, heuresLegalesGroupWS, heuresAntiquesGroup, arcsDiurnesGroup;
@@ -479,29 +477,19 @@
 			0xffffff, 30, 15);
 		earthGroup.add(axeTerre);
 
-		// 	scene.background = new THREE.CubeTextureLoader()
-		// .setPath( './images/' )\\ds415\web\CadsolOnLine\sources\textures\cube\MilkyWay\dark-s_nx.jpg
-		// .load( [
-		// 	'1.jpg',
-		// 	'2.jpg',
-		// 	'3.jpg',
-		// 	'4.jpg',
-		// 	'5.jpg',
-		// 	'6.jpg'
-		// ] );
+		//scene.background = new THREE.CubeTextureLoader()
+		const milkyWaybackGround= new THREE.CubeTextureLoader()
+							.setPath( './images/' )
+							.load( [
+							'1.jpg',
+							'2.jpg',
+							'3.jpg',
+							'4.jpg',
+							'5.jpg',
+							'6.jpg'
+							] );
 
-		// scene.background = new THREE.CubeTextureLoader()
-		// .setPath( './textures/cube/MilkyWay/' ) //\\ds415\web\CadsolOnLine\sources\textures\cube\MilkyWay\dark-s_nx.jpg
-		// .load( [
-		// 	'dark-s_nx.jpg',
-		// 	'dark-s_ny.jpg',
-		// 	'dark-s_nz.jpg',
-		// 	'dark-s_px.jpg',
-		// 	'dark-s_py.jpg',
-		// 	'dark-s_pz.jpg'
-		// ] );
-
-
+	
 
 		const axeLocalisation = new THREE.ArrowHelper(
 			new THREE.Vector3(0, -1, 0),
@@ -850,9 +838,9 @@
 		function Ephemerid(year) {
 			let d, s;
 
-			CSVephemerid = " DATE" + cs.separateurCSV + "TIME EQUATION (s)" + cs.separateurCSV + "SUN DECLINATION (°)" + cs.separateurCSV + "Julian Day" + "\n"
+			CSVephemerid = " DATE" + cs.separateurCSV + "TIME EQUATION (s) " + cs.separateurCSV + "SUN DECLINATION (°) " + cs.separateurCSV + "RIGHT ASCENSION (°) " + cs.separateurCSV + "Julian Day " + "\n"
 			CSVephemerid += " \n";
-			CSVephemerid += "Ephemerids year:  " + cs.year + "\n\n";
+			CSVephemerid += "Ephemerids of the sun \n" + year+" :  " + cs.year + "\n\n";
 			CSVephemerid += "CadsolOnLine  Version:" + cs.version + "\n\n";
 			CSVephemerid += "(c) Jean Meeus \n* Chapter 28 Equation of time \n* Chapter 25  Solar Coordinates ...\n\n";
 			CSVephemerid += " \n";
@@ -863,6 +851,8 @@
 				s = Math.round(SEXA.secFromHourAngle(TS.eqtimes[i]));	// equation du temps en secondes	
 				CSVephemerid += s.toFixed(0) + '     ' + cs.separateurCSV;
 				s = base.toDeg(TS.decSuns[i]);  //dec soleil en degres
+				CSVephemerid += s.toFixed(4) + '     ' + cs.separateurCSV;;
+				s = base.toDeg(TS.ascRights[i]);  //asc. droite soleil en degres
 				CSVephemerid += s.toFixed(4);
 				if (i == TS.jdecSunMin) { CSVephemerid += "  Winter Solstice " }
 				if (i == TS.jdecSunMax) { CSVephemerid += "  Summer Solstice " }
@@ -2216,8 +2206,9 @@
 
 			const guiTimehsol = guiTime.add(cs, "hsol", 0, 24, 0.01)
 				.name("Hour  (0-24)")
-				.onChange(function () { PlacerLeSoleil() });
+				.onChange(function () { PlacerLeSoleil() }).listen();
 				helpGui(guiTimehsol, 'Decimal hour')
+				
 
 			const guiTimeday = guiTime.add(cs, "dayofYear", 1, nbJoursAnnee, 1)
 				.name(nbjoursText)
@@ -2245,6 +2236,8 @@
 					TS = TableSol(cs.year)
 					TracerHeuresEtArcs()})
 				.listen()
+			
+			
 				
 
 
@@ -2273,8 +2266,6 @@
 					cadran.scale.x = cs.largeur;
 					cadran.scale.y = cs.hauteur;
 					cadran.scale.z = cs.epaisseur
-					// folderDimensionsSundial.show()z
-					// folderOrientationSundial.show()
 					cadranSolaireGroup.add(cadran);
 					eulerCsGroup()
 					//TracerStyle()
@@ -3291,7 +3282,7 @@
 				.name('Subdivisions')
 				.onChange(function (e) {
 					if (RTSpolyhedre()) { cs.polysubDivisions[nfaceActive] = e }
-					TracerHeuresEtArcs()
+					//TracerHeuresEtArcs()
 				})
 
 			const precisionH = {
@@ -3354,7 +3345,7 @@
 				})
 				.listen();
 			
-			const zodiac1=20.166, zodiac2=11.5
+			const zodiac1=20.1, zodiac2=11.5   // données astrologiques, précision illusoire
 			folderArcs.add(cs, 'arcsZodiaque')
 				.name('zodiacal arcs')
 				.onChange(function (v) {
@@ -3452,19 +3443,24 @@
 				})
 				.listen()
 
-
 			const Vsun = {
 				"0": 0,
-				"1sec  /sec": 1,
-				"1min  /sec": 60,
-				"10min /sec": 600,
-				"20min /sec": 1200,
-				"30min /sec": 1800,
-				"1h    /sec": 3600
+				"1 sec. /sec": 1,
+				"1 min  /sec": 60,
+				"10 min /sec": 600,
+				"20 min /sec": 1200,
+				"30 min /sec": 1800,
+				"1 hour /sec": 3600
 			}
-			folderView.add(cs, "vrotSun", Vsun)
-				.name('Rotation of sun')
+			const guiRotSun=folderView.add(cs, "vrotSun", Vsun)
+				.name('Rotation of the sun')
 				.onChange(function (e) { RotationSoleil(e) });
+			helpGui(guiRotSun,'Speed of rotation of the sun around the dial ')
+
+			const gCircles=folderView.add(cs,"ecliptique").name("circles & vernal point")
+			          .onChange(function(){PlacerLeSoleil()})
+			helpGui(gCircles,"ecliptic circle (yellow), equatorial circle (white)<br>vernal point (gray sphere), sun(yellow sphere)")
+			
 
 			folderView.add(cs, "vrotscene", 0, 10, 1)
 				.name('Rotation of the scene')
@@ -3479,10 +3475,19 @@
 			folderView.addColor(cs, 'background')
 				.name('wallpaper')
 				.onChange(function () {
+					cs.milkyWay=false
 					scene.background = new THREE.Color(cs.background)
 				})
 			//.onFinishChange(function () {localStorage.setItem("BackGround",cs.background)})
 			/// link
+
+			folderView.add(cs,'milkyWay')
+			    .name('milky Way')
+				.onChange(function (e) {
+					if(e){scene.background= milkyWaybackGround }else{scene.background = new THREE.Color(cs.background)}
+				})
+				.listen()
+
 			folderView.add(cs, "linkMedia").name("link web")
 			const btnMedia = { lireMedia() { if (cs.linkMedia.length > 0) { window.open(cs.linkMedia) } } }
 			folderView.add(btnMedia, "lireMedia").name("open link")
@@ -3495,6 +3500,7 @@
 					effacelisteMesh(labelAxesListeMesh, groupAxes)
 					let e = cs.export
 					if (e == "Sundial(.JSON)") {
+						cs.posCamera=camera.position.toArray()
 						if (RTSpolyhedre()) { rapellerFace(0) };   ////  !!!!!! important
 						saveString(JSON.stringify(cs, null, 2), cs.nameFile + '.json')
 					}
@@ -3667,7 +3673,7 @@
 
 
 			initMenu(cs.typeCadran)
-			scene.background = new THREE.Color(cs.background);
+		    scene.background = new THREE.Color(cs.background);
 			materialCS.opacity = cs.opaciteCS
 			materialCS.metalness = cs.metalness
 			materialCS.wireframe = cs.wireframe
@@ -3701,7 +3707,10 @@
 				gtypeForme.hide()
 			}
 
-			
+			camera.position.set(cs.posCamera[0],cs.posCamera[1],cs.posCamera[2]);
+			RotationSoleil(cs.vrotSun) 
+			if(cs.milkyWay){scene.background= milkyWaybackGround }else{scene.background = new THREE.Color(cs.background)}
+
 		}//end init
 
 
@@ -3771,15 +3780,59 @@
 			//   helperLight.update()
 			//   axeMonde.visible=cs.voirTerre;
 			//   axeMonde.visible=false;
+			//tracerEquateurCeleste() 
 
 		}
 
+		
+
+		
+			const curveEq = new THREE.EllipseCurve(
+				0,  0,            // ax, aY
+				Dst, Dst,           // xRadius, yRadius
+				0,  2 * Math.PI,  // aStartAngle, aEndAngle
+				false,            // aClockwise
+				0 );                // aRotation
+			const pointsEq = curveEq.getPoints( 50 );
+			const geometryEq = new THREE.BufferGeometry().setFromPoints( pointsEq );
+			const materialEq = new THREE.LineBasicMaterial( { color: 0xffffff } );
+			const materialEclip = new THREE.LineBasicMaterial( { color: 0xffff00 } );
+
+		function tracerEquateurCeleste() {
+			if (ellipseEq != undefined) {scene.remove(ellipseEq)}
+			ellipseEq = new THREE.Line( geometryEq, materialEq );
+			scene.add(ellipseEq)
+			ellipseEq.rotation.x = base.toRad(cs.lati);
+		}
+
+		function tracerEcliptique(eqt){
+			tracerEquateurCeleste()
+			let k = Dst,alpha=0,dec,asd
+			//dec = base.toDeg(TS.decSuns[cs.dayofYear - 1])
+			asd = TS.ascRights[cs.dayofYear - 1]
+			if (spherePV != undefined) {axeMondeGroup.remove(spherePV)}
+			spherePV = new THREE.Mesh(geometrySun, materialGnomon);
+		    axeMondeGroup.add(spherePV);
+			spherePV.parent = axeMonde;
+			spherePV.position.z = k *  Math.cos(base.toRad(-(cs.hsol+eqt/3600 - 12) * 15)-asd);
+			spherePV.position.x = k *  Math.sin(base.toRad(-(cs.hsol+eqt/3600 - 12) * 15)-asd);
+			spherePV.position.y = 0;
+			
+			const axis=new THREE.Vector3(spherePV.position.x,spherePV.position.z,0)
+			axis.normalize()
+			if (ellipseEclip != undefined) {axeMondeGroup.remove(ellipseEclip)}
+			ellipseEclip=ellipseEq.clone()
+			ellipseEclip.material=materialEclip
+			axeMondeGroup.add(ellipseEclip);
+			
+			ellipseEclip.rotateOnAxis  ( axis, base.toRad(23+26/60))
+		}
 		//--------------------------------------------------------------------------------------
 		function PlacerLeSoleil() {
 			let k = Dst;
 			const v3 = new THREE.Vector3();
 
-			let h, he, min, sec, y, m, d, dec, eqt, date, sdate, hsol;
+			let h, he, min, sec, y, m, d, dec,asc, eqt, date, sdate, hsol;
 
 			//if(RTSpolyhedre){k=k*cs.Rpol/1200}
 
@@ -3792,13 +3845,11 @@
 			sec = (sec < 10) ? "0" + sec : sec;
 
 			date = JULIAN.JDToCalendarGregorian(TS.jdates[cs.dayofYear - 1]);
-			//jde= JULIAN.CalendarGregorianToJD(cs.year, date.month, date.day); 
+			asc = base.toDeg(TS.ascRights[cs.dayofYear - 1])
 			dec = base.toDeg(TS.decSuns[cs.dayofYear - 1]);
-
-			dec = Math.round(dec * 1000) / 1000;
-
 			eqt = Math.round(SEXA.secFromHourAngle(TS.eqtimes[cs.dayofYear - 1]));
 			//hsol=cs.hsol + eqt/3600 +(cs.longi/15 - cs.offset_sec/3600); //correction de l'heure
+
 			hsol = cs.hsol + eqt / 3600   // correction eq. du temps
 			if (cs.typeCadran != ANL) { hsol += cs.longi / 15 - cs.offset_sec / 3600 }   // pas d'heure légale avec un analemmatique
 			//console.log(cs.typeCadran,ANL,cs.typeCadran!=ANL)
@@ -3815,10 +3866,12 @@
 			light.position.set(v3.x, v3.y, v3.z).normalize();
 			light.castShadow = (v3.y > 0)  // le soleil dit être au dessus de l'horizon	
 
-			labeltime.innerHTML = h + ":" + min + ':' + sec + "  " + sdate + " dec:" + dec.toFixed(3) + "°  eqt:" + eqt.toFixed(0) + 's'
+			labeltime.innerHTML = h + ":" + min + ':' + sec + "  " + sdate + " dec:" + dec.toFixed(3) + "°  asc:"+asc.toFixed(3)+"°  eqt:" + eqt.toFixed(0) + 's'
 			//labeldeceqt.innerHTML="dec:"+dec.toFixed(3)+"°  eqt:"+eqt+'s'
 			//  helperLight.update()
-
+			//if (cs.equatorial){tracerEquateurCeleste()}
+			if (cs.ecliptique){tracerEcliptique(eqt)}
+			              else{scene.remove(ellipseEq);axeMondeGroup.remove(ellipseEclip);axeMondeGroup.remove(spherePV)}
 			if (cs.typeCadran == RTS) {
 				if (lineRay != undefined) {
 					lineRay.geometry.dispose()
@@ -3830,6 +3883,7 @@
 
 		function myTimerSun() {
 			cs.hsol += cs.vrotSun / 360000;
+			cs.hsol=Math.round(cs.hsol*1000)/1000
 			if (cs.hsol > 24) { cs.hsol = 0 };
 			PlacerLeSoleil()
 		}
@@ -3969,15 +4023,15 @@
 		}
 
 		// Terre ---------------------------------------------------------------------------------------------------
-		function PlacerLaTerre() {
+		function PlacerLaTerre(centrer=false) {
 			let r, l;
-			r = cs.hauteur;
+			if (centrer){r=cs.hauteur/10}else{r = cs.hauteur};
 			if(RTSpolyhedre()){r=2*cs.rayonPolyedre}
-			if (r < 100) { r = 100 }
+			//if (r < 100) { r = 100 }
 			sphereEarth.scale.x = r; sphereEarth.scale.y = r; sphereEarth.scale.z = r;
 			meshClouds.scale.set(sphereEarth.scale.x * cloudsScale, sphereEarth.scale.y * cloudsScale, sphereEarth.scale.z * cloudsScale);
 			earthGroup.position.x = 0;
-			earthGroup.position.y = -r* 1.8;
+			if (centrer){earthGroup.position.y=0}else{earthGroup.position.y = -r* 1.8};
 			earthGroup.position.z = 0;
 			earthGroup.rotation.x = -base.toRad(90 - cs.lati);
 			earthGroup.rotation.y = -base.toRad(cs.longi);

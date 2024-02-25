@@ -11,3 +11,7 @@ https://ccs.saf-astronomie.fr/wp-content/uploads/Cadran-Info_pdf/Cadran%20Info_0
    - 1997 - Y. Massé : (page Internet) Cadrans de type analemmatique à
 projection centrale.
 https://gnomonique.fr/gnomon/analprc.htm
+
+heures siderales:
+https://articles.adsabs.harvard.edu//full/1990O%26T....24....3S/0000018.000.html
+
