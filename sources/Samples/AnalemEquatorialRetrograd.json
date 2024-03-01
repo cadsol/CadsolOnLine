@@ -1,6 +1,6 @@
 {
   "version": "2024-01-28",
-  "hsol": 19.23,
+  "hsol": 5.9,
   "dayofYear": 140,
   "year": 2024,
   "typeCadran": "Analemmatic",
@@ -32,7 +32,7 @@
   "colorAnalem": "rgb(100,10,100)",
   "Canalem": true,
   "textSizeANL": 1,
-  "dateAnalem": 20,
+  "dateAnalem": 19,
   "subAnalem": 1,
   "hfilHorizontal": 30,
   "hfilVertical": 50,
@@ -104,6 +104,7 @@
   "subDivisions": 1,
   "precisionHours": 5,
   "equinoxeAndSolstices": false,
+  "arcsZodiaque": false,
   "colorequinoxeAndSolstice": "rgb(152,0,0)",
   "datesArcsDiurnes": [
     []
@@ -114,15 +115,23 @@
   "positionDevisey": -180,
   "deviseSize": 1,
   "axesESZ": true,
-  "axesXYZ": true,
+  "axesXYZ": false,
   "voirTerre": true,
   "vrotscene": 0,
-  "vrotSun": 0,
+  "vrotSun": 3600,
   "linkMedia": "",
   "autoCloseMenu": true,
   "background": "rgb(60,100,140)",
+  "milkyWay": false,
   "dampingFactor": 10,
   "vrotClouds": 1,
+  "posCamera": [
+    -1076.019851255576,
+    546.2241066129575,
+    -1224.631732597793
+  ],
+  "equatorial": false,
+  "ecliptique": true,
   "unitSVG": "auto",
   "separateurCSV": ";",
   "nameFile": "MaquetteYM2024",
@@ -144,6 +153,7 @@
   "polyheuresPlanetairesWS": [],
   "polyheuresPlanetairesSA": [],
   "polyequinoxeAndSolstices": [],
+  "polyarcsZodiaque": [],
   "polydatesArcsDiurnes": [
     []
   ],

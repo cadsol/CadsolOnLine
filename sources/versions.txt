@@ -17,7 +17,9 @@ memorisation de;
 - la position de la camera
 - la vitesse de rotation du soleil
 voie lactée en fond d'écran (sur option)
+- correction bug sortie CSV polyedres
 
-250224
+270224 -> publié
 -cercles: equatorial et ecliptique
 -point vernal
+-maquette YM

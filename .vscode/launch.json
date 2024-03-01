@@ -4,12 +4,7 @@
     // Pour plus d'informations, visitez : https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-    {
-        "command": "npm start",
-        "name": "Run npm start",
-        "request": "launch",
-        "type": "node-terminal"
-    },
+
       
         {
             "type": "chrome",
@@ -21,8 +16,8 @@
         {
             "type": "chrome",
             "request": "launch",
-            "name": "colmodBak.html",
-            "url": "http://192.168.1.14/SauvegardeCOL/CadsolOnLine/sources/colmodBak.html"
+            "name": "colmod270224.html",
+            "url": "http://192.168.1.14/SauvegardeCOL/CadsolOnLine/sources/colmod270224.html"
         }
         ,
         {
