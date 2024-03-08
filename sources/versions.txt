@@ -23,3 +23,11 @@ voie lactée en fond d'écran (sur option)
 -cercles: equatorial et ecliptique
 -point vernal
 -maquette YM
+
+080324 -> publié
+-modif tracé de l'écliptique pour tenir compte de la longitude. 
+-correction de la Disparition du sous-menu "Shadow by..." 
+    folderGnomon.show() ajouté dans InitMenu()
+-condition if (cs.typeCadran != ANL) de la fonction PlacerLeSoleil() supprimée
+-lien vers un editeur svg:  https://svgedit.netlify.app/editor/index.html
+-modif Download menu
