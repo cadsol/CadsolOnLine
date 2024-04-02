@@ -118,9 +118,10 @@
 
 
 		let dateJour = new Date()
+		console.log(dateJour.getDate())
 		let nbJoursAnnee=365,nbjoursText="Day (1-365))"
 		cs.year = dateJour.getFullYear()		
-		cs.dayofYear=JULIAN.DayOfYear(cs.year, dateJour.getMonth()+1,  dateJour.getDate()-1, JULIAN.LeapYearJulian(cs.year))
+		cs.dayofYear=JULIAN.DayOfYear(cs.year, dateJour.getMonth()+1,  dateJour.getDate(), JULIAN.LeapYearJulian(cs.year))
 		if(JULIAN.LeapYearJulian(cs.year)){nbJoursAnnee=366;nbjoursText="Day (1-366))"}else{ nbJoursAnnee=365,nbjoursText="Day (1-365))"}
 
 		const oe=23.4392911  // obliquite de l'Ecliptique, equinoxe de reference 2000.0

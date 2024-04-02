@@ -8,9 +8,14 @@ import {
 	december
 } from '../astronomia-master/src/solstice.js';
 
+//import {Scene} from  'three';
+
 export const SP = "Polar or straight style", BF = "Bifilar (vertical)", BFG = 'Bifilar generalised', ANL = 'Analemmatic', RTS='Ray tracing sundial';///+++
 
- 
+export const Dst=1500 // distance terre soleil
+export const oe=23.4392911  // obliquite de l'Ecliptique, equinoxe de reference 2000.0
+
+
 export let cs = {
 	version: "",
 	hsol: 13,
@@ -146,7 +151,7 @@ export let cs = {
 	dampingFactor: 10,	
 	vrotClouds:1,
 	posCamera:[2000,2000,1500],
-	equatorial:false,
+	sphereArmilaire:false,
 	ecliptique:false,
 
 	//export

@@ -91,9 +91,10 @@
 		import { ConvexGeometry } from 'three/addons/geometries/ConvexGeometry.js';
 
 		// -----------------------------------Modules---------------------------------------------------------------------------------------
-		import { SP, BF, BFG, ANL, RTS, cs, TableSol, RechercheParAdresse, getLocation, HTLM } from './Modcolvars270224.js';
+		import { SP, BF, BFG, ANL, RTS, cs, TableSol,Dst, oe, RechercheParAdresse, getLocation, HTLM } from './Modcolvars.js';
 		import { eclair, Rot, EtoC, ddrte, segm } from './ModAnalem270224.js';
 		import { POLYHEDRA } from './ModPolyhedra.js';
+		//import {tracerEcliptique,effacerEcliptique,tracerSphereArmilaire,effacerSphereArmilaire} from './ModSphereArmilaire.js'
 		// ---------------------------------------------------------------------------------------------------------------------------------	
 
 		document.addEventListener("readystatechange", function (evt) { console.log(document.readyState) })
@@ -109,7 +110,7 @@
 			HPSA = "Planetary (summer, autumn)", HPWS = "Planetary (winter, spring)";
 
 
-		cs.version = "2024-03-08"
+		cs.version = "2024-03-21"
 		console.log('THREE.REVISION :  ', THREE.REVISION)
 		// const cso = structuredClone(cs)
 		// console.log(cso)
@@ -118,29 +119,30 @@
 
 
 		let dateJour = new Date()
+		//console.log(dateJour.getDate(),dateJour.getMonth())
 		let nbJoursAnnee=365,nbjoursText="Day (1-365))"
 		cs.year = dateJour.getFullYear()		
-		cs.dayofYear=JULIAN.DayOfYear(cs.year, dateJour.getMonth()+1,  dateJour.getDate()-1, JULIAN.LeapYearJulian(cs.year))
+		cs.dayofYear=JULIAN.DayOfYear(cs.year, dateJour.getMonth()+1,  dateJour.getDate(), JULIAN.LeapYearJulian(cs.year))
 		if(JULIAN.LeapYearJulian(cs.year)){nbJoursAnnee=366;nbjoursText="Day (1-366))"}else{ nbJoursAnnee=365,nbjoursText="Day (1-365))"}
 
-		const oe=23.4392911  // obliquite de l'Ecliptique, equinoxe de reference 2000.0
+		//const oe=23.4392911  // obliquite de l'Ecliptique, equinoxe de reference 2000.0
 
 		let CSVtext = "", SVGtext = "", CSVephemerid = ""
 		let zFuncxy
 
 		let container, stats, buttonNewSundial;
-		let camera, scene, renderer, cadran;
+		let camera, renderer, cadran;
 		container = document.getElementById('container');
 
 		// camera
 
-		camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 5, 10000);
+		camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 5, 10000);
 		camera.position.set(cs.posCamera[0],cs.posCamera[1],cs.posCamera[2]);
 		cs.posCamera=camera.position.toArray()
 		//console.log(cs.posCamera)
 
 		// scene
-		scene = new THREE.Scene();
+		const scene = new THREE.Scene();
 		//scene.background= new THREE.Color(cs.background)
 		//console.log(localStorage.getItem("BackGround"))
 		//scene.background = new THREE.Color(localStorage.getItem("BackGround"))
@@ -229,7 +231,8 @@
 
 		let cadranSolaireGroup, axeMondeGroup, earthGroup;
 
-		let gnomon, gnomonTore, meshDevise, stylePolaire, sousStylaire, stylePlan, styleBord, BoutStyle, FinStyle,ellipseEq,spherePV,ellipseEclip,
+		let gnomon, gnomonTore, meshDevise, stylePolaire, sousStylaire, stylePlan, styleBord, BoutStyle, FinStyle,
+		   
 			styleAnalem, centreAnalem, styleTorique, filHorizontal, filVertical, pilierH1, pilierH2, pilierH3, pilierH4;
 
 		let heuresSolairesGroup, heuresLegalesGroupSA, heuresLegalesGroupWS, heuresAntiquesGroup, arcsDiurnesGroup;
@@ -444,7 +447,7 @@
 		axeMondeGroup.add(sphereSun);
 		sphereSun.parent = axeMonde;
 
-		const Dst=1500 // distance terre soleil
+		//const Dst=1500 // distance terre soleil
 
 		//rayCaster
 		let rayCaster = new THREE.Raycaster()
@@ -1104,7 +1107,7 @@
 
 
 		function EcrirelesDates(gpostxt) {
-			let dx, dy, rc, an, pj, j, jde, ae, js, ms, gradGeo, gradMesh;
+			let dx, dy, rc, an, pj, j, jde, ae, js, ms, gradGeo, gradMesh,jj,mm;
 			CSVtext += "\n\nDate points\n\n";
 			pj = Proj(EtoC(0, 0, .01)); dx = pj.x - cs.xgnomon; dy = pj.y - cs.ygnomon;
 			rc = Math.sqrt(dx ** 2 + dy ** 2);
@@ -1123,8 +1126,12 @@
 					gradGeo = new THREE.CylinderGeometry(cs.egnomon, cs.egnomon, 3 * cs.egnomon);
 					gradMesh = new THREE.Mesh(gradGeo, materialAnalem);
 					gradMesh.rotateZ(Math.atan2(dy, dx));
-					js = j.toString();
-					ms = m.toString(); if (m < 10) { ms = '0' + ms };
+
+					const dateGregorian=JULIAN.JDToCalendarGregorian (jde)  //
+					jj=dateGregorian.day;mm=dateGregorian.month             // correction JL pour les mois de 30, 29 ou 28 jpours
+					js = jj.toString();                                     //
+					ms = mm.toString(); if (mm < 10) { ms = '0' + ms };     //
+
 					if ((jde > TS.solJuin) && (jde < TS.solDecembre)) {  // à gauche
 						gradMesh.position.set(pj.x - 2 * dy, pj.y + 2 * dx, pj.z);
 						EcrireTexte(js + "/" + ms, pj.x - 5 * dy, pj.y + 5 * dx - rc, pj.z,
@@ -1516,7 +1523,7 @@
 		// const lineGeometry = new THREE.BufferGeometry().setFromPoints( pipeSplineCRC );				   
 		// const lineMaterial = new THREE.LineBasicMaterial( {color:0x0000FF});
 		// mesh = new THREE.Mesh( lineGeometry, lineMaterial);		 
-
+ 
 		//---------------------------------------------------------------------------------------------------------
 		function TracerHeuresSolaires() {
 			cs.hoursTextSize = cs.textSizeHS
@@ -1526,8 +1533,9 @@
 			//console.log(CSVtext)
 			CSVtext += "\n\n"
 			CSVtext += 'Solar hours' + "\n\n"
-
+			//if (SVGtext.length > 0) {SVGtext+='<g id="HSol" >'}
 			traceLignes(sunDial, heuresSolairesListeMesh, heuresSolairesGroup, materialHeuresSolaires)
+			//if (SVGtext.length > 0) {SVGtext+='</g>'}
 
 		}
 
@@ -1805,9 +1813,9 @@
 				const yombre = (a * cp - ap * c) / det
 				// const kxA = (xombre - xA1) / (xA2 - xA1)
 				// const kxB = (xombre - xB1) / (xB2 - xB1)
-				//if ((kxA < 0) || (kxA > 1) || (kxB < 0) || (kxB > 1)) { det = 0 }
-				//if (!(pointDansCadran(xombre, yombre))) { det = 0 }
-				if (Math.abs(det) > 0) {
+				// if ((kxA < 0) || (kxA > 1) || (kxB < 0) || (kxB > 1)) { det = 0 }
+
+				if (pointDansCadran(xombre, yombre)) {
 					return {
 						xo: xombre - cs.xgnomon,
 						yo: yombre - cs.ygnomon,
@@ -2156,7 +2164,7 @@
 			axesESZHelper.visible = cs.axesESZ
 			EcrireXYZ()
 			TracerHeuresEtArcs()
-			render()
+			//render()
 			//console.log(cs)
 		}
 
@@ -2259,7 +2267,7 @@
 					//TracerStyle()
 					TracerHeuresEtArcs()
 					EcrireDevise(cs.devise, cs.positionDevisex, cs.positionDevisey);
-					render()
+					//render()
 					//console.log(NouveauCadran,cs.decli)
 				}
 				function TracerCadranEquatorial() {
@@ -2278,7 +2286,7 @@
 					eulerCsGroup()
 					//TracerStyle()
 					TracerHeuresEtArcs()
-					render()
+					//render()
 				}
 
 				function TracerCadranScaphe() {
@@ -2298,7 +2306,7 @@
 					eulerCsGroup()
 					TracerStyle()
 					TracerHeuresEtArcs()
-					render()
+					//render()
 				}
 
 				function TracerFichier() {
@@ -2376,7 +2384,41 @@
 					eulerCsGroup()
 					//TracerStyle()
 					TracerHeuresEtArcs()
-				}
+				}  
+/*
+				function TracerCadranParam() {
+					//gui.domElement.style.color = 'green';
+					//Info("x and y between -1 and 1")
+					materialCS.side = THREE.DoubleSide
+					gzfxy.show()
+					zFuncxy = Parser.parse(cs.zfxy).toJSFunction(['x', 'y'])  //  -largeur/2 < x < largeur/2
+					//catch (err) { console.log("Formule incorrecte"); return }
+					let funcxyz = (u, v, target) => {    //  0<=u<=1,0<=v<=1
+						const xf = (u - 0.5) * cs.largeur/2
+						const yf = (v - 0.5) * cs.hauteur/2
+						const zf = zFuncxy(xf, yf)* cs.epaisseur/2
+						target.set(xf, yf, zf)
+					}
+					const geometryCSParam = new ParametricGeometry(funcxyz, 100,100)
+					//geometryCSParam.computeVertexNormals()
+					const cadranParam = new THREE.Mesh(geometryCSParam, materialCS);
+					cadranParam.castShadow = true
+					cadranParam.receiveShadow = true
+					cadran = cadranParam.clone()
+
+					if (NouveauCadran == true) {
+						cs.epaisseur = 10; cs.hauteur = 300; cs.largeur = 300
+						cs.xgnomon = 0; cs.ygnomon = 0; cs.zgnomon = 50
+						cs.decli = 0; cs.incli = 90
+					}
+					cadran.scale.x = cs.largeur;
+					cadran.scale.y = cs.hauteur;
+					cadran.scale.z = cs.epaisseur
+					cadranSolaireGroup.add(cadran);
+					eulerCsGroup()
+					//TracerStyle()
+					TracerHeuresEtArcs()
+				}*/
 
 				function TracerCadranPolyedrique() {
 					cs.axesXYZ = false
@@ -2442,7 +2484,7 @@
 				gnomon.visible = false
 				eulerCsGroup()
 				PlacerLeSoleil()
-				render()
+				//render()
 				EcrireXYZ()
 
 				// gTypeCadran.hide()
@@ -2501,7 +2543,7 @@
 				groupAxes.add(axeZ)
 				cadranSolaireGroup.add(groupAxes)
 				EcrireXYZ()
-				render
+				
 
 				if (e == SP) {
 					folderGnomonBifilaireVertical.hide();
@@ -2685,7 +2727,8 @@
 					PlacerLeSoleil(); TracerHeuresEtArcs();TracerStyle()
 					if ((cs.typeCadran == RTS) && (cs.typeForme == "equatorial")) { TracerCadranRTS("equatorial") }
 					if ((cs.typeCadran == RTS) && (cs.typeForme == "scaphe")) { TracerCadranRTS("scaphe") }
-					if (RTSpolyhedre()) { tracerTouteslesfaces() }
+					if (RTSpolyhedre())  {tracerTouteslesfaces()}
+					if (cs.sphereArmilaire){effacerSphereArmilaire();tracerSphereArmilaire()} 
 				})
 				.listen();
 			folderGeoSundial.add(cs, "longi", -180, 180, 0.001)
@@ -2765,8 +2808,19 @@
 
 			const folderSundial = gui.addFolder(sp + 'Geometry ');
 
-
+			//const Bidon={x:-cs.decli}
 			//// ORIENTATION				
+			// const folderOrientationSundial = folderSundial.addFolder("Orientation...");
+			// folderOrientationSundial.add(Bidon, "x", -180, 180, 0.1)
+			// 	.name("Declinaison °")
+			// 	.onChange((v) => {cs.decli=-v; eulerCsGroup()/*;TracerHeuresEtArcs;TracerStyle()*/})
+			// 	.onFinishChange(() => {
+			// 		eulerCsGroup();TracerHeuresEtArcs();TracerStyle()
+			// 		if (RTSpolyhedre()) { tracerTouteslesfaces() }
+			// 	})
+			// 	.listen()
+			//// ORIENTATION	
+						
 			const folderOrientationSundial = folderSundial.addFolder("Orientation...");
 			folderOrientationSundial.add(cs, "decli", -180, 180, 0.1)
 				.name("Declinaison °")
@@ -2775,7 +2829,7 @@
 					eulerCsGroup();TracerHeuresEtArcs();TracerStyle()
 					if (RTSpolyhedre()) { tracerTouteslesfaces() }
 				})
-				.listen()
+
 			const ctlIncli = folderOrientationSundial.add(cs, "incli", -180, 180, 0.1)
 				.name("Inclinaison °")
 				.onChange(() => { eulerCsGroup()/*;TracerHeuresEtArcs();TracerStyle()*/})
@@ -3417,7 +3471,14 @@
 
 			const gCircles=folderView.add(cs,"ecliptique").name("circles & vernal point")
 			          .onChange(function(){PlacerLeSoleil()})
+					  .listen()
 			helpGui(gCircles,"ecliptic circle (yellow), equatorial circle (white)<br>vernal point (gray sphere), sun(yellow sphere)")
+
+			const gSphereArmilaire=folderView.add(cs,"sphereArmilaire").name("sphere armilaire")
+			          .onChange(function(v){
+						v?tracerSphereArmilaire():effacerSphereArmilaire()
+					  })
+			helpGui(gSphereArmilaire,"ecliptic circle (yellow), equatorial circle (white)<br>vernal point (gray sphere), sun(yellow sphere)<br>horizon (blue), local meridien (green)<br>tropic and polar circles (gray)")
 			
 
 			folderView.add(cs, "vrotscene", 0, 10, 1)
@@ -3750,7 +3811,7 @@
 
 			axeMonde.setDirection(new THREE.Vector3(0, Math.sin(cs.lati * Math.PI / 180),
 				-Math.cos(cs.lati * Math.PI / 180)));
-			axeMonde.setLength(600, 30, 10);
+			//axeMonde.setLength(600, 30, 10);
 			//   helperLight.update()
 			//   axeMonde.visible=cs.voirTerre;
 			//   axeMonde.visible=false;
@@ -3759,30 +3820,110 @@
 		}
 
 		
-
+		let ellipseEq,spherePV,ellipseEclip,horizon,meridien,tropiqueNord, tropiqueSud, polaireNord, polaireSud,axeArmilaire
 		
-			const curveEq = new THREE.EllipseCurve(
+			// const curveEquateur = new THREE.EllipseCurve(
+			// 	0,  0,            // ax, aY
+			// 	Dst, Dst,           // xRadius, yRadius
+			// 	0,  2 * Math.PI,  // aStartAngle, aEndAngle
+			// 	false,            // aClockwise
+			// 	0 );                // aRotation
+
+			const RTropique=Dst*Math.cos(base.toRad(oe))
+			const curveTropique = new THREE.EllipseCurve(
 				0,  0,            // ax, aY
-				Dst, Dst,           // xRadius, yRadius
+				RTropique, RTropique,           // xRadius, yRadius
 				0,  2 * Math.PI,  // aStartAngle, aEndAngle
 				false,            // aClockwise
-				0 );                // aRotation
-			const pointsEq = curveEq.getPoints( 50 );
-			const geometryEq = new THREE.BufferGeometry().setFromPoints( pointsEq );
+				0 );  
+
+			const RPolaire=Dst*Math.cos(base.toRad(90-oe))
+			const curvePolaire = new THREE.EllipseCurve(
+				0,  0,            // ax, aY
+				RPolaire, RPolaire,           // xRadius, yRadius
+				0,  2 * Math.PI,  // aStartAngle, aEndAngle
+				false,            // aClockwise
+				0 );  
+
+			//const pointsEq = curveEquateur.getPoints( 50 );
+			const pointsTropiqueNord= curveTropique.getPoints( 50 );
+			const pointsTropiqueSud = curveTropique.getPoints( 50 );
+			const pointsPolairesNord= curvePolaire.getPoints( 50 );
+			const pointsPolairesSud= curvePolaire.getPoints( 50 );
+			const geometryEq= new THREE.RingGeometry(Dst*1.002, Dst*0.998, 64, 64)
+			const geometryTropiqueNord = new THREE.BufferGeometry().setFromPoints( pointsTropiqueNord );
+			const geometryTropiqueSud = new THREE.BufferGeometry().setFromPoints( pointsTropiqueSud );
+			const geometryPolaireNord = new THREE.BufferGeometry().setFromPoints( pointsPolairesNord );
+			const geometryPolaireSud = new THREE.BufferGeometry().setFromPoints( pointsPolairesSud );
+			const geometryAxeArmilairene= new THREE.CylinderGeometry(RPolaire/200,RPolaire/200,Dst*2.25)
 			const materialEq = new THREE.LineBasicMaterial( { color: 0xffffff } );
 			const materialEclip = new THREE.LineBasicMaterial( { color: 0xffff00 } );
+			const materialHorizon= new THREE.LineBasicMaterial( { color: 0x0a0aff } );
+			const materialMeridien = new THREE.LineBasicMaterial( { color: 0x00ff00 } );
+			
 
 		function tracerEquateurCeleste() {
 			if (ellipseEq != undefined) {scene.remove(ellipseEq)}
-			ellipseEq = new THREE.Line( geometryEq, materialEq );
+			ellipseEq = new THREE.Line( geometryEq, materialEq )
 			scene.add(ellipseEq)
 			ellipseEq.rotation.x = base.toRad(cs.lati);
+			// const AxeArmilaire = axeMonde.clone()
+			// AxeArmilaire.setLength(Dst*1.5)
+			// scene.add(AxeArmilaire)
+		}
+
+		function tracerTropiques() {
+			if (tropiqueNord != undefined) {scene.remove(tropiqueNord)}
+			if (tropiqueSud != undefined) {scene.remove(tropiqueSud)}
+			tropiqueNord = new THREE.Line( geometryTropiqueNord, materialEq );	
+			tropiqueSud  = new THREE.Line( geometryTropiqueSud, materialEq );	
+			tropiqueNord.rotation.x= base.toRad(cs.lati);
+			tropiqueSud.rotation.x = base.toRad(cs.lati);
+			tropiqueNord.translateZ (-Dst*Math.sin(oe*Math.PI/180) )
+			tropiqueSud.translateZ  ( Dst*Math.sin(oe*Math.PI/180) )
+			scene.add(tropiqueNord)
+			scene.add(tropiqueSud)
+		}
+
+		function tracerPolaires() {
+			if (polaireNord != undefined) {scene.remove(polaireNord)}
+			if (polaireSud  != undefined) {scene.remove(polaireSud)}
+			polaireNord = new THREE.Line( geometryPolaireNord, materialEq );	
+			polaireSud  = new THREE.Line( geometryPolaireSud, materialEq );	
+			polaireNord.rotation.x= base.toRad(cs.lati);
+			polaireSud.rotation.x = base.toRad(cs.lati);
+			polaireNord.translateZ (-Dst*Math.sin((90-oe)*Math.PI/180) )
+			polaireSud.translateZ  ( Dst*Math.sin((90-oe)*Math.PI/180) )
+			scene.add(polaireNord)
+			scene.add(polaireSud)
+		}
+
+
+		function tracerHorizonEtMeridien(){
+			if (horizon!= undefined) {scene.remove(horizon)}
+			horizon = new THREE.Line( geometryEq, materialHorizon );
+			horizon.rotation.x = Math.PI/2;
+			scene.add(horizon)
+			if (meridien!= undefined) {scene.remove(meridien)}
+			meridien= new THREE.Line( geometryEq, materialMeridien );
+			meridien.rotation.y = Math.PI/2;
+			scene.add(meridien)
+		}
+
+		function tracerAxeArmilaire(){
+			if (axeArmilaire != undefined) {axeMondeGroup.remove(axeArmilaire)}
+			axeArmilaire=new THREE.Mesh(geometryAxeArmilairene,materialEq)
+			
+			axeArmilaire.parent=axeMonde
+			// axeArmilaire.rotation.z=Math.PI/2
+			// axeArmilaire.rotation.x = base.toRad(cs.lati);
+			axeMondeGroup.add(axeArmilaire)	
+			axeArmilaire.rotation.x = base.toRad(cs.lati+90);
 		}
 
 		function tracerEcliptique(h){
 			tracerEquateurCeleste()
 			let k = Dst,alpha=0,asd
-			//dec = base.toDeg(TS.decSuns[cs.dayofYear - 1])
 			asd = TS.ascRights[cs.dayofYear - 1]
 			h=base.toRad(-(h - 12) * 15)-asd
 			if (spherePV != undefined) {axeMondeGroup.remove(spherePV)}
@@ -3798,10 +3939,41 @@
 			if (ellipseEclip != undefined) {axeMondeGroup.remove(ellipseEclip)}
 			ellipseEclip=ellipseEq.clone()
 			ellipseEclip.material=materialEclip
-			axeMondeGroup.add(ellipseEclip);
-			
-			ellipseEclip.rotateOnAxis  ( axis, base.toRad(oe))
+			axeMondeGroup.add(ellipseEclip);		
+			ellipseEclip.rotateOnAxis  ( axis, base.toRad(oe))			
 		}
+
+		function effacerEcliptique(){
+			cs.ecliptique=false
+			scene.remove(ellipseEq);axeMondeGroup.remove(ellipseEclip);axeMondeGroup.remove(spherePV)
+		}
+
+		function tracerSphereArmilaire(){
+			cs.ecliptique=true
+			PlacerLeSoleil()
+			tracerHorizonEtMeridien()
+			tracerEquateurCeleste()
+			tracerTropiques()
+			tracerPolaires()
+			tracerAxeArmilaire()
+			PlacerLaTerre(true)
+		}
+
+		function effacerSphereArmilaire(){
+			effacerEcliptique()
+			scene.remove(horizon)
+			scene.remove(meridien)
+			scene.remove(tropiqueNord)
+			scene.remove(tropiqueSud)
+			scene.remove(polaireNord)
+			scene.remove(polaireSud)
+			PlacerLaTerre(false)
+		}
+
+
+		
+
+
 		//--------------------------------------------------------------------------------------
 		function PlacerLeSoleil() {
 			let k = Dst;
@@ -3843,11 +4015,10 @@
 			light.castShadow = (v3.y > 0)  // le soleil dit être au dessus de l'horizon	
 
 			labeltime.innerHTML = h + ":" + min + ':' + sec + "  " + sdate + " dec:" + dec.toFixed(3) + "°  asc:"+asc.toFixed(3)+"°  eqt:" + eqt.toFixed(0) + 's'
-			//labeldeceqt.innerHTML="dec:"+dec.toFixed(3)+"°  eqt:"+eqt+'s'
-			//  helperLight.update()
-			//if (cs.equatorial){tracerEquateurCeleste()}
+
 			if (cs.ecliptique){tracerEcliptique(hsol,eqt)}
-			              else{scene.remove(ellipseEq);axeMondeGroup.remove(ellipseEclip);axeMondeGroup.remove(spherePV)}
+			              else{effacerEcliptique()}
+
 			if (cs.typeCadran == RTS) {
 				if (lineRay != undefined) {
 					lineRay.geometry.dispose()
@@ -4001,8 +4172,14 @@
 		// Terre ---------------------------------------------------------------------------------------------------
 		function PlacerLaTerre(centrer=false) {
 			let r, l;
-			if (centrer){r=cs.hauteur/10}else{r = cs.hauteur};
-			if(RTSpolyhedre()){r=2*cs.rayonPolyedre}
+			if (centrer){
+			    r=cs.hauteur/5;materialCS.wireframe = true;cs.wireframe=true
+				if(RTSpolyhedre()){r=cs.rayonPolyedre/2}
+			    }else{
+				r = cs.hauteur;
+				materialCS.wireframe = false;cs.wireframe=false
+				if(RTSpolyhedre()){r=2*cs.rayonPolyedre}
+				}
 			//if (r < 100) { r = 100 }
 			sphereEarth.scale.x = r; sphereEarth.scale.y = r; sphereEarth.scale.z = r;
 			meshClouds.scale.set(sphereEarth.scale.x * cloudsScale, sphereEarth.scale.y * cloudsScale, sphereEarth.scale.z * cloudsScale);
@@ -4017,7 +4194,7 @@
 			axeLocalisation.setLength(l, 0.1 * l, 0.02 * l)
 			axeLocalisation.visible = cs.voirTerre;
 
-			//	console.log(renderer.info)
+			//console.log(renderer.info)
 
 		}
 
@@ -4034,24 +4211,19 @@
 
 		function animate() {
 
-			requestAnimationFrame(animate);
 			controls.dampingFactor = cs.dampingFactor/100;
 			controls.update()
 			if (cs.vrotscene > 0) { scene.rotation.y += 0.001 * cs.vrotscene } else { scene.rotation.y = 0 }
 			meshClouds.rotation.y += 0.00005*cs.vrotClouds;
-			render();
-			stats.update();
-
-			//document.body.style.cursor = "auto"
-		}
-
-		//
-
-		function render() {
-
+			//render();
 			renderer.render(scene, camera);
+			stats.update();
+			requestAnimationFrame(animate);
 
 		}
+
+		// function render() {renderer.render(scene, camera)}
+
 
 		//----------------------------------------------------------------------------------------------------------------------------------------------------
 		///////////////////////////////////////////////////////////////////POLYEDRES/////////////////////////////////////////////////////////////////////////
@@ -4141,7 +4313,7 @@
 			return verticesFaceN
 		}
 
-		//let meshGeometry=[]
+		
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////
 		function displayFaces(Pol) {
 			if (polyhedre == undefined) { return }
@@ -4204,7 +4376,7 @@
 				
 				meshFace.receiveShadow = true
 				meshFaces.push(meshFace)
-				meshFacesGroup.add(meshFace)
+				
 				h = centerFace.distanceTo(a) 
 				rmaxFace.push(h)
 				h=h/3
@@ -4229,8 +4401,8 @@
 				hauteursGnomons.push(h)
 				gnomonPoly.castShadow = true
 				gnomonPoly.receiveShadow = false
-				//if (f!=nfaceActive){meshFaces[f].visible=false}
-				
+				//if (f==nfaceActive){meshFacesGroup.add(meshFace)}
+				meshFacesGroup.add(meshFace)
 
 			} //f
 
@@ -4494,6 +4666,7 @@
 			cs.positionDevisex = cs.polyDevx[nfaceActive]
 			cs.positionDevisey = cs.polyDevy[nfaceActive]
 			cs.devise=cs.polyDev[nfaceActive]
+			//for(let i=0;i<nbFaces;i++){if (i!=nfaceActive){meshFaces[i].visible=false}}
 		}
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		function InitGuiPolyedres(gui) {
@@ -4508,7 +4681,7 @@
 					displayFaces(polyhedre)
 					faceSurBase(nfaceActive)
 					tracerTouteslesfaces()
-					SudSundial.show()
+					//SudSundial.show()
 				},
 				rotationSud() {
 					if ((Math.abs(normalsFaces[nfaceActive][0]) > 0.001)) {
@@ -4521,8 +4694,32 @@
 						//SudSundial.hide()
 					}
 				},
-				facesIdentiques(){tracerTouteslesfacesIdentiques()}
-			}
+				tracerUneFace(){
+					meshGnomons[nfaceActive].remove(styleToriquePoly)
+					let csGroup=cadranSolaireGroup.clone(true)
+					cadranSolaireGroup.clear()				
+					rapellerFace(nfaceActive)
+					TracerHeuresEtArcs()
+					EcrireDevise(cs.polyDev[nfaceActive], cs.polyDevx[nfaceActive], cs.polyDevy[nfaceActive])
+					cadranSolaireGroup.add(meshFaces[nfaceActive])
+					cadranSolaireGroup.add(meshGnomons[nfaceActive])
+					const vNorm = new THREE.Vector3()
+					quaternion.setFromUnitVectors(vNorm.fromArray(normalsFaces[nfaceActive]), new THREE.Vector3(0, 1, 0))
+					cadranSolaireGroup.setRotationFromQuaternion(quaternion)
+
+					
+					//cadranSolaireGroup.setRotationFromQuaternion(quaternion.conjugate())
+					//  cadranSolaireGroup=csGroup.clone(true)
+					// // cadranSolaireGroup=new THREE.Group()		
+					//  displayFaces(polyhedre)
+					//  tracerTouteslesfaces()
+					// rapellerFace(0)
+					// nfaceActive = 0
+					// tracerFaceActive()
+					}
+					
+					
+				}
 
 			guiSectionPoly = gui.addFolder("POLYEDRA");
 			if (NouveauCadran) { polyhedre = POLYHEDRA.Dodecahedron; nbFaces = 12 }
@@ -4568,9 +4765,9 @@
 
 			//choix de la base et de la face sud
 
-			const BaseSundial = guiSectionPoly.add(rotationFaces, "rotationBase").name("facet -> base")
-			const SudSundial = guiSectionPoly.add(rotationFaces, "rotationSud").name("facet -> sud")
-			//const faceId = guiSectionPoly.add(rotationFaces, "facesIdentiques").name("faces identiques")
+			const gBaseSundial = guiSectionPoly.add(rotationFaces, "rotationBase").name("facet -> base")
+			const gSudSundial = guiSectionPoly.add(rotationFaces, "rotationSud").name("facet -> sud")
+			const gtracerUneFace = guiSectionPoly.add(rotationFaces, "tracerUneFace").name("face active")
 
 			// parametrage gnomon
 			
@@ -4665,7 +4862,7 @@
 					displayFaces(polyhedre)
 
 					faceSurBase(nFaceMax)
-					SudSundial.show()
+					//SudSundial.show()
 					nfaceActive = 0
 					tracerFaceActive()
 					// cadran = meshFaces[nfaceActive].clone()
@@ -4869,7 +5066,7 @@
 	</script>
 
 	<script src="./parser.js"></script>
-
+	
 </body>
 
 </html>

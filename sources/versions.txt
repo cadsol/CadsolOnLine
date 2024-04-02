@@ -31,3 +31,13 @@ voie lactée en fond d'écran (sur option)
 -condition if (cs.typeCadran != ANL) de la fonction PlacerLeSoleil() supprimée
 -lien vers un editeur svg:  https://svgedit.netlify.app/editor/index.html
 -modif Download menu
+
+140324
+- dates des analemmatiques : correction pour les mois de 30, 29 ou 28 jpours
+- modif bifilaire generalisé
+
+220324
+- sphere armilaire
+
+020324
+- mise à plat de la face active
