@@ -5,13 +5,13 @@
 <head>
 	<title>CadsolOnLine 3D</title>
 	<link rel="icon" type="image/x-icon" href="./favicon.ico">
-	
+
 	<meta charset="utf-8">
 	<meta name="viewport"
 		content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0">
 
 	<!--  FICHIER CSS---------------------------------------------------------------------------------------------------------- -->
-	<link type="text/css" rel="stylesheet" href="./main070224.css">
+	<link type="text/css" rel="stylesheet" href="./main030624.css">
 	<!--  FICHIER CSS------------------------------------------------------------------------------------------------------------->
 
 </head>
@@ -55,7 +55,7 @@
 	<script type="importmap">
 		{
 			"imports": {
-				"three": "../build/three.module.js",
+				"three": "../build/three.module164.js",
 				"three/addons/": "./jsm/"
 			}
 		}
@@ -91,8 +91,8 @@
 		import { ConvexGeometry } from 'three/addons/geometries/ConvexGeometry.js';
 
 		// -----------------------------------Modules---------------------------------------------------------------------------------------
-		import { SP, BF, BFG, ANL, RTS, cs, TableSol,Dst, oe, RechercheParAdresse, getLocation, HTLM } from './Modcolvars.js';
-		import { eclair, Rot, EtoC, ddrte, segm } from './ModAnalem270224.js';
+		import { SP, BF, BFG, ANL, RTS, cs, TableSol, Dst, oe, RechercheParAdresse, getLocation, HTLM } from './Modcolvars030624.js';
+		import { eclair, Rot, EtoC, ddrte, segm } from './ModAnalem030624.js';
 		import { POLYHEDRA } from './ModPolyhedra.js';
 		//import {tracerEcliptique,effacerEcliptique,tracerSphereArmilaire,effacerSphereArmilaire} from './ModSphereArmilaire.js'
 		// ---------------------------------------------------------------------------------------------------------------------------------	
@@ -110,7 +110,7 @@
 			HPSA = "Planetary (summer, autumn)", HPWS = "Planetary (winter, spring)";
 
 
-		cs.version = "2024-03-21"
+		cs.version = "2024-06-03"
 		console.log('THREE.REVISION :  ', THREE.REVISION)
 		// const cso = structuredClone(cs)
 		// console.log(cso)
@@ -120,10 +120,10 @@
 
 		let dateJour = new Date()
 		//console.log(dateJour.getDate(),dateJour.getMonth())
-		let nbJoursAnnee=365,nbjoursText="Day (1-365))"
-		cs.year = dateJour.getFullYear()		
-		cs.dayofYear=JULIAN.DayOfYear(cs.year, dateJour.getMonth()+1,  dateJour.getDate(), JULIAN.LeapYearJulian(cs.year))
-		if(JULIAN.LeapYearJulian(cs.year)){nbJoursAnnee=366;nbjoursText="Day (1-366))"}else{ nbJoursAnnee=365,nbjoursText="Day (1-365))"}
+		let nbJoursAnnee = 365, nbjoursText = "Day (1-365))"
+		cs.year = dateJour.getFullYear()
+		cs.dayofYear = JULIAN.DayOfYear(cs.year, dateJour.getMonth() + 1, dateJour.getDate(), JULIAN.LeapYearJulian(cs.year))
+		if (JULIAN.LeapYearJulian(cs.year)) { nbJoursAnnee = 366; nbjoursText = "Day (1-366))" } else { nbJoursAnnee = 365, nbjoursText = "Day (1-365))" }
 
 		//const oe=23.4392911  // obliquite de l'Ecliptique, equinoxe de reference 2000.0
 
@@ -136,9 +136,9 @@
 
 		// camera
 
-		camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 5, 10000);
-		camera.position.set(cs.posCamera[0],cs.posCamera[1],cs.posCamera[2]);
-		cs.posCamera=camera.position.toArray()
+		camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 10, 10000);
+		camera.position.set(cs.posCamera[0], cs.posCamera[1], cs.posCamera[2]);
+		cs.posCamera = camera.position.toArray()
 		//console.log(cs.posCamera)
 
 		// scene
@@ -198,10 +198,10 @@
 
 		// OrbitControls
 		const controls = new OrbitControls(camera, renderer.domElement);
-		controls.minDistance = 1;
+		controls.minDistance = 70;
 		controls.maxDistance = 7000;
 		controls.enableDamping = true
-		controls.dampingFactor = cs.dampingFactor/100;
+		controls.dampingFactor = cs.dampingFactor / 100;
 
 		//addEventListener
 		window.addEventListener('resize', onWindowResize);
@@ -232,7 +232,7 @@
 		let cadranSolaireGroup, axeMondeGroup, earthGroup;
 
 		let gnomon, gnomonTore, meshDevise, stylePolaire, sousStylaire, stylePlan, styleBord, BoutStyle, FinStyle,
-		   
+
 			styleAnalem, centreAnalem, styleTorique, filHorizontal, filVertical, pilierH1, pilierH2, pilierH3, pilierH4;
 
 		let heuresSolairesGroup, heuresLegalesGroupSA, heuresLegalesGroupWS, heuresAntiquesGroup, arcsDiurnesGroup;
@@ -462,17 +462,17 @@
 		earthGroup.add(axeTerre);
 
 		scene.background = new THREE.CubeTextureLoader()
-		const milkyWaybackGround= new THREE.CubeTextureLoader()
-							.setPath( './images/' )
-							.load( [
-							'1.jpg',
-							'2.jpg',
-							'3.jpg',
-							'4.jpg',
-							'5.jpg',
-							'6.jpg'
-							] );
-		milkyWaybackGround.flipY=true
+		const milkyWaybackGround = new THREE.CubeTextureLoader()
+			.setPath('./images/')
+			.load([
+				'1.jpg',
+				'2.jpg',
+				'3.jpg',
+				'4.jpg',
+				'5.jpg',
+				'6.jpg'
+			]);
+		milkyWaybackGround.flipY = true
 
 		// const milkyWaybackGround= new THREE.CubeTextureLoader()
 		// 					.setPath( './images/' )
@@ -485,7 +485,7 @@
 		// 					'nz.png'
 		// 					] );
 
-	
+
 
 		const axeLocalisation = new THREE.ArrowHelper(
 			new THREE.Vector3(0, -1, 0),
@@ -510,7 +510,7 @@
 			0x00ffff, 20, 5);
 
 		// helpers 
-		const axesESZHelper = new THREE.AxesHelper(800);
+		const axesESZHelper = new THREE.AxesHelper(Dst);
 		scene.add(axesESZHelper);
 
 
@@ -568,13 +568,13 @@
 				for (var k in csl) { cs[k] = csl[k] }
 				//console.log(JSON.stringify(cs,null,2));
 				TS = TableSol(cs.year);
-				if(JULIAN.LeapYearJulian(cs.year)){nbJoursAnnee=366;nbjoursText="Day (1-366))"}
-				                              else{ nbJoursAnnee=365,nbjoursText="Day (1-365))"}
+				if (JULIAN.LeapYearJulian(cs.year)) { nbJoursAnnee = 366; nbjoursText = "Day (1-366))" }
+				else { nbJoursAnnee = 365, nbjoursText = "Day (1-365))" }
 				NouveauCadran = false
 
 				// gTypeCadran.hide()
 				// gtypeForme.hide()
-				
+
 			};
 
 
@@ -656,7 +656,7 @@
    fill="${cs.colorCS}" stroke="black" stroke-width="1px" />
  
   
-`		
+`
 			SVGtextDevise = ""
 		}
 
@@ -816,7 +816,7 @@
 			mesh.position.x = x;
 			mesh.position.y = y;
 			mesh.position.z = z
-		
+
 			//if((cs.typeCadran==RTS)&&(cs.typeForme=="polyedric")) {	mesh.applyQuaternion (meshGnomons[nFace].quaternion);mesh.rotateX(-Math.PI / 2)}
 
 
@@ -836,7 +836,7 @@
 
 			CSVephemerid = " DATE" + cs.separateurCSV + "TIME EQUATION (s) " + cs.separateurCSV + "SUN DECLINATION (°) " + cs.separateurCSV + "RIGHT ASCENSION (°) " + cs.separateurCSV + "Julian Day " + "\n"
 			CSVephemerid += " \n";
-			CSVephemerid += "Ephemerids of the sun \n" + year+" :  " + cs.year + "\n\n";
+			CSVephemerid += "Ephemerids of the sun \n" + year + " :  " + cs.year + "\n\n";
 			CSVephemerid += "CadsolOnLine  Version:" + cs.version + "\n\n";
 			CSVephemerid += "(c) Jean Meeus \n* Chapter 28 Equation of time \n* Chapter 25  Solar Coordinates ...\n\n";
 			CSVephemerid += " \n";
@@ -1107,7 +1107,7 @@
 
 
 		function EcrirelesDates(gpostxt) {
-			let dx, dy, rc, an, pj, j, jde, ae, js, ms, gradGeo, gradMesh,jj,mm;
+			let dx, dy, rc, an, pj, j, jde, ae, js, ms, gradGeo, gradMesh, jj, mm;
 			CSVtext += "\n\nDate points\n\n";
 			pj = Proj(EtoC(0, 0, .01)); dx = pj.x - cs.xgnomon; dy = pj.y - cs.ygnomon;
 			rc = Math.sqrt(dx ** 2 + dy ** 2);
@@ -1127,8 +1127,8 @@
 					gradMesh = new THREE.Mesh(gradGeo, materialAnalem);
 					gradMesh.rotateZ(Math.atan2(dy, dx));
 
-					const dateGregorian=JULIAN.JDToCalendarGregorian (jde)  //
-					jj=dateGregorian.day;mm=dateGregorian.month             // correction JL pour les mois de 30, 29 ou 28 jpours
+					const dateGregorian = JULIAN.JDToCalendarGregorian(jde)  //
+					jj = dateGregorian.day; mm = dateGregorian.month             // correction JL pour les mois de 30, 29 ou 28 jpours
 					js = jj.toString();                                     //
 					ms = mm.toString(); if (mm < 10) { ms = '0' + ms };     //
 
@@ -1438,17 +1438,17 @@
 		function effacelisteMesh(listeMesh, group) {
 			if (group == undefined) { return }
 			const lm = listeMesh.length;
-			let mesh,geo;
+			let mesh, geo;
 			for (let i = 0; i < lm; i++) {
 				mesh = listeMesh[i];
-				geo=mesh.geometry
+				geo = mesh.geometry
 				geo.dispose();
 				group.remove(mesh);
 				//mesh.clear
 				//console.log(geo)
 			}
 			//listeMesh = [];
-			listeMesh.splice(0, listeMesh .length);	
+			listeMesh.splice(0, listeMesh.length);
 			//group.clear()
 			cadranSolaireGroup.remove(group)
 			// if (group == undefined) { return }
@@ -1523,7 +1523,7 @@
 		// const lineGeometry = new THREE.BufferGeometry().setFromPoints( pipeSplineCRC );				   
 		// const lineMaterial = new THREE.LineBasicMaterial( {color:0x0000FF});
 		// mesh = new THREE.Mesh( lineGeometry, lineMaterial);		 
- 
+
 		//---------------------------------------------------------------------------------------------------------
 		function TracerHeuresSolaires() {
 			cs.hoursTextSize = cs.textSizeHS
@@ -1834,7 +1834,7 @@
 			if (cs.typeCadran == RTS) {
 				const Coord = CoordRayTracing(H, dec)
 				//console.log(Coord)
-				if (Coord.ok) {999
+				if (Coord.ok) {
 					return {
 						xo: Coord.x - cs.xgnomon,
 						yo: Coord.y - cs.ygnomon,
@@ -1863,7 +1863,7 @@
 		function generalAJL(φ, D, a, z, debut, fin, TypeHeure, group, material, listeMesh) {
 			// (φ, D, a, z float64)  (lines []LigneHoraire, center Point, u, ψ float64)
 			let l
-			let coupe = false; let gauche=false
+			let coupe = false; let gauche = false
 			effacelisteMesh(listeMesh, group)
 			let H, xp, yp, zp, xm, ym, zm, chiffreH = 0, sHeure = "";
 			if (φ * 180 / Math.PI > 89.99) { φ = 89.99 * Math.PI / 180 }
@@ -1945,13 +1945,13 @@
 									//if (i==6){console.log(j,xp+ cs.xgnomon,yp+ cs.ygnomon)}
 									if (pointDansCadran(xp + cs.xgnomon, yp + cs.ygnomon)) {
 										//if (i==6){console.log("Point dans cadran")}
-										 if (coupe) {
-										 	if (l.points.length > 0) { lines.push(l) }
+										if (coupe) {
+											if (l.points.length > 0) { lines.push(l) }
 											l = new LigneHoraire(i); coupe = false
-										 }
+										}
 										l.points.push(new Point(xp, yp, zp)); xm = xp + cs.xgnomon; ym = yp + cs.ygnomon; zm = zp
 									} else { coupe = true }
-								}else { coupe = true }
+								} else { coupe = true }
 							}
 						}
 
@@ -2021,7 +2021,7 @@
 									l.points.push(new Point(xp, yp, zp));
 									xm = xp + cs.xgnomon; ym = yp + cs.ygnomon; coupe = false
 								} else { coupe = true }
-							}else { coupe = true }
+							} else { coupe = true }
 						}
 					}
 				}
@@ -2055,8 +2055,8 @@
 				catch (e) { console.error("Parsing error:", e) }
 				for (let k in csl) { cs[k] = csl[k] }   //  ;console.log(k,cs[k],csl[k])
 				TS = TableSol(cs.year);
-				if(JULIAN.LeapYearJulian(cs.year)){nbJoursAnnee=366;nbjoursText="Day (1-366))"}
-											  else{ nbJoursAnnee=365,nbjoursText="Day (1-365))"}
+				if (JULIAN.LeapYearJulian(cs.year)) { nbJoursAnnee = 366; nbjoursText = "Day (1-366))" }
+				else { nbJoursAnnee = 365, nbjoursText = "Day (1-365))" }
 				NouveauCadran = false
 				//	console.log(JSON.stringify(cs,null,2)) 
 				run();
@@ -2098,7 +2098,7 @@
 
 		}
 
-	
+
 
 		function MiseEnPlaceCadranEtGnomon() {
 			cadran.scale.x = cs.largeur;
@@ -2140,9 +2140,9 @@
 			cs.hoursTextSize = 3
 			effacelisteMesh(labelAxesListeMesh, groupAxes)
 			if (cs.axesXYZ == true) {
-				EcrireTexte('x', 810, 0, 0, materialAxeX, groupAxes, labelAxesListeMesh,false,false);
-				EcrireTexte('y', 0, 820, 0, materialAxeY, groupAxes, labelAxesListeMesh,false,false);
-				EcrireTexte('z', 0, 0, 810, materialAxeZ, groupAxes, labelAxesListeMesh,false,false)
+				EcrireTexte('x', 810, 0, 0, materialAxeX, groupAxes, labelAxesListeMesh, false, false);
+				EcrireTexte('y', 0, 820, 0, materialAxeY, groupAxes, labelAxesListeMesh, false, false);
+				EcrireTexte('z', 0, 0, 810, materialAxeZ, groupAxes, labelAxesListeMesh, false, false)
 				cadranSolaireGroup.add(groupAxes)
 			} else { effacelisteMesh(labelAxesListeMesh, groupAxes) }
 			cs.hoursTextSize = ht
@@ -2170,16 +2170,16 @@
 
 
 		function helpGui(g, textHelp) {
-				g.domElement.addEventListener("mouseover", function () {
-					//document.getElementById("info").innerHTML=textHelp
-					//gui.title(textHelp)
-					Info(textHelp)
-				})
-				g.domElement.addEventListener("mouseout", function () {
-					//gui.title("Edit sundial...")
-					Info("")
-				})
-			}
+			g.domElement.addEventListener("mouseover", function () {
+				//document.getElementById("info").innerHTML=textHelp
+				//gui.title(textHelp)
+				Info(textHelp)
+			})
+			g.domElement.addEventListener("mouseout", function () {
+				//gui.title("Edit sundial...")
+				Info("")
+			})
+		}
 
 		//---------------------------------------------------------------------------------------------------------
 		function init() {
@@ -2193,18 +2193,20 @@
 
 			let guiTime
 
-			guiTime=new GUI({ container: document.getElementById( 'heureDate' ),
-			                        width: Math.min(Math.round(window.innerWidth / 2), 280), 
-			 						title: "Sundial time" })
-		    guiTime.$title.style.color = 'yellow'
+			guiTime = new GUI({
+				container: document.getElementById('heureDate'),
+				width: Math.min(Math.round(window.innerWidth / 2), 280),
+				title: "Sundial time"
+			})
+			guiTime.$title.style.color = 'yellow'
 
-			
+
 
 			const guiTimehsol = guiTime.add(cs, "hsol", 0, 24, 0.01)
 				.name("Hour  (0-24)")
 				.onChange(function () { PlacerLeSoleil() }).listen();
-				helpGui(guiTimehsol, 'Decimal hour')
-				
+			helpGui(guiTimehsol, 'Decimal hour')
+
 
 			const guiTimeday = guiTime.add(cs, "dayofYear", 1, nbJoursAnnee, 1)
 				.name(nbjoursText)
@@ -2212,29 +2214,56 @@
 					PlacerLeSoleil();
 					if (cs.typeCadran == ANL) TracerStyle();
 				});
-				helpGui(guiTimeday, 'Day of the year')
+			helpGui(guiTimeday, 'Day of the year')
 
 			const guiTimeyear = guiTime.add(cs, "year")
 				.name("Year")
 				.onChange(function (v) {
-					if(JULIAN.LeapYearJulian(v)){
-						nbJoursAnnee=366				
-						nbjoursText="Day (1-366))"
-						}else{
-							nbJoursAnnee=365
-							nbjoursText="Day (1-365))"
-							}
+					if (JULIAN.LeapYearJulian(v)) {
+						nbJoursAnnee = 366
+						nbjoursText = "Day (1-366))"
+					} else {
+						nbJoursAnnee = 365
+						nbjoursText = "Day (1-365))"
+					}
 					console.log(nbJoursAnnee)
 					guiTimeday.name(nbjoursText)
 					guiTimeday.max(nbJoursAnnee)
-					guiTimeday.updateDisplay()})
-				.onFinishChange(function(){
+					guiTimeday.updateDisplay()
+				})
+				.onFinishChange(function () {
 					TS = TableSol(cs.year)
-					TracerHeuresEtArcs()})
+					TracerHeuresEtArcs()
+				})
 				.listen()
-			
-			
-				
+			helpGui(guiTimeyear,'leap years taken into account')
+
+
+			const Vsun = {
+				"0": 0,
+				"1 sec. /sec": 1,
+				"1 min  /sec": 60,
+				"10 min /sec": 600,
+				"20 min /sec": 1200,
+				"30 min /sec": 1800,
+				"1 hour /sec": 3600
+			}
+			function myTimerSun() {
+				cs.hsol += cs.vrotSun / 360000;
+				//cs.hsol = Math.round(cs.hsol * 1000000) / 1000000
+				if (cs.hsol > 24) { cs.hsol = 0 };
+				PlacerLeSoleil()
+			}
+			let temporisation = null;
+			function RotationSoleil(e) {
+				window.clearInterval(temporisation);
+				if (e > 0) { temporisation = window.setInterval(myTimerSun, 10) }; //    1/100 sec
+			}
+
+			const guiRotSun = guiTime.add(cs, "vrotSun", Vsun)
+				.name('Rotation of the sun')
+				.onChange(function (e) { RotationSoleil(e) });
+			helpGui(guiRotSun, 'Speed of rotation of the sun around the dial <br> 0: stationary sun   1 sec/sec: real speed <br> 1 min/sec: speedx60  10 min/sec: speedx600 <br> 20 min/sec: speedx120   30 min/sec: speedx1800 <br> 1 hour/sec: speedx3600 <br>')
 
 
 			function TracerCadranRTS(v) {
@@ -2384,46 +2413,46 @@
 					eulerCsGroup()
 					//TracerStyle()
 					TracerHeuresEtArcs()
-				}  
-/*
-				function TracerCadranParam() {
-					//gui.domElement.style.color = 'green';
-					//Info("x and y between -1 and 1")
-					materialCS.side = THREE.DoubleSide
-					gzfxy.show()
-					zFuncxy = Parser.parse(cs.zfxy).toJSFunction(['x', 'y'])  //  -largeur/2 < x < largeur/2
-					//catch (err) { console.log("Formule incorrecte"); return }
-					let funcxyz = (u, v, target) => {    //  0<=u<=1,0<=v<=1
-						const xf = (u - 0.5) * cs.largeur/2
-						const yf = (v - 0.5) * cs.hauteur/2
-						const zf = zFuncxy(xf, yf)* cs.epaisseur/2
-						target.set(xf, yf, zf)
-					}
-					const geometryCSParam = new ParametricGeometry(funcxyz, 100,100)
-					//geometryCSParam.computeVertexNormals()
-					const cadranParam = new THREE.Mesh(geometryCSParam, materialCS);
-					cadranParam.castShadow = true
-					cadranParam.receiveShadow = true
-					cadran = cadranParam.clone()
-
-					if (NouveauCadran == true) {
-						cs.epaisseur = 10; cs.hauteur = 300; cs.largeur = 300
-						cs.xgnomon = 0; cs.ygnomon = 0; cs.zgnomon = 50
-						cs.decli = 0; cs.incli = 90
-					}
-					cadran.scale.x = cs.largeur;
-					cadran.scale.y = cs.hauteur;
-					cadran.scale.z = cs.epaisseur
-					cadranSolaireGroup.add(cadran);
-					eulerCsGroup()
-					//TracerStyle()
-					TracerHeuresEtArcs()
-				}*/
+				}
+				/*
+								function TracerCadranParam() {
+									//gui.domElement.style.color = 'green';
+									//Info("x and y between -1 and 1")
+									materialCS.side = THREE.DoubleSide
+									gzfxy.show()
+									zFuncxy = Parser.parse(cs.zfxy).toJSFunction(['x', 'y'])  //  -largeur/2 < x < largeur/2
+									//catch (err) { console.log("Formule incorrecte"); return }
+									let funcxyz = (u, v, target) => {    //  0<=u<=1,0<=v<=1
+										const xf = (u - 0.5) * cs.largeur/2
+										const yf = (v - 0.5) * cs.hauteur/2
+										const zf = zFuncxy(xf, yf)* cs.epaisseur/2
+										target.set(xf, yf, zf)
+									}
+									const geometryCSParam = new ParametricGeometry(funcxyz, 100,100)
+									//geometryCSParam.computeVertexNormals()
+									const cadranParam = new THREE.Mesh(geometryCSParam, materialCS);
+									cadranParam.castShadow = true
+									cadranParam.receiveShadow = true
+									cadran = cadranParam.clone()
+				
+									if (NouveauCadran == true) {
+										cs.epaisseur = 10; cs.hauteur = 300; cs.largeur = 300
+										cs.xgnomon = 0; cs.ygnomon = 0; cs.zgnomon = 50
+										cs.decli = 0; cs.incli = 90
+									}
+									cadran.scale.x = cs.largeur;
+									cadran.scale.y = cs.hauteur;
+									cadran.scale.z = cs.epaisseur
+									cadranSolaireGroup.add(cadran);
+									eulerCsGroup()
+									//TracerStyle()
+									TracerHeuresEtArcs()
+								}*/
 
 				function TracerCadranPolyedrique() {
 					cs.axesXYZ = false
-
-					effacerListesMesh()
+					numFace = ""
+					//effacerListesMesh()
 					//console.log(NouveauCadran)
 					if (NouveauCadran == true) {
 						cs.incli = 90; cs.decli = 0; cs.rot = 0
@@ -2452,7 +2481,7 @@
 
 				gzfxy.hide()
 				Info("")
-				
+
 				cadranSolaireGroup.clear()
 				cadranSolaireGroup.add(axeX)
 				cadranSolaireGroup.add(axeY)
@@ -2467,7 +2496,7 @@
 				//	materialCS.wrapS = materialCS.wrapT = THREE.RepeatWrapping;
 				//	materialCS.colorSpace = THREE.SRGBColorSpace;
 				materialCS.needsUpdate = true
-				cs.name = 'none' 
+				cs.name = 'none'
 
 				if (v == "parallelepiped") { cadran = cadranBox.clone(); TracerSolide() }//; cs.epaisseur = cs.largeur }
 				if (v == "cylinder") { cadran = cadranCyl.clone(); TracerSolide() }//; cs.epaisseur = cs.largeur }
@@ -2498,7 +2527,6 @@
 				Info("")
 				gzfxy.hide()
 				cadranSolaireGroup.clear();
-				//heuresGroupsRemove()
 				polyhedre = undefined
 				cadran = cadranBox.clone()
 				if (NouveauCadran == true) {
@@ -2517,7 +2545,7 @@
 					cs.dataURL = ""
 					cs.devise = "Carpe diem"
 					cs.positionDevisex = -280,
-					cs.positionDevisey = -180
+						cs.positionDevisey = -180
 					cs.deviseSize = 1
 					//cs.typeCadran=SP
 					//folderAnalem.hide();
@@ -2543,7 +2571,7 @@
 				groupAxes.add(axeZ)
 				cadranSolaireGroup.add(groupAxes)
 				EcrireXYZ()
-				
+
 
 				if (e == SP) {
 					folderGnomonBifilaireVertical.hide();
@@ -2696,7 +2724,7 @@
 					//console.log(SVGtext)
 				}
 			}
-			const guiButton2D=gui.add(Button2D, 'function2D').name('2D View');
+			const guiButton2D = gui.add(Button2D, 'function2D').name('2D View');
 			helpGui(guiButton2D, 'Projection on the plane xOy')
 
 			const nameW = "List params"
@@ -2720,15 +2748,15 @@
 			//folderGeoSundial.domElement.addEventListener
 			folderGeoSundial.add(cs, "lati", -90, 90, 0.001)
 				.name("Latitude")
-				.onChange(() => {  PlacerLaTerre() })
+				.onChange(() => { PlacerLaTerre() })
 				.onFinishChange(() => {
 					orienterAxedumonde();
-					PlacerLaTerre();eulerCsGroup()
-					PlacerLeSoleil(); TracerHeuresEtArcs();TracerStyle()
+					PlacerLaTerre(); eulerCsGroup()
+					PlacerLeSoleil(); TracerHeuresEtArcs(); TracerStyle()
 					if ((cs.typeCadran == RTS) && (cs.typeForme == "equatorial")) { TracerCadranRTS("equatorial") }
 					if ((cs.typeCadran == RTS) && (cs.typeForme == "scaphe")) { TracerCadranRTS("scaphe") }
-					if (RTSpolyhedre())  {tracerTouteslesfaces()}
-					if (cs.sphereArmilaire){effacerSphereArmilaire();tracerSphereArmilaire()} 
+					if (RTSpolyhedre()) { tracerTouteslesfaces() }
+					if (cs.sphereArmilaire) { effacerSphereArmilaire(); tracerSphereArmilaire() }
 				})
 				.listen();
 			folderGeoSundial.add(cs, "longi", -180, 180, 0.001)
@@ -2739,8 +2767,8 @@
 				})
 				.onFinishChange(() => {
 					orienterAxedumonde();
-					PlacerLaTerre();eulerCsGroup()
-					PlacerLeSoleil();TracerHeuresEtArcs();TracerStyle()
+					PlacerLaTerre(); eulerCsGroup()
+					PlacerLeSoleil(); TracerHeuresEtArcs(); TracerStyle()
 					if (RTSpolyhedre()) { tracerTouteslesfaces() }
 				})
 				.listen();
@@ -2820,29 +2848,29 @@
 			// 	})
 			// 	.listen()
 			//// ORIENTATION	
-						
+
 			const folderOrientationSundial = folderSundial.addFolder("Orientation...");
 			folderOrientationSundial.add(cs, "decli", -180, 180, 0.1)
 				.name("Declinaison °")
-				.onChange(() => { eulerCsGroup()/*;TracerHeuresEtArcs;TracerStyle()*/})
+				.onChange(() => { eulerCsGroup()/*;TracerHeuresEtArcs;TracerStyle()*/ })
 				.onFinishChange(() => {
-					eulerCsGroup();TracerHeuresEtArcs();TracerStyle()
+					eulerCsGroup(); TracerHeuresEtArcs(); TracerStyle()
 					if (RTSpolyhedre()) { tracerTouteslesfaces() }
 				})
 
 			const ctlIncli = folderOrientationSundial.add(cs, "incli", -180, 180, 0.1)
 				.name("Inclinaison °")
-				.onChange(() => { eulerCsGroup()/*;TracerHeuresEtArcs();TracerStyle()*/})
+				.onChange(() => { eulerCsGroup()/*;TracerHeuresEtArcs();TracerStyle()*/ })
 				.onFinishChange(() => {
-					eulerCsGroup();TracerHeuresEtArcs();TracerStyle()
+					eulerCsGroup(); TracerHeuresEtArcs(); TracerStyle()
 					if (RTSpolyhedre()) { tracerTouteslesfaces() }
 				})
 				.listen()
 			const ctlRot = folderOrientationSundial.add(cs, "rot", -180, 180, 0.1)
 				.name("Rotation °")
-				.onChange(function (v) { eulerCsGroup();TracerHeuresEtArcs() })
+				.onChange(function (v) { eulerCsGroup(); TracerHeuresEtArcs() })
 				.onFinishChange(function () {
-					eulerCsGroup();TracerHeuresEtArcs();TracerStyle()
+					eulerCsGroup(); TracerHeuresEtArcs(); TracerStyle()
 					if (RTSpolyhedre()) { tracerTouteslesfaces() }
 				})
 				.listen()
@@ -2945,9 +2973,9 @@
 				.onChange(function (e) {
 					gnomon.scale.y = cs.hgnomon;
 					gnomon.position.z = (cs.hgnomon + cs.epaisseur) / 2
-					eulerCsGroup();TracerHeuresEtArcs();TracerStyle();
+					eulerCsGroup(); TracerHeuresEtArcs(); TracerStyle();
 				})
-				.onFinishChange(function () {eulerCsGroup(); TracerHeuresEtArcs();TracerStyle() })
+				.onFinishChange(function () { eulerCsGroup(); TracerHeuresEtArcs(); TracerStyle() })
 			folderGnomonClassic.add(cs, "vgnomon")
 				.name("straight style visible")
 				.onChange(function (e) {
@@ -3323,7 +3351,7 @@
 			//  .onChange(function(v){dateArc.trace=false});						  
 			folderArcs.add(dateArc, 'function1')
 				.name("trace one arc");
-			
+
 
 			function tracerArc() {
 				let j = 0, s = "";
@@ -3335,7 +3363,7 @@
 			function effaceArcs() {
 				cs.datesArcsDiurnes = [[]]
 				cs.equinoxeAndSolstices = false
-				cs.arcZodiaque=false
+				cs.arcZodiaque = false
 				TracerArcsDiurnes()
 			}
 
@@ -3345,7 +3373,7 @@
 					cs.equinoxeAndSolstices = v;
 					if (v) {
 						cs.datesArcsDiurnes.unshift(['solstice', base.toRad(-oe)])
-						cs.datesArcsDiurnes.unshift(['solstice', base.toRad( oe)])
+						cs.datesArcsDiurnes.unshift(['solstice', base.toRad(oe)])
 						cs.datesArcsDiurnes.unshift(['equinoxe', 0])
 					}
 					else {
@@ -3356,16 +3384,16 @@
 					TracerArcsDiurnes()
 				})
 				.listen();
-			
-			const zodiac1=20.1, zodiac2=11.5   // données astrologiques, précision illusoire
+
+			const zodiac1 = 20.1, zodiac2 = 11.5   // données astrologiques, précision illusoire
 			folderArcs.add(cs, 'arcsZodiaque')
 				.name('zodiacal arcs')
 				.onChange(function (v) {
 					if (v) {
 						cs.datesArcsDiurnes.unshift(['Z', base.toRad(-zodiac1)])
-						cs.datesArcsDiurnes.unshift(['Z', base.toRad( zodiac1)])
+						cs.datesArcsDiurnes.unshift(['Z', base.toRad(zodiac1)])
 						cs.datesArcsDiurnes.unshift(['Z', base.toRad(-zodiac2)])
-						cs.datesArcsDiurnes.unshift(['Z', base.toRad( zodiac2)])					
+						cs.datesArcsDiurnes.unshift(['Z', base.toRad(zodiac2)])
 					}
 					else {
 						cs.datesArcsDiurnes = cs.datesArcsDiurnes.filter(function (d) {
@@ -3438,7 +3466,7 @@
 
 
 			folderView.add(cs, "axesESZ").name("East,South,Zenith")
-				.onChange(function (e) { cs.axesESZ = e; axesESZHelper.visible = e })
+				.onChange(function (e) { axesESZHelper.visible = e })
 				.listen()
 
 			folderView.add(cs, "axesXYZ").name("axes X,Y,Z")
@@ -3455,31 +3483,18 @@
 				})
 				.listen()
 
-			const Vsun = {
-				"0": 0,
-				"1 sec. /sec": 1,
-				"1 min  /sec": 60,
-				"10 min /sec": 600,
-				"20 min /sec": 1200,
-				"30 min /sec": 1800,
-				"1 hour /sec": 3600
-			}
-			const guiRotSun=folderView.add(cs, "vrotSun", Vsun)
-				.name('Rotation of the sun')
-				.onChange(function (e) { RotationSoleil(e) });
-			helpGui(guiRotSun,'Speed of rotation of the sun around the dial ')
 
-			const gCircles=folderView.add(cs,"ecliptique").name("circles & vernal point")
-			          .onChange(function(){PlacerLeSoleil()})
-					  .listen()
-			helpGui(gCircles,"ecliptic circle (yellow), equatorial circle (white)<br>vernal point (gray sphere), sun(yellow sphere)")
+			const gCircles = folderView.add(cs, "ecliptique").name("circles & vernal point")
+				.onChange(function () { PlacerLeSoleil() })
+				.listen()
+			helpGui(gCircles, "ecliptic circle (yellow), equatorial circle (white)<br>vernal point (gray sphere), sun(yellow sphere)")
 
-			const gSphereArmilaire=folderView.add(cs,"sphereArmilaire").name("sphere armilaire")
-			          .onChange(function(v){
-						v?tracerSphereArmilaire():effacerSphereArmilaire()
-					  })
-			helpGui(gSphereArmilaire,"ecliptic circle (yellow), equatorial circle (white)<br>vernal point (gray sphere), sun(yellow sphere)<br>horizon (blue), local meridien (green)<br>tropic and polar circles (gray)")
-			
+			const gSphereArmilaire = folderView.add(cs, "sphereArmilaire").name("sphere armilaire")
+				.onChange(function (v) {
+					v ? tracerSphereArmilaire() : effacerSphereArmilaire()
+				})
+			helpGui(gSphereArmilaire, "ecliptic circle (yellow), equatorial circle (white)<br>vernal point (gray sphere), sun(yellow sphere)<br>horizon (blue), local meridien (green)<br>tropic and polar circles (gray)")
+
 
 			folderView.add(cs, "vrotscene", 0, 10, 1)
 				.name('Rotation of the scene')
@@ -3494,20 +3509,21 @@
 			folderView.addColor(cs, 'background')
 				.name('wallpaper')
 				.onChange(function () {
-					cs.milkyWay=false
+					cs.milkyWay = false
 					scene.background = new THREE.Color(cs.background)
 				})
 			//.onFinishChange(function () {localStorage.setItem("BackGround",cs.background)})
 			/// link
 
-			folderView.add(cs,'milkyWay')
-			    .name('milky Way')
+			folderView.add(cs, 'milkyWay')
+				.name('milky Way')
 				.onChange(function (e) {
-					if(e){scene.background= milkyWaybackGround 
+					if (e) {
+						scene.background = milkyWaybackGround
 						//scene.environment = milkyWaybackGround 
-					    //   scene.backgroundRotation = new THREE.Euler(1,0.5,0.2,"XYZ")
-					    //   console.log(scene)
-						}else{scene.background = new THREE.Color(cs.background)}
+						//   scene.backgroundRotation = new THREE.Euler(1,0.5,0.2,"XYZ")
+						//   console.log(scene)
+					} else { scene.background = new THREE.Color(cs.background) }
 				})
 				.listen()
 
@@ -3523,7 +3539,7 @@
 					effacelisteMesh(labelAxesListeMesh, groupAxes)
 					let e = cs.export
 					if (e == "Sundial(.JSON)") {
-						cs.posCamera=camera.position.toArray()
+						cs.posCamera = camera.position.toArray()
 						if (RTSpolyhedre()) { rapellerFace(0) };   ////  !!!!!! important
 						saveString(JSON.stringify(cs, null, 2), cs.nameFile + '.json')
 					}
@@ -3532,10 +3548,10 @@
 						saveString(CSVtext, cs.nameFile + '.csv')
 					}
 					if (e == "Ephemeris(.CSV)") { Ephemerid(cs.year); saveString(CSVephemerid, 'Ephemerid' + cs.year + '.csv') };
-					if (e == "3D(.PLY)") { saveString(GenererPLY(), cs.nameFile + ".PLY") };
-					if (e == "3D(.OBJ)") { saveString(GenererOBJ(), cs.nameFile + ".OBJ") };
-					if (e == "3D(.STL)") { saveString(GenererSTL(), cs.nameFile + ".STL") };
-					if (e == "3D(.GLTF)") { GenererGLTF() };
+					if (e == "3D(.PLY)") { saveString(GenererPLY(), cs.nameFile + numFace + ".PLY") }//; heuresGroupsRemove();initPol(polyhedre) ;
+					if (e == "3D(.OBJ)") { saveString(GenererOBJ(), cs.nameFile + numFace + ".OBJ") };
+					if (e == "3D(.STL)") { saveString(GenererSTL(), cs.nameFile + numFace + ".STL") };
+					if (e == "3D(.GLTF)") { GenererGLTF(numFace) };
 					if (e == "Vector graphic(.SVG)") {
 						construireFichierSVG()
 						saveString(SVGtext, cs.nameFile + '.svg')
@@ -3544,6 +3560,7 @@
 					if (RTSpolyhedre()) {
 						VoirPoly2D = false; TracerHeuresEtArcs()
 						EcrireXYZ()
+						if (e.indexOf("3D") != -1) { TracerCadranRTS("polyedric") }
 					}
 				}
 			}
@@ -3561,7 +3578,35 @@
 				.onChange(function (e) {
 					if (e == "Vector graphic(.SVG)") { unitsSVG.show() } else { unitsSVG.hide() };
 					if (e == "Spreadsheet(.CSV)") { sepCSV.show() } else { sepCSV.hide() }
+					if ((e.indexOf("3D") != -1) && (RTSpolyhedre())) { gchoixExportPoly.show() } else { gchoixExportPoly.hide() }
 				});
+
+			function tracerUneFace() {
+				meshGnomons[nfaceActive].remove(styleToriquePoly)
+				//let csGroup=cadranSolaireGroup.clone(true)
+				cadranSolaireGroup.clear()
+				rapellerFace(nfaceActive)
+				TracerHeuresEtArcs()
+				EcrireDevise(cs.polyDev[nfaceActive], cs.polyDevx[nfaceActive], cs.polyDevy[nfaceActive])
+				cadranSolaireGroup.add(meshFaces[nfaceActive])
+				cadranSolaireGroup.add(meshGnomons[nfaceActive])
+				const vNorm = new THREE.Vector3()
+				quaternion.setFromUnitVectors(vNorm.fromArray(normalsFaces[nfaceActive]), new THREE.Vector3(0, 1, 0))
+				cadranSolaireGroup.setRotationFromQuaternion(quaternion)
+				// console.log(cadranSolaireGroup)
+				// heuresGroupsRemove()
+				// initPol(polyhedre)
+			}
+
+			const objExportPoly = { "choix": "?" }
+
+			const gchoixExportPoly = folderFiles.add(objExportPoly, "choix", ["?", "full polyhedra", "active face"])//,"all the faces","full polyhedra",])
+				.name("face to export?")
+				.onChange(function (e) {
+					if (e == "full polyhedra") { TracerCadranRTS("polyedric") }
+					if (e == "active face") { tracerUneFace(); numFace = "-f" + (nfaceActive + 1).toString() }
+					objExportPoly.choix = "?"
+				})
 
 
 			const absoluteUnits = {
@@ -3582,14 +3627,13 @@
 			}
 			const sepCSV = folderFiles.add(cs, "separateurCSV", separateurCSV)
 				.name('CSV separator')
-			//   .onChange(function(e){});
 
-			const btnEditSVG = { EditSVG() { window.open("https://svgedit.netlify.app/editor/index.html") } }
-			folderFiles.add(btnEditSVG, "EditSVG").name("Editor svg")
+
 
 			unitsSVG.hide();
 			sepCSV.hide()
-	
+			gchoixExportPoly.hide()
+
 
 			// // Exemples --------------------------------------------------------------------------------------
 
@@ -3620,9 +3664,9 @@
 				myEx18: function () { newSundial('TruncCube.json') },
 				myEx19: function () { newSundial('Jonhson48.json') },
 				myEx20: function () { newSundial('CubeOctaedre.json') },
-				myEx21: function () { newSundial('Rhombobicubioctaedre.json')},
+				myEx21: function () { newSundial('Rhombobicubioctaedre.json') },
 				myEx22: function () { newSundial('TourDesVents.json') },
-				myEx23: function () { newSundial('MaquetteYMcspt11.json') } 
+				myEx23: function () { newSundial('MaquetteYMcspt11.json') }
 			}
 			const CadPolairesEx = folderSamples.addFolder('Polar or straigth style');
 			CadPolairesEx.add(objEx, 'myEx1').name("Bab&Ita-D.Savoie-p278");
@@ -3680,7 +3724,7 @@
 
 			cs.autoCloseMenu = true
 
-			
+
 			for (let g = 0; g < gui.folders.length; g++) {
 				gui.folders[g].$title.style.color = couleurMenu
 				gui.folders[g].close()
@@ -3693,6 +3737,9 @@
 				}
 			}
 
+			const btnEditSVG = { EditSVG() { window.open("https://svgedit.netlify.app/editor/index.html") } }
+			gui.add(btnEditSVG, "EditSVG").name("Editor svg")
+
 			CadPolairesEx.close()
 			BifilairesEx.close()
 			AnalemEx.close()
@@ -3701,7 +3748,7 @@
 
 
 			initMenu(cs.typeCadran)
-		    scene.background = new THREE.Color(cs.background);
+			scene.background = new THREE.Color(cs.background);
 			materialCS.opacity = cs.opaciteCS
 			materialCS.metalness = cs.metalness
 			materialCS.wireframe = cs.wireframe
@@ -3730,14 +3777,14 @@
 
 			EcrireXYZ()
 
-			// if (NouveauCadran==false) {
-			// 	gTypeCadran.hide()
-			// 	gtypeForme.hide()
-			// }
+			if (NouveauCadran == false) {
+				gTypeCadran.hide()
+				gtypeForme.hide()
+			}
 
-			camera.position.set(cs.posCamera[0],cs.posCamera[1],cs.posCamera[2]);
-			RotationSoleil(cs.vrotSun) 
-			if(cs.milkyWay){scene.background= milkyWaybackGround }else{scene.background = new THREE.Color(cs.background)}
+			camera.position.set(cs.posCamera[0], cs.posCamera[1], cs.posCamera[2]);
+			RotationSoleil(cs.vrotSun)
+			if (cs.milkyWay) { scene.background = milkyWaybackGround } else { scene.background = new THREE.Color(cs.background) }
 
 			// const loader = new GLTFLoader().setPath( 'models/gltf/DamagedHelmet/glTF/' );
 			// loader.load( 'DamagedHelmet.gltf', function ( gltf ) {
@@ -3757,8 +3804,8 @@
 			axeLocalisation.visible = false;
 			if (styleTorique != undefined) { styleTorique.visible = false }
 			if (styleToriquePoly != undefined) { styleToriquePoly.visible = false }
-// for (let index = 0; index < nbFaces;index++) {
-// 				if (index!=nfaceActive){meshFaces[index].visible=false}}
+			// for (let index = 0; index < nbFaces;index++) {
+			// 				if (index!=nfaceActive){meshFaces[index].visible=false}}
 		}
 
 		function GenererPLY() {
@@ -3766,8 +3813,10 @@
 			preparerExport()
 			let s = "";
 			if (cs.typeCadran == BF) { cadranSolaireGroup.remove(gnomon) }
-			s = plyExporter.parse(cadranSolaireGroup, data => { }, { binary: false })
+			try {s = plyExporter.parse(cadranSolaireGroup, data => { }, { binary: false })}
+				catch(err) {alert("Parse error") }
 			if (cs.typeCadran == BF) { cadranSolaireGroup.add(gnomon) }
+			// if (RTSpolyhedre()){heuresGroupsRemove();initPol(polyhedre) } 
 			return s
 		}
 
@@ -3776,7 +3825,9 @@
 			preparerExport()
 			let s = "";
 			if (cs.typeCadran == BF) { cadranSolaireGroup.remove(gnomon) }
-			s = objExporter.parse(cadranSolaireGroup)
+			render()
+			try { s = objExporter.parse(cadranSolaireGroup) }	
+				catch(err) {alert("Parse error") }
 			if (cs.typeCadran == BF) { cadranSolaireGroup.add(gnomon) }
 			return s
 		}
@@ -3786,22 +3837,24 @@
 			preparerExport()
 			let s = "";
 			if (cs.typeCadran == BF) { cadranSolaireGroup.remove(gnomon) }
-			s = stlExporter.parse(cadranSolaireGroup, { binary: false })
+			render()
+			try {s = stlExporter.parse(cadranSolaireGroup, { binary: false })}
+				catch(err) {alert("Parse error") }
 			if (cs.typeCadran == BF) { cadranSolaireGroup.add(gnomon) }
 			return s
 		}
 
-		function GenererGLTF() {
+		function GenererGLTF(nf) {
 			const gltfExporter = new GLTFExporter();
 			preparerExport()
+			render()
 			gltfExporter.parse(cadranSolaireGroup,
 				function (gltf) {
 					const s = JSON.stringify(gltf, null, 2)
-					saveString(s, cs.nameFile + ".GLTF")
+					saveString(s, cs.nameFile + nf + ".GLTF")
 				},
 				function (error) { console.log('gltf error happened') })
-
-		}
+			}
 
 
 
@@ -3819,52 +3872,53 @@
 
 		}
 
-		
-		let ellipseEq,spherePV,ellipseEclip,horizon,meridien,tropiqueNord, tropiqueSud, polaireNord, polaireSud,axeArmilaire
-		
-			// const curveEquateur = new THREE.EllipseCurve(
-			// 	0,  0,            // ax, aY
-			// 	Dst, Dst,           // xRadius, yRadius
-			// 	0,  2 * Math.PI,  // aStartAngle, aEndAngle
-			// 	false,            // aClockwise
-			// 	0 );                // aRotation
 
-			const RTropique=Dst*Math.cos(base.toRad(oe))
-			const curveTropique = new THREE.EllipseCurve(
-				0,  0,            // ax, aY
-				RTropique, RTropique,           // xRadius, yRadius
-				0,  2 * Math.PI,  // aStartAngle, aEndAngle
-				false,            // aClockwise
-				0 );  
+		let ellipseEq, spherePV, ellipseEclip, horizon, meridien, tropiqueNord, tropiqueSud, polaireNord, polaireSud, axeArmilaire
 
-			const RPolaire=Dst*Math.cos(base.toRad(90-oe))
-			const curvePolaire = new THREE.EllipseCurve(
-				0,  0,            // ax, aY
-				RPolaire, RPolaire,           // xRadius, yRadius
-				0,  2 * Math.PI,  // aStartAngle, aEndAngle
-				false,            // aClockwise
-				0 );  
+		// const curveEquateur = new THREE.EllipseCurve(
+		// 	0,  0,            // ax, aY
+		// 	Dst, Dst,           // xRadius, yRadius
+		// 	0,  2 * Math.PI,  // aStartAngle, aEndAngle
+		// 	false,            // aClockwise
+		// 	0 );                // aRotation
 
-			//const pointsEq = curveEquateur.getPoints( 50 );
-			const pointsTropiqueNord= curveTropique.getPoints( 50 );
-			const pointsTropiqueSud = curveTropique.getPoints( 50 );
-			const pointsPolairesNord= curvePolaire.getPoints( 50 );
-			const pointsPolairesSud= curvePolaire.getPoints( 50 );
-			const geometryEq= new THREE.RingGeometry(Dst*1.002, Dst*0.998, 64, 64)
-			const geometryTropiqueNord = new THREE.BufferGeometry().setFromPoints( pointsTropiqueNord );
-			const geometryTropiqueSud = new THREE.BufferGeometry().setFromPoints( pointsTropiqueSud );
-			const geometryPolaireNord = new THREE.BufferGeometry().setFromPoints( pointsPolairesNord );
-			const geometryPolaireSud = new THREE.BufferGeometry().setFromPoints( pointsPolairesSud );
-			const geometryAxeArmilairene= new THREE.CylinderGeometry(RPolaire/200,RPolaire/200,Dst*2.25)
-			const materialEq = new THREE.LineBasicMaterial( { color: 0xffffff } );
-			const materialEclip = new THREE.LineBasicMaterial( { color: 0xffff00 } );
-			const materialHorizon= new THREE.LineBasicMaterial( { color: 0x0a0aff } );
-			const materialMeridien = new THREE.LineBasicMaterial( { color: 0x00ff00 } );
-			
+		const RTropique = Dst * Math.cos(base.toRad(oe))
+		const curveTropique = new THREE.EllipseCurve(
+			0, 0,            // ax, aY
+			RTropique, RTropique,           // xRadius, yRadius
+			0, 2 * Math.PI,  // aStartAngle, aEndAngle
+			false,            // aClockwise
+			0);
+
+		const RPolaire = Dst * Math.cos(base.toRad(90 - oe))
+		const curvePolaire = new THREE.EllipseCurve(
+			0, 0,            // ax, aY
+			RPolaire, RPolaire,           // xRadius, yRadius
+			0, 2 * Math.PI,  // aStartAngle, aEndAngle
+			false,            // aClockwise
+			0);
+
+		//const pointsEq = curveEquateur.getPoints( 50 );
+		const pointsTropiqueNord = curveTropique.getPoints(50);
+		const pointsTropiqueSud = curveTropique.getPoints(50);
+		const pointsPolairesNord = curvePolaire.getPoints(50);
+		const pointsPolairesSud = curvePolaire.getPoints(50);
+		const geometryHorizon = new THREE.RingGeometry(Dst * 1.02, Dst * 0.98, 64, 64)
+		const geometryEq = new THREE.RingGeometry(Dst * 1.002, Dst * 0.998, 64, 64)
+		const geometryTropiqueNord = new THREE.BufferGeometry().setFromPoints(pointsTropiqueNord);
+		const geometryTropiqueSud = new THREE.BufferGeometry().setFromPoints(pointsTropiqueSud);
+		const geometryPolaireNord = new THREE.BufferGeometry().setFromPoints(pointsPolairesNord);
+		const geometryPolaireSud = new THREE.BufferGeometry().setFromPoints(pointsPolairesSud);
+		const geometryAxeArmilairene = new THREE.CylinderGeometry(RPolaire / 200, RPolaire / 200, Dst * 2.25)
+		const materialEq = new THREE.LineBasicMaterial({ color: 0xffffff });
+		const materialEclip = new THREE.LineBasicMaterial({ color: 0xffff00 });
+		const materialHorizon = new THREE.LineBasicMaterial({ color: 0x0a0aff });
+		const materialMeridien = new THREE.LineBasicMaterial({ color: 0x00ff00 });
+
 
 		function tracerEquateurCeleste() {
-			if (ellipseEq != undefined) {scene.remove(ellipseEq)}
-			ellipseEq = new THREE.Line( geometryEq, materialEq )
+			if (ellipseEq != undefined) { scene.remove(ellipseEq) }
+			ellipseEq = new THREE.Line(geometryEq, materialEq)
 			scene.add(ellipseEq)
 			ellipseEq.rotation.x = base.toRad(cs.lati);
 			// const AxeArmilaire = axeMonde.clone()
@@ -3873,83 +3927,83 @@
 		}
 
 		function tracerTropiques() {
-			if (tropiqueNord != undefined) {scene.remove(tropiqueNord)}
-			if (tropiqueSud != undefined) {scene.remove(tropiqueSud)}
-			tropiqueNord = new THREE.Line( geometryTropiqueNord, materialEq );	
-			tropiqueSud  = new THREE.Line( geometryTropiqueSud, materialEq );	
-			tropiqueNord.rotation.x= base.toRad(cs.lati);
+			if (tropiqueNord != undefined) { scene.remove(tropiqueNord) }
+			if (tropiqueSud != undefined) { scene.remove(tropiqueSud) }
+			tropiqueNord = new THREE.Line(geometryTropiqueNord, materialEq);
+			tropiqueSud = new THREE.Line(geometryTropiqueSud, materialEq);
+			tropiqueNord.rotation.x = base.toRad(cs.lati);
 			tropiqueSud.rotation.x = base.toRad(cs.lati);
-			tropiqueNord.translateZ (-Dst*Math.sin(oe*Math.PI/180) )
-			tropiqueSud.translateZ  ( Dst*Math.sin(oe*Math.PI/180) )
+			tropiqueNord.translateZ(-Dst * Math.sin(oe * Math.PI / 180))
+			tropiqueSud.translateZ(Dst * Math.sin(oe * Math.PI / 180))
 			scene.add(tropiqueNord)
 			scene.add(tropiqueSud)
 		}
 
 		function tracerPolaires() {
-			if (polaireNord != undefined) {scene.remove(polaireNord)}
-			if (polaireSud  != undefined) {scene.remove(polaireSud)}
-			polaireNord = new THREE.Line( geometryPolaireNord, materialEq );	
-			polaireSud  = new THREE.Line( geometryPolaireSud, materialEq );	
-			polaireNord.rotation.x= base.toRad(cs.lati);
+			if (polaireNord != undefined) { scene.remove(polaireNord) }
+			if (polaireSud != undefined) { scene.remove(polaireSud) }
+			polaireNord = new THREE.Line(geometryPolaireNord, materialEq);
+			polaireSud = new THREE.Line(geometryPolaireSud, materialEq);
+			polaireNord.rotation.x = base.toRad(cs.lati);
 			polaireSud.rotation.x = base.toRad(cs.lati);
-			polaireNord.translateZ (-Dst*Math.sin((90-oe)*Math.PI/180) )
-			polaireSud.translateZ  ( Dst*Math.sin((90-oe)*Math.PI/180) )
+			polaireNord.translateZ(-Dst * Math.sin((90 - oe) * Math.PI / 180))
+			polaireSud.translateZ(Dst * Math.sin((90 - oe) * Math.PI / 180))
 			scene.add(polaireNord)
 			scene.add(polaireSud)
 		}
 
 
-		function tracerHorizonEtMeridien(){
-			if (horizon!= undefined) {scene.remove(horizon)}
-			horizon = new THREE.Line( geometryEq, materialHorizon );
-			horizon.rotation.x = Math.PI/2;
+		function tracerHorizonEtMeridien() {
+			if (horizon != undefined) { scene.remove(horizon) }
+			horizon = new THREE.Line(geometryHorizon, materialHorizon);
+			horizon.rotation.x = Math.PI / 2;
 			scene.add(horizon)
-			if (meridien!= undefined) {scene.remove(meridien)}
-			meridien= new THREE.Line( geometryEq, materialMeridien );
-			meridien.rotation.y = Math.PI/2;
+			if (meridien != undefined) { scene.remove(meridien) }
+			meridien = new THREE.Line(geometryEq, materialMeridien);
+			meridien.rotation.y = Math.PI / 2;
 			scene.add(meridien)
 		}
 
-		function tracerAxeArmilaire(){
-			if (axeArmilaire != undefined) {axeMondeGroup.remove(axeArmilaire)}
-			axeArmilaire=new THREE.Mesh(geometryAxeArmilairene,materialEq)
-			
-			axeArmilaire.parent=axeMonde
+		function tracerAxeArmilaire() {
+			if (axeArmilaire != undefined) { axeMondeGroup.remove(axeArmilaire) }
+			axeArmilaire = new THREE.Mesh(geometryAxeArmilairene, materialEq)
+
+			axeArmilaire.parent = axeMonde
 			// axeArmilaire.rotation.z=Math.PI/2
 			// axeArmilaire.rotation.x = base.toRad(cs.lati);
-			axeMondeGroup.add(axeArmilaire)	
-			axeArmilaire.rotation.x = base.toRad(cs.lati+90);
+			axeMondeGroup.add(axeArmilaire)
+			axeArmilaire.rotation.x = base.toRad(cs.lati + 90);
 		}
 
-		function tracerEcliptique(h){
+		function tracerEcliptique(h) {
 			tracerEquateurCeleste()
-			let k = Dst,alpha=0,asd
+			let k = Dst, alpha = 0, asd
 			asd = TS.ascRights[cs.dayofYear - 1]
-			h=base.toRad(-(h - 12) * 15)-asd
-			if (spherePV != undefined) {axeMondeGroup.remove(spherePV)}
+			h = base.toRad(-(h - 12) * 15) - asd
+			if (spherePV != undefined) { axeMondeGroup.remove(spherePV) }
 			spherePV = new THREE.Mesh(geometrySun, materialGnomon);
-		    axeMondeGroup.add(spherePV);
+			axeMondeGroup.add(spherePV);
 			spherePV.parent = axeMonde;
-			spherePV.position.z = k *  Math.cos(h);
-			spherePV.position.x = k *  Math.sin(h);
+			spherePV.position.z = k * Math.cos(h);
+			spherePV.position.x = k * Math.sin(h);
 			spherePV.position.y = 0;
-			
-			const axis=new THREE.Vector3(spherePV.position.x,spherePV.position.z,0)
+
+			const axis = new THREE.Vector3(spherePV.position.x, spherePV.position.z, 0)
 			axis.normalize()
-			if (ellipseEclip != undefined) {axeMondeGroup.remove(ellipseEclip)}
-			ellipseEclip=ellipseEq.clone()
-			ellipseEclip.material=materialEclip
-			axeMondeGroup.add(ellipseEclip);		
-			ellipseEclip.rotateOnAxis  ( axis, base.toRad(oe))			
+			if (ellipseEclip != undefined) { axeMondeGroup.remove(ellipseEclip) }
+			ellipseEclip = ellipseEq.clone()
+			ellipseEclip.material = materialEclip
+			axeMondeGroup.add(ellipseEclip);
+			ellipseEclip.rotateOnAxis(axis, base.toRad(oe))
 		}
 
-		function effacerEcliptique(){
-			cs.ecliptique=false
-			scene.remove(ellipseEq);axeMondeGroup.remove(ellipseEclip);axeMondeGroup.remove(spherePV)
+		function effacerEcliptique() {
+			cs.ecliptique = false
+			scene.remove(ellipseEq); axeMondeGroup.remove(ellipseEclip); axeMondeGroup.remove(spherePV)
 		}
 
-		function tracerSphereArmilaire(){
-			cs.ecliptique=true
+		function tracerSphereArmilaire() {
+			cs.ecliptique = true
 			PlacerLeSoleil()
 			tracerHorizonEtMeridien()
 			tracerEquateurCeleste()
@@ -3959,7 +4013,7 @@
 			PlacerLaTerre(true)
 		}
 
-		function effacerSphereArmilaire(){
+		function effacerSphereArmilaire() {
 			effacerEcliptique()
 			scene.remove(horizon)
 			scene.remove(meridien)
@@ -3967,11 +4021,12 @@
 			scene.remove(tropiqueSud)
 			scene.remove(polaireNord)
 			scene.remove(polaireSud)
+			axeArmilaire.visible = false
 			PlacerLaTerre(false)
 		}
 
 
-		
+
 
 
 		//--------------------------------------------------------------------------------------
@@ -3979,7 +4034,7 @@
 			let k = Dst;
 			const v3 = new THREE.Vector3();
 
-			let h, he, min, sec, y, m, d, dec,asc, eqt, date, sdate, hsol;
+			let h, he, min, sec, y, m, d, dec, asc, eqt, date, sdate, hsol;
 
 			//if(RTSpolyhedre){k=k*cs.Rpol/1200}
 
@@ -4014,10 +4069,10 @@
 			light.position.set(v3.x, v3.y, v3.z).normalize();
 			light.castShadow = (v3.y > 0)  // le soleil dit être au dessus de l'horizon	
 
-			labeltime.innerHTML = h + ":" + min + ':' + sec + "  " + sdate + " dec:" + dec.toFixed(3) + "°  asc:"+asc.toFixed(3)+"°  eqt:" + eqt.toFixed(0) + 's'
+			labeltime.innerHTML = h + ":" + min + ':' + sec + "  " + sdate + " dec:" + dec.toFixed(3) + "°  asc:" + asc.toFixed(3) + "°  eqt:" + eqt.toFixed(0) + 's'
 
-			if (cs.ecliptique){tracerEcliptique(hsol,eqt)}
-			              else{effacerEcliptique()}
+			if (cs.ecliptique) { tracerEcliptique(hsol, eqt) }
+			else { effacerEcliptique() }
 
 			if (cs.typeCadran == RTS) {
 				if (lineRay != undefined) {
@@ -4028,17 +4083,6 @@
 			}
 		}
 
-		function myTimerSun() {
-			cs.hsol += cs.vrotSun / 360000;
-			cs.hsol=Math.round(cs.hsol*1000)/1000
-			if (cs.hsol > 24) { cs.hsol = 0 };
-			PlacerLeSoleil()
-		}
-		let temporisation = null;
-		function RotationSoleil(e) {
-			window.clearInterval(temporisation);
-			if (e > 0) { temporisation = window.setInterval(myTimerSun, 10) }; //    1/100 sec
-		}
 
 
 
@@ -4129,7 +4173,7 @@
 			let coordRayCaster = new THREE.Vector3();   // coord. de l'ombre tore sur le cadran en coord. locales (c'est le pont 3D à trouver)
 			let intersects
 
-			let k = Dst;  
+			let k = Dst;
 			sphereSun.position.z = k * cd * ch   // calcul des coord. du soleil virtuel
 			sphereSun.position.x = k * cd * sh
 			sphereSun.position.y = k * sd
@@ -4170,21 +4214,21 @@
 		}
 
 		// Terre ---------------------------------------------------------------------------------------------------
-		function PlacerLaTerre(centrer=false) {
+		function PlacerLaTerre(centrer = false) {
 			let r, l;
-			if (centrer){
-			    r=cs.hauteur/5;materialCS.wireframe = true;cs.wireframe=true
-				if(RTSpolyhedre()){r=cs.rayonPolyedre/2}
-			    }else{
+			if (centrer) {
+				r = cs.hauteur / 5; materialCS.wireframe = true; cs.wireframe = true
+				if (RTSpolyhedre()) { r = cs.rayonPolyedre / 2 }
+			} else {
 				r = cs.hauteur;
-				materialCS.wireframe = false;cs.wireframe=false
-				if(RTSpolyhedre()){r=2*cs.rayonPolyedre}
-				}
+				materialCS.wireframe = false; cs.wireframe = false
+				if (RTSpolyhedre()) { r = 2 * cs.rayonPolyedre }
+			}
 			//if (r < 100) { r = 100 }
 			sphereEarth.scale.x = r; sphereEarth.scale.y = r; sphereEarth.scale.z = r;
 			meshClouds.scale.set(sphereEarth.scale.x * cloudsScale, sphereEarth.scale.y * cloudsScale, sphereEarth.scale.z * cloudsScale);
 			earthGroup.position.x = 0;
-			if (centrer){earthGroup.position.y=0}else{earthGroup.position.y = -r* 1.8};
+			if (centrer) { earthGroup.position.y = 0 } else { earthGroup.position.y = -r * 1.8 };
 			earthGroup.position.z = 0;
 			earthGroup.rotation.x = -base.toRad(90 - cs.lati);
 			earthGroup.rotation.y = -base.toRad(cs.longi);
@@ -4211,10 +4255,10 @@
 
 		function animate() {
 
-			controls.dampingFactor = cs.dampingFactor/100;
+			controls.dampingFactor = cs.dampingFactor / 100;
 			controls.update()
 			if (cs.vrotscene > 0) { scene.rotation.y += 0.001 * cs.vrotscene } else { scene.rotation.y = 0 }
-			meshClouds.rotation.y += 0.00005*cs.vrotClouds;
+			meshClouds.rotation.y += 0.00005 * cs.vrotClouds;
 			//render();
 			renderer.render(scene, camera);
 			stats.update();
@@ -4222,20 +4266,21 @@
 
 		}
 
-		// function render() {renderer.render(scene, camera)}
+		function render() {renderer.render(scene, camera)}
 
 
 		//----------------------------------------------------------------------------------------------------------------------------------------------------
 		///////////////////////////////////////////////////////////////////POLYEDRES/////////////////////////////////////////////////////////////////////////
 		//----------------------------------------------------------------------------------------------------------------------------------------------------
 
-		let categoryFolders, meshFace, gnomonGeometry, Rpol,copieGnomon,
+		let categoryFolders, meshFace, gnomonGeometry, Rpol, copieGnomon,
 			nbFaces = 0, guiSectionPoly, guichoixPoly, guichoixFace,
 			quaternion = new THREE.Quaternion(),
 			polyhedre, styleToriquePoly, geoTorePoly, gnomonPoly, VoirPoly2D = false
 		let meshFacesGroup = new THREE.Group()
-		let meshFaces = [], meshGnomons = [], normalsFaces = [], hauteursGnomons = [], centersFaces = [],rmaxFace=[]
+		let meshFaces = [], meshGnomons = [], normalsFaces = [], hauteursGnomons = [], centersFaces = [], rmaxFace = []
 		let nfaceActive = 0, aFace = 0, nFaceMax = -1, nFaceBase = -1
+		let numFace = ""
 
 		let
 			polyheuresSolairesListeMesh = [],
@@ -4271,7 +4316,7 @@
 			gnomonPoly.translateZ(-y)
 		}
 
-		
+
 		function TracerGnomonPoly(h) {
 			let geometryGnomonPoly
 
@@ -4305,7 +4350,7 @@
 				verticeFace.applyEuler(new THREE.Euler((cs.incli - 90) / 180 * Math.PI, cs.decli / 180 * Math.PI, cs.rot / 180 * Math.PI, 'YXZ'))
 				verticeFace.multiplyScalar(Rpol)
 				if (local) { meshGnomons[N].worldToLocal(verticeFace) } else[verticeFace.multiplyScalar(1.1)]
-							//local= false -> mise en evidence de la face active par trace d'un polygone
+				//local= false -> mise en evidence de la face active par trace d'un polygone
 				verticesFaceN.push(verticeFace);
 			}
 			const v0 = verticesFaceN[0]
@@ -4313,11 +4358,11 @@
 			return verticesFaceN
 		}
 
-		
+
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////
 		function displayFaces(Pol) {
 			if (polyhedre == undefined) { return }
-			let nSommetsParFace = 0, v, h, hmaxPoly 
+			let nSommetsParFace = 0, v, h, hmaxPoly
 			let a = new THREE.Vector3(), b = new THREE.Vector3(), c = new THREE.Vector3()
 			let normalFace = new THREE.Vector3()
 
@@ -4329,9 +4374,9 @@
 			// for (let i=0;i<meshGeometry.length;i++){
 			// 	meshGeometry[i].dispose()
 			// }
-		    // meshGeometry=[]
+			// meshGeometry=[]
 			//console.log(meshGeometry[0])
-			
+
 			effacelisteMesh(meshFaces, meshFacesGroup)
 			effacelisteMesh(meshGnomons, meshFacesGroup)
 
@@ -4370,16 +4415,16 @@
 
 				const centerFace = new THREE.Vector3(sx / nSommetsParFace, sy / nSommetsParFace, sz / nSommetsParFace)
 				centersFaces.push(centerFace)
-	
-				meshFace = new THREE.Mesh( new ConvexGeometry(verticesFaces) , materialCS);
+
+				meshFace = new THREE.Mesh(new ConvexGeometry(verticesFaces), materialCS);
 				meshFace.lookAt(new THREE.Vector3(0, 0, 0))
-				
+
 				meshFace.receiveShadow = true
 				meshFaces.push(meshFace)
-				
-				h = centerFace.distanceTo(a) 
+
+				h = centerFace.distanceTo(a)
 				rmaxFace.push(h)
-				h=h/3
+				h = h / 3
 				//h=Math.round(h*100)/100
 				if (h > hmaxPoly) { hmaxPoly = h; nFaceMax = f }  //recherche d'une "grande" face
 				if (cs.polyGz[f] == -1) { cs.polyGz[f] = h } else { h = cs.polyGz[f] }
@@ -4408,20 +4453,20 @@
 
 			cadranSolaireGroup.add(meshFacesGroup)
 
-			
+
 			tracerTouteslesDevises()
-			
+
 			if (nfaceActive > nbFaces) { nfaceActive = 0 }
 			cadran = meshFaces[nfaceActive].clone()
 			PlacerStyleToriquePoly(nfaceActive, hauteursGnomons[nfaceActive])
-			
+
 			if (typeof (BoutStyle) !== "undefined") { BoutStyle.geometry.dispose() };
 			// let GeometryBout = new THREE.SphereGeometry(2*cs.egnomon*cs.conicity, 32, 16);
 			// BoutStyle = new THREE.Mesh(GeometryBout, materialGnomon)
-			BoutStyle=styleToriquePoly.clone()		
+			BoutStyle = styleToriquePoly.clone()
 
 			guichoixPoly.close()
-		
+
 
 		}
 
@@ -4432,13 +4477,13 @@
 			}
 		}
 
-		function tracerLaDevise(n) {		
-				cadran = meshFaces[n].clone()
-				EcrireDevise(cs.polyDev[n], cs.polyDevx[n], cs.polyDevy[n], n)		
+		function tracerLaDevise(n) {
+			cadran = meshFaces[n].clone()
+			EcrireDevise(cs.polyDev[n], cs.polyDevx[n], cs.polyDevy[n], n)
 		}
 
 
-		
+
 
 
 		function PlacerStyleToriquePoly(n, h) {
@@ -4456,7 +4501,7 @@
 			// meshGnomons[n].add(axeZ)	
 			// axeZ.position.set(0, -h / 2, 0)
 			// axeZ.setDirection(new THREE.Vector3(0, 0, -1))
-			
+
 		}
 
 		function memoriserFace(f) {
@@ -4500,7 +4545,7 @@
 			polyheuresHPSAListeMesh[f] = heuresHPSAListeMesh
 			polyheuresHPSAgroup[f] = heuresHPSAgroup
 
-			cs.polyarcsZodiaque[f]=cs.arcsZodiaque
+			cs.polyarcsZodiaque[f] = cs.arcsZodiaque
 			cs.polyequinoxeAndSolstices[f] = cs.equinoxeAndSolstices
 			cs.polydatesArcsDiurnes[f] = cs.datesArcsDiurnes
 
@@ -4583,7 +4628,7 @@
 			rapellerFace(nfaceActive)
 			for (let f = 0; f < nbFaces; f++) {
 				nfaceActive = f
-				cadran = meshFaces[nfaceActive].clone()		
+				cadran = meshFaces[nfaceActive].clone()
 				tracerFaceActive()
 				TracerHeuresEtArcs()
 			}
@@ -4592,7 +4637,7 @@
 		}
 
 		function tracerTouteslesfacesIdentiques() {
-			
+
 		}
 
 
@@ -4643,7 +4688,7 @@
 			heuresHPSAgroup = polyheuresHPSAgroup[f]
 
 			cs.equinoxeAndSolstices = cs.polyequinoxeAndSolstices[f]
-			cs.arcsZodiaque=cs.polyarcsZodiaque[f]
+			cs.arcsZodiaque = cs.polyarcsZodiaque[f]
 			cs.datesArcsDiurnes = cs.polydatesArcsDiurnes[f]
 			arcsDiurnesListeMesh = polyarcsDiurnesListeMesh[f]
 			arcsDiurnesGroup = polyarcsDiurnesGroup[f]
@@ -4665,7 +4710,7 @@
 			cs.zgnomon = cs.polyGz[nfaceActive]
 			cs.positionDevisex = cs.polyDevx[nfaceActive]
 			cs.positionDevisey = cs.polyDevy[nfaceActive]
-			cs.devise=cs.polyDev[nfaceActive]
+			cs.devise = cs.polyDev[nfaceActive]
 			//for(let i=0;i<nbFaces;i++){if (i!=nfaceActive){meshFaces[i].visible=false}}
 		}
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -4694,32 +4739,25 @@
 						//SudSundial.hide()
 					}
 				},
-				tracerUneFace(){
-					meshGnomons[nfaceActive].remove(styleToriquePoly)
-					let csGroup=cadranSolaireGroup.clone(true)
-					cadranSolaireGroup.clear()				
-					rapellerFace(nfaceActive)
-					TracerHeuresEtArcs()
-					EcrireDevise(cs.polyDev[nfaceActive], cs.polyDevx[nfaceActive], cs.polyDevy[nfaceActive])
-					cadranSolaireGroup.add(meshFaces[nfaceActive])
-					cadranSolaireGroup.add(meshGnomons[nfaceActive])
-					const vNorm = new THREE.Vector3()
-					quaternion.setFromUnitVectors(vNorm.fromArray(normalsFaces[nfaceActive]), new THREE.Vector3(0, 1, 0))
-					cadranSolaireGroup.setRotationFromQuaternion(quaternion)
+				// tracerUneFace(){
+				// 	meshGnomons[nfaceActive].remove(styleToriquePoly)
+				// 	//let csGroup=cadranSolaireGroup.clone(true)
+				// 	cadranSolaireGroup.clear()				
+				// 	rapellerFace(nfaceActive)
+				// 	TracerHeuresEtArcs()
+				// 	EcrireDevise(cs.polyDev[nfaceActive], cs.polyDevx[nfaceActive], cs.polyDevy[nfaceActive])
+				// 	cadranSolaireGroup.add(meshFaces[nfaceActive])
+				// 	cadranSolaireGroup.add(meshGnomons[nfaceActive])
+				// 	const vNorm = new THREE.Vector3()
+				// 	quaternion.setFromUnitVectors(vNorm.fromArray(normalsFaces[nfaceActive]), new THREE.Vector3(0, 1, 0))
+				// 	cadranSolaireGroup.setRotationFromQuaternion(quaternion)
+				// 	console.log(cadranSolaireGroup)
+				// 	heuresGroupsRemove()
+				// 	initPol(polyhedre)
+				// 	}
 
-					
-					//cadranSolaireGroup.setRotationFromQuaternion(quaternion.conjugate())
-					//  cadranSolaireGroup=csGroup.clone(true)
-					// // cadranSolaireGroup=new THREE.Group()		
-					//  displayFaces(polyhedre)
-					//  tracerTouteslesfaces()
-					// rapellerFace(0)
-					// nfaceActive = 0
-					// tracerFaceActive()
-					}
-					
-					
-				}
+
+			}
 
 			guiSectionPoly = gui.addFolder("POLYEDRA");
 			if (NouveauCadran) { polyhedre = POLYHEDRA.Dodecahedron; nbFaces = 12 }
@@ -4740,19 +4778,19 @@
 				})
 
 				.onFinishChange(function (f) {
-					nfaceActive = f - 1					
+					nfaceActive = f - 1
 					if (nfaceActive >= nbFaces) { nfaceActive = nbFaces - 1 }
 					tracerFaceActive()
-					guixgnomon.max( rmaxFace[nfaceActive])
+					guixgnomon.max(rmaxFace[nfaceActive])
 					guixgnomon.min(-rmaxFace[nfaceActive])
 					guixgnomon.updateDisplay()
-					guiygnomon.max( rmaxFace[nfaceActive])
+					guiygnomon.max(rmaxFace[nfaceActive])
 					guiygnomon.min(-rmaxFace[nfaceActive])
 					guiygnomon.updateDisplay()
-					guixFaceDevise.max( rmaxFace[nfaceActive])
+					guixFaceDevise.max(rmaxFace[nfaceActive])
 					guixFaceDevise.min(-rmaxFace[nfaceActive])
 					guixFaceDevise.updateDisplay()
-					guiyFaceDevise.max( rmaxFace[nfaceActive])
+					guiyFaceDevise.max(rmaxFace[nfaceActive])
 					guiyFaceDevise.min(-rmaxFace[nfaceActive])
 					guiyFaceDevise.updateDisplay()
 					scene.remove(lineSommetsFace)
@@ -4767,30 +4805,30 @@
 
 			const gBaseSundial = guiSectionPoly.add(rotationFaces, "rotationBase").name("facet -> base")
 			const gSudSundial = guiSectionPoly.add(rotationFaces, "rotationSud").name("facet -> sud")
-			const gtracerUneFace = guiSectionPoly.add(rotationFaces, "tracerUneFace").name("face active")
+			//const gtracerUneFace = guiSectionPoly.add(rotationFaces, "tracerUneFace").name("face active")
 
 			// parametrage gnomon
-			
+
 			const folderFaceGnomon = guiSectionPoly.addFolder("gnomon").title("gnomon")
-			
-			const guixgnomon=folderFaceGnomon.add(cs, "xgnomon", -500, 500, 0.1).name("<- x ->")
+
+			const guixgnomon = folderFaceGnomon.add(cs, "xgnomon", -500, 500, 0.1).name("<- x ->")
 				.onChange(function (v) {
 					meshGnomons[nfaceActive].add(BoutStyle)
-					BoutStyle.position.set(v-cs.polyGx[nfaceActive],cs.polyGz[nfaceActive]/2,0)
+					BoutStyle.position.set(v - cs.polyGx[nfaceActive], cs.polyGz[nfaceActive] / 2, 0)
 				})
 				.onFinishChange(function (v) { cs.polyGx[nfaceActive] = v; displayFaces(polyhedre); TracerHeuresEtArcs() })
 				.listen()
-			const guiygnomon=folderFaceGnomon.add(cs, "ygnomon", -500, 500, 0.1).name("<- y ->")
-				.onChange(function (v) { 
+			const guiygnomon = folderFaceGnomon.add(cs, "ygnomon", -500, 500, 0.1).name("<- y ->")
+				.onChange(function (v) {
 					meshGnomons[nfaceActive].add(BoutStyle)
-					BoutStyle.position.set(0,cs.polyGz[nfaceActive]/2,-v+cs.polyGy[nfaceActive])
+					BoutStyle.position.set(0, cs.polyGz[nfaceActive] / 2, -v + cs.polyGy[nfaceActive])
 				})
 				.onFinishChange(function (v) { cs.polyGy[nfaceActive] = v; displayFaces(polyhedre); TracerHeuresEtArcs() })
 				.listen()
 			folderFaceGnomon.add(cs, "zgnomon", 0, 500, 0.1).name("Heigth")
-				.onChange(function (v) { 
+				.onChange(function (v) {
 					meshGnomons[nfaceActive].add(BoutStyle)
-					BoutStyle.position.set(0,-cs.polyGz[nfaceActive]/2+v,0) 
+					BoutStyle.position.set(0, -cs.polyGz[nfaceActive] / 2 + v, 0)
 				})
 				.onFinishChange(function (v) { cs.polyGz[nfaceActive] = v; displayFaces(polyhedre); TracerHeuresEtArcs() })
 				.listen()
@@ -4811,23 +4849,23 @@
 			const folderFaceDevise = guiSectionPoly.addFolder("motto").title("motto")
 
 			folderFaceDevise.add(cs, "devise").name("text") //.setValue(cs.polyDev[nFace])
-				.onChange(function (v) { cs.polyDev[nfaceActive] = v; tracerLaDevise(nfaceActive)})
+				.onChange(function (v) { cs.polyDev[nfaceActive] = v; tracerLaDevise(nfaceActive) })
 				.onFinishChange(function (v) { cs.polyDev[nfaceActive] = v; displayFaces(polyhedre) })
 				.listen()
 
-			const guixFaceDevise=folderFaceDevise.add(cs, "positionDevisex", -500, 500, 0.1).name("<- x ->")
-				.onChange(function (v) {cs.polyDevx[nfaceActive] = v;    tracerLaDevise(nfaceActive)})
-				.onFinishChange(function (v) { cs.polyDevx[nfaceActive] = v;   displayFaces(polyhedre) })
-			    .listen()
+			const guixFaceDevise = folderFaceDevise.add(cs, "positionDevisex", -500, 500, 0.1).name("<- x ->")
+				.onChange(function (v) { cs.polyDevx[nfaceActive] = v; tracerLaDevise(nfaceActive) })
+				.onFinishChange(function (v) { cs.polyDevx[nfaceActive] = v; displayFaces(polyhedre) })
+				.listen()
 
-			const guiyFaceDevise=folderFaceDevise.add(cs, "positionDevisey", -500, 500, 0.1).name("<- y ->")
-				.onChange(function (v) { cs.polyDevy[nfaceActive] = v; tracerLaDevise(nfaceActive)})
+			const guiyFaceDevise = folderFaceDevise.add(cs, "positionDevisey", -500, 500, 0.1).name("<- y ->")
+				.onChange(function (v) { cs.polyDevy[nfaceActive] = v; tracerLaDevise(nfaceActive) })
 				.onFinishChange(function (v) { cs.polyDevy[nfaceActive] = v; displayFaces(polyhedre) })
-			    .listen()
+				.listen()
 
 			folderFaceDevise.add(cs, 'deviseSize', 0, 5, 0.1).name('font size')
 				.onChange(function (v) { cs.polyDevTextsize = v })
-				.onFinishChange(function (v) { displayFaces(polyhedre)})
+				.onFinishChange(function (v) { displayFaces(polyhedre) })
 
 			// choix du polyhedre
 			guichoixPoly = guiSectionPoly.addFolder("Choose polyedra")
@@ -4874,16 +4912,19 @@
 
 
 			//rayon
-			const guirayonPoly= guiSectionPoly.add(cs, "rayonPolyedre", 100,1000, 1).name("radius polyedra")
+			guiSectionPoly.add(cs, "rayonPolyedre", 100, 1000, 1).name("radius polyedra")
 				.onFinishChange(function (v) {
-				if(NouveauCadran){
-					if (confirm('Reinit sundial?')){
-					  effacerTouteslesfaces()
-					  initPol()	
-					}}else{	effacerTouteslesfaces()
-					 		initPol()}
+					if (NouveauCadran) {
+						if (confirm('Reinit sundial?')) {
+							effacerTouteslesfaces()
+							initPol()
+						}
+					} else {
+						effacerTouteslesfaces()
+						initPol()
+					}
 				})
-			
+
 
 			guiSectionPoly.close()
 			guichoixPoly.close()
@@ -4938,7 +4979,7 @@
 				cs.polyheuresPlanetairesWS = []
 				cs.polyheuresPlanetairesSA = []
 				cs.polyequinoxeAndSolstices = []
-				cs.polyarcsZodiaque=[]
+				cs.polyarcsZodiaque = []
 				cs.polydatesArcsDiurnes = [[]] // [[date, dec en rad]]  tableau à deux dimensions
 				cs.polyDevx = []
 				cs.polyDevy = []
@@ -5027,13 +5068,16 @@
 			}
 			TouteslesHeuresFalse()
 			heuresGroupsRemove()
-			
+
 		}
 
 
 		function initPol() {
-
-			cadranSolaireGroup.clear()
+			heuresGroupsRemove()
+			scene.remove(cadranSolaireGroup)
+			cadranSolaireGroup.clear
+			cadranSolaireGroup = new THREE.Group()
+			scene.add(cadranSolaireGroup)
 			initFacesPolyedre()
 			voirSectionPoly(true)
 			nbFaces = polyhedre.face.length
@@ -5047,11 +5091,11 @@
 			cs.hauteur = cs.largeur
 			nfaceActive = 0
 			//displayFaces(polyhedre)
-			if (NouveauCadran) {
-				cs.decli = 0; cs.incli = 90; cs.rot = 0;
-				displayFaces(polyhedre)
-				faceSurBase(nFaceMax)
-			}
+			// if (NouveauCadran) {
+			// 	cs.decli = 0; cs.incli = 90; cs.rot = 0;
+			// 	displayFaces(polyhedre)
+			// 	faceSurBase(nFaceMax)
+			// }
 			// TouteslesHeuresFalse()
 			// effacerListesMesh()
 			displayFaces(polyhedre)
@@ -5059,14 +5103,14 @@
 			rapellerFace(0)
 			nfaceActive = 0
 			tracerFaceActive()
-			PlacerLaTerre()	
+			PlacerLaTerre()
 
 		}
 
 	</script>
 
 	<script src="./parser.js"></script>
-	
+
 </body>
 
 </html>

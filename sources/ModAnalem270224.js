@@ -1,5 +1,5 @@
 
-import { cs } from './Modcolvars270224.js';
+import { cs } from './Modcolvars.js';
 import * as THREE from 'three';
 
 

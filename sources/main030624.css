@@ -64,23 +64,28 @@
  }
 
  label.open {
+	width: auto;
 	color: #ffffff;
-	border: 2px outset rgb(88, 88, 88); 
+	border: 2px outset rgb(121, 124, 29); 
 	/*cursor: pointer;*/
-	background-color: rgb(88, 88, 88);
+	background-color: rgb(55, 50, 50);
  }
 
  label.open:hover {
+	width: auto;
+	color: #ffffff;
+	border: 2px outset rgb(121, 124, 29); 
  	background-color: rgb(173, 173, 165);
  }
 
  button {
  	/*cursor: pointer;*/
- 	background-color: rgb(88, 88, 88);
- 	text-transform: uppercase;
+ 	background-color: rgb(55, 50, 50);
+	border: 2px outset rgb(121, 124, 29); 
+ 	/*text-transform: uppercase;*/
  	color: #ffffff;
- 	width: 150;
- 	height: 50;
+ 	width: auto;
+ 	height: 100;
  	/* height: auto; */
  	/*	height: 40px;*/
  }

@@ -35,9 +35,10 @@ voie lactée en fond d'écran (sur option)
 140324
 - dates des analemmatiques : correction pour les mois de 30, 29 ou 28 jpours
 - modif bifilaire generalisé
-
 220324
 - sphere armilaire
-
-020324
-- mise à plat de la face active
+020424
+- tracé et mise à plat de la seule face active
+180624
+- correction d'un bug dans la vitesse apparente du soleil
+030624-> publié
