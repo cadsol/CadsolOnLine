@@ -32,8 +32,8 @@
         {
             "type": "chrome",
             "request": "launch",
-            "name": "colmod080324.html",
-            "url": "http://192.168.1.14/SauvegardeCOL/CadsolOnLine/sources/colmod080324.html"
+            "name": "colmod.html",
+            "url": "http://192.168.1.14/SauvegardeCOL/CadsolOnLine/sources/colmod.html"
         }
         
     ]
