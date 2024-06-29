@@ -49,7 +49,7 @@
   "emissiveCS": "rgb(102,102,102)",
   "specularCS": "rgb(0,0,0)",
   "metalness": 0.5,
-  "opaciteCS": 0.5,
+  "opaciteCS": 1,
   "lati": 49,
   "longi": 3.9,
   "adresse": "",

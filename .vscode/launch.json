@@ -18,17 +18,11 @@
         {
             "type": "chrome",
             "request": "launch",
-            "name": "colmod030624.html",
-            "url": "http://192.168.1.14/SauvegardeCOL/CadsolOnLine/sources/colmod030624.html"
+            "name": "colmod290624.html",
+            "url": "http://192.168.1.14/SauvegardeCOL/CadsolOnLine/sources/colmod290624.html"
            
         },
-        {
-            "type": "chrome",
-            "request": "launch",
-            "name": "colmod270224.html",
-            "url": "http://192.168.1.14/SauvegardeCOL/CadsolOnLine/sources/colmod270224.html"
-        }
-        ,
+        
         {
             "type": "chrome",
             "request": "launch",
