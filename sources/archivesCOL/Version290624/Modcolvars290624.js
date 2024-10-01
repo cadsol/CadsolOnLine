@@ -1,18 +1,16 @@
-import * as EQTIME from 'astronomia/eqtime.js';
-import * as JULIAN from 'astronomia/julian.js';
-import { apparentEquatorial } from 'astronomia/solar.js';
+import * as EQTIME from '../astronomia-master/src/eqtime.js';
+import * as JULIAN from '../astronomia-master/src/julian.js';
+import { apparentEquatorial } from '../astronomia-master/src/solar.js';
 import {
 	march,
 	june,
 	september,
 	december
-} from 'astronomia/solstice.js';
+} from '../astronomia-master/src/solstice.js';
 
 //import {Scene} from  'three';
 
-export const SP = "Polar or straight style", BF = "Bifilar (vertical)", BFG = 'Bifilar generalised', 
-             ANL = 'Analemmatic', RTS='Ray tracing sundial',STP = "Profiled style";
-			
+export const SP = "Polar or straight style", BF = "Bifilar (vertical)", BFG = 'Bifilar generalised', ANL = 'Analemmatic', RTS='Ray tracing sundial';///+++
 
 export const Dst=1500 // distance terre soleil
 export const oe=23.4392911  // obliquite de l'Ecliptique, equinoxe de reference 2000.0
@@ -33,9 +31,6 @@ export let cs = {
 	decli: 0,
 	incli: 90,
 	rot: 0,
-
-	//cadran à style profilé
-	a: 5, Rmax: 20, sais: true, appx: false, reb: false,//saisSA:true,saisWS:false,
 
 	//Cadran parametrique
 	zfxy:"",
@@ -186,7 +181,6 @@ export let cs = {
 	typePolyedre:"Dodecahedron", // par defaut
 	rayonPolyedre:200,
 	conicity:2,
-	uniform:true,
 	
 	polyGx:[],
 	polyGy:[],
@@ -325,7 +319,7 @@ export function TableSol(year) {
 		jdes.push(jde); eqts.push(eqt); decs.push(dec);rasc.push(ra)
 		jde += 1; j += 1
 	};
-	// console.log(JULIAN.JDToCalendarGregorian(march(cs.year)))
+	// console.log(jdecSunMin,jdecSunMax);
 	return {//Tableaux à 365 ou 366 elements, valeurs calculées à 12h, index: 0...364 ou 0...365
 		decSuns: decs,  //radians
 		ascRights: rasc,

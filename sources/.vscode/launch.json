@@ -9,15 +9,23 @@
             "type": "chrome",
             "request": "launch",
             "name": "Launch colmod.html Chrome against localhost",
-            "url": "http://192.168.1.14/CadsolOnLine/sources/colmod.html",
+            "url": "http://192.168.1.14/SauvegardeCOL/CadsolOnLine/sources/colmod.html",
             "webRoot": "${workspaceFolder}"
         },
         {
             "type": "chrome",
             "request": "launch",
-            "name": "Launch colmod_ym.html Chrome against localhost",
-            "url": "http://192.168.1.14/CadsolOnLine/sources/colmod_ym.html",
+            "name": "Launch colmodYMsp.html Chrome against localhost",
+            "url": "http://192.168.1.14/SauvegardeCOL/CadsolOnLine/sources/colmodYM.html",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Launch colmod290624.html Chrome against localhost",
+            "url": "http://192.168.1.14/SauvegardeCOL/CadsolOnLine/sources/colmod290624.html",
             "webRoot": "${workspaceFolder}"
         }
+
     ]
 }

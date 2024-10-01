@@ -47,3 +47,9 @@ voie lactée en fond d'écran (sur option)
 - surfaces paramétrées du type x(u,v) y(u,v) z(u,v) > Exemples (Mobius, Astroidal Ellipsoid,Tore de Klein)
 - correction bugs mineurs (chargement des textures, textes des heures par tracés de rayon)
 290624->publié
+
+270924
+- cadrans polyedriques dimensionnables, sortie 2D améliorée
+- cadrans à style profilés
+- correction bugs mineurs (éclairage des cadrans...)
+
