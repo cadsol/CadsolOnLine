@@ -96,7 +96,7 @@
 
 		// -----------------------------------Modules---------------------------------------------------------------------------------------
 		import { SP, BF, BFG, ANL, RTS, STP, cs, TableSol, Dst, oe, RechercheParAdresse, getLocation, HTLM } from './Modcolvars.js';
-		import { eclair, Rot, EtoC, ddrte, segm } from './ModAnalem.js';
+		import { eclair, Rot, EtoC, ddrte, segm } from './ModAnalem.js'
 		import { POLYHEDRA } from './ModPolyhedra.js';
 		//import {tracerEcliptique,effacerEcliptique,tracerSphereArmilaire,effacerSphereArmilaire} from './ModSphereArmilaire.js'
 		// ---------------------------------------------------------------------------------------------------------------------------------	
@@ -117,7 +117,7 @@
 			HPSA = "Planetary (summer, autumn)", HPWS = "Planetary (winter, spring)";
 
 
-		cs.version = "2024-10-01"
+		cs.version = "2024-10-07"
 		console.log('THREE.REVISION :  ', THREE.REVISION)
 		// const cso = structuredClone(cs)
 		// console.log(cso)
@@ -246,6 +246,10 @@
 		let gnomon, gnomonTore, meshDevise, stylePolaire, sousStylaire, stylePlan, styleBord, BoutStyle, FinStyle,
 
 			styleAnalem, centreAnalem, styleSTP, styleTorique, filHorizontal, filVertical, pilierH1, pilierH2, pilierH3, pilierH4;
+		
+		let geometryCircle1STP,circle1STP,geometryCircle2STP,circle2STP
+		let geometrySupportSTP,supportSTPsup,supportSTPinf,geometryAxeSTP,axeSTP
+		
 
 		let heuresSolairesGroup, heuresLegalesGroupSA, heuresLegalesGroupWS, heuresAntiquesGroup, arcsDiurnesGroup;
 		let heuresBabyloniquesGroup, heuresItaliquesGroup, heuresSDSAgroup, heuresSDWSgroup, groupAxes;
@@ -359,7 +363,7 @@
 		let SVGtextDevise = ""
 
 		//let EffacerLesLignes=true
-		// const materialScaphe = new THREE.MeshStandardMaterial(
+		// const materialScaphe = new THREE.MeshStandardMaterial(Cercle
 		// 	{ transparent: true, opacity: 0.8, roughness: 0.5, map: textureAcier,side:THREE.DoubleSide/*,shadowSide:THREE.BackSide */ });
 		// *********************************************************************************************************************************
 
@@ -1264,7 +1268,7 @@
 
 		function TracerStyle() {
 			let v10, v20, v30, v40, xg, yg, zg, xp, yp, zp, alphaSpSs, x10, y10, x20, y20, h1, h2, OK = true;
-
+			
 			function TracerFil(alpha, hfil1, hfil2) {			//points d'intersection de la droite passant par le pied du style droit, et de coef. dir. tan(alpha)
 				let x1, y1, x2, y2, x3, y3, x4, y4				//avec les cotés du cadran rectangulaire -> (x10,y10)   et   (x20,y20)
 				let coordFil = [];
@@ -1411,7 +1415,7 @@
 				ligneSVG(v1.x, v1.y, v4.x, v4.y)
 				croixSVG(v4.x, v4.y)
 
-			}
+			}//SP
 
 			if (cs.typeCadran == BF) {
 				calculg1g2k1k2()
@@ -1442,7 +1446,7 @@
 				croixSVG(cs.xA1, cs.yA1); croixSVG(cs.xA2, cs.yA2); croixSVG(cs.xB1, cs.yB1); croixSVG(cs.xB2, cs.yB2)
 				croixSVG(cs.xgnomon, cs.ygnomon)
 
-			}
+			}//BF
 
 			if (cs.typeCadran == BFG) {
 
@@ -1486,7 +1490,7 @@
 				croixSVG(cs.xgnomon, cs.ygnomon)
 				gnomon.visible = false;
 
-			}
+			}//BFG
 
 			if (cs.typeCadran == ANL) {
 				if (cs.zdirect == 0) cs.zdirect = 0.1;
@@ -1524,10 +1528,10 @@
 					centreAnalem.position.set(ct.x, ct.y, ct.z);
 					cadranSolaireGroup.add(centreAnalem);
 				}
-			}
+			}//ANL
 
 			if (cs.typeCadran == STP) {
-
+				
 				// Calcul du point du profil pour le jour julien jj
 				function pProfil(jj) {
 					const a = cs.a*Math.PI/180, dc = apparentEquatorial(jj).dec, eq = EQTIME.eSmart(jj);
@@ -1590,8 +1594,7 @@
 				}
 				if (pp.x < rm) profil.push(pp);
 
-				//const materialGnomon = new THREE.MeshStandardMaterial({side: THREE.DoubleSide, color: 0xf0f0f0, map: textureAcier});
-				//	{transparent: true, opacity: 1, roughness: 0.5, metalness: 0.5, side: THREE.DoubleSide, color: 0xfffff, map: textureAcier}
+				//style
 				const geometrySTP = new THREE.LatheGeometry(profil, 64);
 				styleSTP = new THREE.Mesh(geometrySTP, materialGnomon);
 				const rc = kSTP*cs.largeur;			// Rayon interne du cylindre
@@ -1602,6 +1605,7 @@
 				styleSTP.receiveShadow=true
 				cadranSolaireGroup.add(styleSTP);
 
+				//sortie csv
 				CSVtext +="\n\n"
 				CSVtext +="Profile of the style\n"+"\n"
 				CSVtext += "Day:" + cs.separateurCSV+"Radius" + cs.separateurCSV + "y" + "\n";
@@ -1611,8 +1615,41 @@
 					dateJour=JULIAN.JDToCalendarGregorian(Jour[i])
 					CSVtext +=  Math.floor(dateJour.day)+"/"+dateJour.month+ cs.separateurCSV + rs.toFixed(3) + cs.separateurCSV + zs.toFixed(3) + "\n";
 				}
-				//console.log(CSVtext)
-			}
+
+				//disques haut et bas
+				if(geometryCircle1STP!==undefined){geometryCircle1STP.dispose();cadranSolaireGroup.remove(circle1STP)}
+				geometryCircle1STP = new THREE.CircleGeometry( profil[profil.length-1].x*rc, 32 ); 			
+				circle1STP = new THREE.Mesh( geometryCircle1STP, materialGnomon )
+				circle1STP.rotateX(Math.PI/2)
+				circle1STP.position.y=profil[profil.length-1].y*rc
+				cadranSolaireGroup.add(circle1STP);
+				if(geometryCircle2STP!==undefined){geometryCircle2STP.dispose();cadranSolaireGroup.remove(circle2STP)}
+				geometryCircle2STP = new THREE.CircleGeometry( profil[0].x*rc, 32 ); 			
+				circle2STP = new THREE.Mesh( geometryCircle2STP, materialGnomon )
+				circle2STP.rotateX(Math.PI/2)
+				circle2STP.position.y=profil[0].y*rc
+				cadranSolaireGroup.add(circle2STP);
+				//supports
+				if (axeSTP!==undefined){
+					cadranSolaireGroup.remove(supportSTPsup);cadranSolaireGroup.remove(supportSTPinf);cadranSolaireGroup.remove(axeSTP)}			
+				if(cs.support){
+					if(geometrySupportSTP!==undefined){geometrySupportSTP.dispose()}
+					geometrySupportSTP= new THREE.BoxGeometry(cs.largeur+0.2*rc/2,0.025*rc,0.025*rc) 		
+					supportSTPsup=new THREE.Mesh( geometrySupportSTP, materialCS )
+					supportSTPsup.position.y=cs.hauteur/2//-0.025*rc
+					supportSTPinf=supportSTPsup.clone()
+					supportSTPinf.position.y=-supportSTPsup.position.y					
+					supportSTPsup.castShadow=true
+					supportSTPinf.castShadow=true
+					if(geometryAxeSTP!==undefined){geometryAxeSTP.dispose()}
+					geometryAxeSTP=new THREE.CylinderGeometry(0.01*rc,0.01*rc,cs.hauteur-0.025*rc)
+					axeSTP=new THREE.Mesh( geometryAxeSTP, materialCS )					
+					axeSTP.castShadow=true					
+					cadranSolaireGroup.add(supportSTPsup)
+					cadranSolaireGroup.add(supportSTPinf)
+				    cadranSolaireGroup.add(axeSTP)}
+			
+			}//STP
 
 		}  //Tracer Style
 
@@ -2451,11 +2488,13 @@
 				"20 min /sec": 1200,
 				"30 min /sec": 1800,
 				"1 hour /sec": 3600
+			//	"1 day  /sec": 3600*24
 			}
 			function myTimerSun() {
 				cs.hsol += cs.vrotSun / 360000;
 				//cs.hsol = Math.round(cs.hsol * 1000000) / 1000000
-				if (cs.hsol > 24) { cs.hsol = 0 };
+				if (cs.hsol > 24) { cs.hsol = 0;cs.dayofYear +=1 };
+				if(cs.dayofYear>nbJoursAnnee){cs.dayofYear=1}
 				PlacerLeSoleil()
 			}
 			let temporisation = null;
@@ -2859,7 +2898,7 @@
 
 					folderOrientationSundial.hide();
 					folderGnomonPosition.hide();
-					ctlEpais.disable();
+					ctlEpais.hide();
 
 					folderSTP.show();
 					TracerHeuresEtArcs();
@@ -3147,7 +3186,7 @@
 				})
 				.onFinishChange(function () { TracerHeuresEtArcs(); if (RTSpolyhedre()) { tracerTouteslesfaces() } })
 				.listen()
-				const ctlEpais=folderDimensionsSundial.add(cs, "epaisseur", 1, 1000, 0.1)
+			const ctlEpais=folderDimensionsSundial.add(cs, "epaisseur", 1, 1000, 0.1)
 				.name("Depth")
 				.onChange(function (v) {
 					cs.epaisseur = v;
@@ -3252,12 +3291,18 @@
 					TracerStyle();
 				});
 			helpGui(appxSTP, "Approximate shape of the style");
-			const rebSTP = folderSTP.add(cs, "reb")
-				.name("Reversal")
+			const rebSTP = folderSTP.add(cs, "support")
+				.name("mount of the style")
 				.onChange(function () {
 					TracerStyle();
 				});
-			helpGui(rebSTP, "Set/remove reversal part");
+			helpGui(rebSTP, "Set/remove the mount of the style");
+			// const rebSTP = folderSTP.add(cs, "reb")
+			// 	.name("Reversal")
+			// 	.onChange(function () {
+			// 		TracerStyle();
+			// 	});
+			// helpGui(rebSTP, "Set/remove reversal part");
 			folderSTP.addColor(cs, "colorAnalem")
 				.name("Color")
 				.onChange(function (e) {
@@ -3271,7 +3316,7 @@
 				.onChange(function () { TracerHeuresEtArcs() });
 
 
-			/// Style droit ou polaire
+			// / Style droit ou polaire
 			const folderGnomonClassic = folderGnomon.addFolder('Straight or polar style...');
 			folderGnomonClassic.add(cs, "hgnomon", 1, 1000, 0.1)
 				.name("Length straight style")
@@ -4544,7 +4589,7 @@ materialEclip
 			sphereEarth.scale.x = r; sphereEarth.scale.y = r; sphereEarth.scale.z = r;
 			meshClouds.scale.set(sphereEarth.scale.x * cloudsScale, sphereEarth.scale.y * cloudsScale, sphereEarth.scale.z * cloudsScale);
 			earthGroup.position.x = 0;
-			if (centrer) { earthGroup.position.y = 0 } else { earthGroup.position.y = -r * 1.8 };
+			if (centrer) { earthGroup.position.y = 0 } else { earthGroup.position.y = -r * 2 };
 			earthGroup.position.z = 0;
 			earthGroup.rotation.x = -base.toRad(90 - cs.lati);
 			earthGroup.rotation.y = -base.toRad(cs.longi);

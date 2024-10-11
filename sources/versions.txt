@@ -52,4 +52,6 @@ voie lactée en fond d'écran (sur option)
 - cadrans polyedriques dimensionnables, sortie 2D améliorée
 - cadrans à style profilés
 - correction bugs mineurs (éclairage des cadrans...)
+071024
+- support de style profilé
 

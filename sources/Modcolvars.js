@@ -35,7 +35,7 @@ export let cs = {
 	rot: 0,
 
 	//cadran à style profilé
-	a: 5, Rmax: 20, sais: true, appx: false, reb: false,//saisSA:true,saisWS:false,
+	a: 5, Rmax: 20, sais: true, appx: false, reb: false,support:false,//saisSA:true,saisWS:false,
 
 	//Cadran parametrique
 	zfxy:"",

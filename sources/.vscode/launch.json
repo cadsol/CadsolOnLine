@@ -22,8 +22,8 @@
         {
             "type": "chrome",
             "request": "launch",
-            "name": "Launch colmod290624.html Chrome against localhost",
-            "url": "http://192.168.1.14/SauvegardeCOL/CadsolOnLine/sources/colmod290624.html",
+            "name": "Launch colmod241007.html Chrome against localhost",
+            "url": "http://192.168.1.14/SauvegardeCOL/CadsolOnLine/sources/colmod241007.html",
             "webRoot": "${workspaceFolder}"
         }
 

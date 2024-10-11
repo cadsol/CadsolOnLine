@@ -1,0 +1,122 @@
+# Exported from 3D Builder
+
+newmtl aluminum_black_0
+Kd 0.308930 0.301206 0.301206
+
+newmtl aluminum_0
+Kd 0.984314 0.984314 0.984314
+
+newmtl hub_0
+Kd 1.000000 1.000000 1.000000
+map_Kd texture_7_15853527909305393568.png
+
+newmtl mars_2020_06_0
+Kd 1.000000 1.000000 1.000000
+map_Kd texture_13_8328196163999553924.png
+
+newmtl gunmetal_dark_0
+Kd 0.318684 0.310129 0.310129
+
+newmtl mars_2020_05_0
+Kd 1.000000 1.000000 1.000000
+map_Kd texture_4_9919837686481292364.png
+
+newmtl mars_2020_01_0
+Kd 1.000000 1.000000 1.000000
+map_Kd texture_1_14126322532748253036.png
+
+newmtl mars_2020_03_0
+Kd 1.000000 1.000000 1.000000
+map_Kd texture_0_17832851910588591680.png
+
+newmtl mars_2020_04_0
+Kd 1.000000 1.000000 1.000000
+map_Kd texture_2_6672996682974157280.png
+
+newmtl mars_2020_02_0
+Kd 1.000000 1.000000 1.000000
+map_Kd texture_3_12672105836179371972.png
+
+newmtl paint_white_base_0
+Kd 0.828093 0.828093 0.850000
+
+newmtl Mat_0
+Kd 1.000000 1.000000 1.000000
+map_Kd texture_2.01
+
+newmtl mars_2020_07_0
+Kd 1.000000 1.000000 1.000000
+map_Kd texture_12_5046405598993221836.png
+
+newmtl gunmetal_0
+Kd 0.584314 0.568627 0.568627
+
+newmtl bronze_0
+Kd 0.750000 0.621375 0.487500
+
+newmtl spring_0
+Kd 0.750000 0.750000 0.750000
+
+newmtl mars_2020_06_brass2_0
+Kd 0.511310 0.469202 0.306783
+
+newmtl grey_brushed_0
+Kd 0.801823 0.801823 0.801823
+
+newmtl gray_krinkle_0
+Kd 0.622883 0.622883 0.622883
+
+newmtl glass_2_0
+Kd 1.000000 1.000000 1.000000
+map_Kd texture_10_11899704555594244116.png
+
+newmtl glass_lens_0
+Kd 0.704941 0.839216 0.736367
+
+newmtl transparent_0
+Kd 1.000000 1.000000 1.000000
+map_Kd texture_11_8153810648107067296.png
+
+newmtl iron_0
+Kd 0.699270 0.699270 0.699270
+
+newmtl Material_0
+Kd 0.703823 0.464843 0.313307
+
+newmtl foil_orange_0
+Kd 0.707020 0.463966 0.172092
+
+newmtl arm_graphics_0
+Kd 1.000000 1.000000 1.000000
+map_Kd texture_14_7532134839153738640.png
+
+newmtl copper_0
+Kd 0.631830 0.443366 0.362595
+
+newmtl array_gold_trim_0
+Kd 1.000000 0.884237 0.529558
+
+newmtl gold_0
+Kd 1.000000 0.815686 0.250981
+
+newmtl black_krinkle_0
+Kd 0.150000 0.150000 0.150000
+
+newmtl brass_0
+Kd 0.578148 0.560495 0.423975
+
+newmtl nameplate_0
+Kd 1.000000 1.000000 1.000000
+map_Kd texture_18_5090655307731093264.png
+
+newmtl Mat_1
+Kd 1.000000 1.000000 1.000000
+map_Kd texture_20
+
+newmtl covidPlaque_0
+Kd 1.000000 1.000000 1.000000
+map_Kd texture_22_2834719412083903128.png
+
+newmtl sample_handling_door_0
+Kd 1.000000 1.000000 1.000000
+map_Kd texture_23_1209896779176171428.png
