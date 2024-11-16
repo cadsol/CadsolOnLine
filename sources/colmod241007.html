@@ -852,8 +852,7 @@
 				meshGnomons[nfaceActive].add(mesh)
 				mesh.applyQuaternion(meshGnomons[nfaceActive].quaternion)
 				mesh.rotateX(-Math.PI / 2)
-			}
-			mesh.rotation.y = rot;
+			} else {mesh.rotation.y = rot}
 			group.add(mesh);
 			listeMesh.push(mesh);
 			// if (gauche) { x = x - (texte.length - 1) * 7 * cs.hoursTextSize }//else{x=x+7*cs.hoursTextSize}

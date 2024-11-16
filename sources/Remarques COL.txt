@@ -1,0 +1,32 @@
+Remarques COL
+
+1. J’avais mis le booléen ‘approximate’ pour voir la différence entre le profil obtenu en première approximation suivant le principe proposé par Bachus : l’extrémité de l’ombre d’une rondelle de diamètre approprié placé à la bonne « hauteur » donnera le temps moyen. C’est sans compter sur le fait que les autres rondelles, placées plus haut ou plus bas, peuvent apporter une ombre parasite. Il faut donc tenir compte des rondelles environnantes, ce qui donne ce profil plus « sophistiqué », voire impossible dans le cas du rebroussement. Laisser ce booléen sans explication ne me paraît pas judicieux.
+    Effectivement, je n’ai pas bien compris le rôle de ce bouton…Je te laisse le soin de donner des explications, sommaires (en jaune sur l’écran) ou plus détaillées (dans un article à écrire? et à mettre en biblio?) En fait, il me semble que la commande est inutile, pourquoi ne pas laisser ce booléen à true en permanence? mais je te laisse décider.
+    Je pensais effectivement ouvrir un nouveau sujet sur le forum concernant le calcul de ce type de style. On pourrait peut-être mettre le lien vers le sujet dans la description en jaune ?
+      
+2. Tu as donné à l’attribut styleSTP.receiveShadow la valeur ‘true’, ce qui donne au style profilé une apparence marbrée que je trouve désagréable sans apporter de réel intérêt à la simulation 3D. À supprimer ?
+    Je peux arranger ça, mais j’aime bien que les objets 3D soient éclairés de façon réaliste. C’est une question de choix de texture. je pense introduire une nouvelle commande pour pouvoir télécharger librement les fichiers jpg  correspondants au cadran et au style.
+    Effectivement, si la texture permet de corriger cet effet, ce serait plus agréable.
+    Jai réglé la question en donnant au style profilé la même texture que le cadran.
+    Le moirage est inévitable, à mon avis, mais j’y réfléchirai…
+    
+3. Dans la fonction EcrireTexte() j’ai rajouté un paramètre pour la rotation des caractères afin que la numérotation des heures soit bien visible sur la surface cylindrique.  Tu peux peut-être utiliser cette fonctionnalité pour ton cadran Ray tracing -> equatorial.
+    J’avais l’intention de le faire un de ces jours. C’est effectivement un plus.
+    
+4. La vue 2D ne présente que la numérotation horaire et la devise. L’appel de la vue 2D rend visible la devise (qui n’est pas en contact avec le cadran) dans la vue 3D.
+    La vue 2D est surement sans intérêt ici, comme dans tous les cadrans non plans. On peut développer les cylindres et les cônes, mais j’ai négligé cette question (pour l’instant)
+    Je comprends. Toutefois, on peut peut-être éviter que la devise devienne visible ?
+    
+5. Je n’ai pas pu vérifier les export 3D.
+    Pourquoi? il suffit de télécharger les fichiers, puis de les ouvrir dans un éditeur 3D quelconque. Il me semble qu’il faut reprendre ces fichiers dans un éditeur avant toute impression en 3D.
+    As-tu un éditeur 3D léger (mon ordinateur est très poussif) à me conseiller ?
+    Une recherche sur internet te donnera facilement des listes de logiciel 3D plus ou moins gratuits voir par exemple: https://www.primante3d.com/logiciel-cao-02092021/
+    j’aime bien Freecad, openscad… mais ily en a des tas…
+    Le gestionnaire de fichiers Windows donne un aperçu de certain fichier 3D, de plus: 3D Builder, Visionneuse 3D,  paint  3D sont fournis par le système
+    
+    
+
+Remarque optimiste: on a dépassé les 100000 connexion au site
+Oui, c’est encourageant mais il faut modérer par le fait qu’il y a peut-être une forte proportion de connexions faites par des robots…
+
+Note : pour faire un retour à la ligne en restant dans le même chapitre numéroté, utilise Shift+Entrée 

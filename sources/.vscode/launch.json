@@ -15,15 +15,15 @@
         {
             "type": "chrome",
             "request": "launch",
-            "name": "Launch colmodYMsp.html Chrome against localhost",
-            "url": "http://192.168.1.14/SauvegardeCOL/CadsolOnLine/sources/colmodYM.html",
+            "name": "Launch 5500.html Chrome against localhost",
+            "url": "http://127.0.0.1:5500/colmod.html",
             "webRoot": "${workspaceFolder}"
         },
         {
             "type": "chrome",
             "request": "launch",
-            "name": "Launch colmod241007.html Chrome against localhost",
-            "url": "http://192.168.1.14/SauvegardeCOL/CadsolOnLine/sources/colmod241007.html",
+            "name": "Launch colmod241115.html Chrome against localhost",
+            "url": "http://192.168.1.14/SauvegardeCOL/CadsolOnLine/sources/colmod241115.html",
             "webRoot": "${workspaceFolder}"
         }
 

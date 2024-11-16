@@ -117,7 +117,7 @@
 			HPSA = "Planetary (summer, autumn)", HPWS = "Planetary (winter, spring)";
 
 
-		cs.version = "2024-10-07"
+		cs.version = "2024-11-15"
 		console.log('THREE.REVISION :  ', THREE.REVISION)
 		// const cso = structuredClone(cs)
 		// console.log(cso)
@@ -193,10 +193,10 @@
 		//renderer.toneMapping=THREE.ReinhardToneMapping
 		renderer.shadowMap.enabled = true;
 		//THREE.ColorManagement.enabled = true;
+		renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
 		//renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
-		//renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
-		renderer.shadowMap.type = THREE.PCFShadowMap
-		renderer.localClippingEnabled = true;
+		//renderer.shadowMap.type = THREE.PCFShadowMap
+		//renderer.localClippingEnabled = true;
 
 		renderer.toneMappingExposure = 1;
 		container.appendChild(renderer.domElement);
@@ -246,10 +246,10 @@
 		let gnomon, gnomonTore, meshDevise, stylePolaire, sousStylaire, stylePlan, styleBord, BoutStyle, FinStyle,
 
 			styleAnalem, centreAnalem, styleSTP, styleTorique, filHorizontal, filVertical, pilierH1, pilierH2, pilierH3, pilierH4;
-		
-		let geometryCircle1STP,circle1STP,geometryCircle2STP,circle2STP
-		let geometrySupportSTP,supportSTPsup,supportSTPinf,geometryAxeSTP,axeSTP
-		
+
+		let geometryCircle1STP, circle1STP, geometryCircle2STP, circle2STP
+		let geometrySupportSTP, supportSTPsup, supportSTPinf, geometryAxeSTP, axeSTP
+
 
 		let heuresSolairesGroup, heuresLegalesGroupSA, heuresLegalesGroupWS, heuresAntiquesGroup, arcsDiurnesGroup;
 		let heuresBabyloniquesGroup, heuresItaliquesGroup, heuresSDSAgroup, heuresSDWSgroup, groupAxes;
@@ -300,6 +300,7 @@
 		//stpListeMesh = [];//+++
 
 		// Textures
+		const textureLoader = new THREE.TextureLoader()
 
 		const textureAcier = new THREE.TextureLoader().load('./images/metaltexture.jpg')
 		textureAcier.name = 'steel'
@@ -315,18 +316,19 @@
 		textureBois.name = 'wood'
 		const textureEau = new THREE.TextureLoader().load('./textures/waternormals.jpg');
 		textureEau.name = 'water'
+		var textureCS 
 
 
 
 		const choixTextures = {
 			'none': null, 'steel': textureAcier, 'copper': textureCuivre, 'water': textureEau,
-			'asphalt': textureAsphalt, 'wood': textureBois, 'fruits': textureFruits, 'green stone': texturePierreVerte
-		}
-		//let texture = textureAcier
+			'asphalt': textureAsphalt, 'wood': textureBois, 'fruits': textureFruits, 'greenstone': texturePierreVerte, 
+			'file (.JPG, .PNG)': 'JPG-PNG'/*, 'file (.SVG)':'SVG'*/}
+			
 
 
 
-		const optionsMaterial = { roughness: 0.5, metalness: 0.5, transparent: true, opacity: 1, side: THREE.DoubleSide, map: null }
+		const optionsMaterial = { roughness: 0, metalness: 0, transparent: true, opacity: 1,/* side: THREE.DoubleSide,*/ map: null }
 		const materialHeuresSolaires = new THREE.MeshStandardMaterial(optionsMaterial);
 		const materialHeuresLegalesSA = new THREE.MeshStandardMaterial(optionsMaterial);
 		const materialHeuresLegalesWS = new THREE.MeshStandardMaterial(optionsMaterial);
@@ -348,17 +350,67 @@
 
 
 		const materialCS = new THREE.MeshStandardMaterial(
-			{ transparent: true, opacity: 1, roughness: 0.5, side: THREE.FrontSide/*,shadowSide:THREE.BackSide*/ });
+			{ transparent: true, opacity: 1, metalness: 0.5, roughness: 0.5, side: THREE.DoubleSide });
 
-		function textureCS(t) {
-			materialCS.map = t
-			materialCS.emissiveMap = t
-			materialCS.wrapT = THREE.RepeatWrapping;
-			materialCS.wrapS = THREE.RepeatWrapping;
-			materialCS.colorSpace = THREE.SRGBColorSpace;
-			materialCS.needsUpdate = true
-			if (t == null) { cs.name = 'none' } else { cs.nameTexture = t.name }
+		
+
+		function lireFichierTexture() {
+			const fileInput = document.createElement('input')
+			fileInput.type = 'file';
+			fileInput.multiple = false;
+			fileInput.accept = ".png,.jpg"
+			fileInput.addEventListener('change', 
+				function () {
+					const reader = new FileReader();
+					const selectedFile = fileInput.files[0]
+					const NF = selectedFile.name.toLowerCase()
+					reader.readAsDataURL(selectedFile)
+					reader.addEventListener("load", () => {
+						cs.dataURLtexture = reader.result	
+						cs.nameTexture=NF					
+						textureLoader.load(cs.dataURLtexture,
+							function (texture) {
+								materialCS.map = texture
+								materialCS.emissiveMap = texture
+								materialCS.needsUpdate = true
+							},
+							undefined,
+							function (err) { console.error('LoadTexture: An error happened.') }
+						)									
+						})
+					
+				}, 
+				false);
+
+			document.body.appendChild(fileInput);
+			fileInput.click();
 		}
+
+		function LireFichierSVG() {
+			const fileInput = document.createElement('input')
+			fileInput.type = 'file';
+			fileInput.multiple = false;
+			fileInput.accept = ".svg"
+			fileInput.addEventListener('change', 
+				function () {
+					const reader = new FileReader();
+					const selectedFile = fileInput.files[0]
+					const NF = selectedFile.name.toLowerCase()
+					reader.readAsText(selectedFile);
+					reader.addEventListener("load", () => {						
+							cs.dataSVG = reader.result	
+							cs.nameTexture=NF	
+							console.log(cs.nameTexture,cs.dataSVG),
+							undefined,
+							function (err) { console.error('SVG: An error happened.') }
+							})
+					}, 
+				false);
+
+			document.body.appendChild(fileInput);
+			fileInput.click();		
+		}
+
 
 		let SVGtextDevise = ""
 
@@ -395,7 +447,7 @@
 			};
 			return { forme: recShape, setting: Settings }
 		}
-		const Cercle = CercleSetting(0.5, 0.5, 0.025, 100);
+		const Cercle = CercleSetting(0.5, 0.5, 0.025, 180);
 
 
 		const geometryCSbox = new THREE.BoxGeometry(1, 1, 1);
@@ -413,13 +465,13 @@
 		const cadranEquatorial = new THREE.Mesh(EquatorialGeometry, materialCS);
 		const cadranScaphe = new THREE.Mesh(geometryScaphe, materialCS);
 
-        cadran = cadranBox.clone()  //YM: dans MiseEnPlaceCadranEtGnomon(e)
+		cadran = cadranBox.clone()  //YM: dans MiseEnPlaceCadranEtGnomon(e)
 
 		//SphereGeometry(radius : Float, widthSegments : Integer, heightSegments : Integer, phiStart : Float, phiLength : Float, thetaStart : Float, thetaLength : Float)
 
 
 		const materialGnomon = new THREE.MeshStandardMaterial(
-			{ transparent: true, opacity: 1, roughness: 0.5, metalness: 0.5, side: THREE.DoubleSide, color: 0xffffff, map: textureAcier /*,clippingPlanes:clipPlanes */ });
+			{ transparent: true, opacity: 1, roughness: 0, metalness: 0, side: THREE.DoubleSide, color: 0xffffff, map: textureAcier /*,clippingPlanes:clipPlanes */ });
 		const geometryGnomon = new THREE.CylinderGeometry(1, 1, 1, 16);
 		gnomon = new THREE.Mesh(geometryGnomon, materialGnomon);
 
@@ -435,7 +487,7 @@
 		axeMondeGroup.add(axeMonde);
 		axeMonde.visible = false;
 
-		const textureLoader = new THREE.TextureLoader();
+		//const textureLoader = new THREE.TextureLoader();
 
 		const earthGeometry = new THREE.SphereGeometry(1, 32, 32);
 		const earthMaterial = new THREE.MeshPhongMaterial({
@@ -662,10 +714,10 @@
 			}
 			CSVtext += "\n\n";
 
-			if (cs.typeCadran==STP){
+			if (cs.typeCadran == STP) {
 				CSVtext = "CadsolOnLine      " //+ s + "   XO   " + s + "  YO  " + s + "   ZO   "  + "  \n\n";
 				CSVtext += " Version: " + cs.version + "\n\n"
-				
+
 				CSVtext += "Sundial: " + cs.nameFile
 				CSVtext += "\n\n";
 				CSVtext += "Type of sundial : " + cs.typeCadran + "\n\n"
@@ -693,6 +745,13 @@
 
   <rect x="0" y="0" width="${cs.largeur.toString()}" height="${cs.hauteur.toString()}" 
    fill="${cs.colorCS}" stroke="black" stroke-width="1px" />
+
+  <image
+    xlink:href="${cs.dataURLtexture}"
+    x="0"
+    y="0"
+    height="${cs.hauteur.toString()}" 
+    width="${cs.largeur.toString()}" />
  
   
 `
@@ -714,35 +773,36 @@
 
 		function construireFichierSVG() {
 
-			if (RTSpolyhedre()) { 
-				
-				VoirPoly2D = true }
+			if (RTSpolyhedre()) {
+
+				VoirPoly2D = true
+			}
 			else {
 				initSVGtext(cs.unitSVG);
 				EcrireDevise(cs.devise, cs.positionDevisex, cs.positionDevisey);
 				VoirPoly2D = false
-				TracerHeuresEtArcs()}
-	
-			
+				TracerHeuresEtArcs()
+			}
+
+
 			//xg = xg + cs.largeur / 2; yg = -yg + cs.hauteur / 2
 			//croixSVG(cs.xgnomon, cs.ygnomon)
 			if (VoirPoly2D) {
 				const sommets = SommetsFace(nfaceActive, polyhedre)
 				displayFaces(polyhedre)
-				let l=cs.largeur;let h=cs.hauteur;let k=Math.max(cs.largeur,cs.hauteur,cs.epaisseur)
-				cs.largeur=2.5*k
-				cs.hauteur=2.5*k
+				let l = cs.largeur; let h = cs.hauteur; let k = Math.max(cs.largeur, cs.hauteur, cs.epaisseur)
+				cs.largeur = 2.5 * k
+				cs.hauteur = 2.5 * k
 				initSVGtext(cs.unitSVG);
 				const ns = sommets.length
 				for (let i = 0; i < ns - 1; i++) {
 					ligneSVG(sommets[i].x, -sommets[i].z, sommets[i + 1].x, -sommets[i + 1].z)
-					}
+				}
 				croixSVG(0, 0)
 				TracerHeuresEtArcs()
-				cs.largeur=l; cs.hauteur=h			
-				} 
-			else 
-			   { croixSVG(cs.xgnomon, cs.ygnomon) }
+				cs.largeur = l; cs.hauteur = h
+			}
+			else { croixSVG(cs.xgnomon, cs.ygnomon) }
 			SVGtext += SVGtextDevise
 			closeSVGtext();
 			//if (cs.typeForme == "polyedric") { Poly2D = false; TracerHeuresEtArcs() }
@@ -852,8 +912,8 @@
 				meshGnomons[nfaceActive].add(mesh)
 				mesh.applyQuaternion(meshGnomons[nfaceActive].quaternion)
 				mesh.rotateX(-Math.PI / 2)
-			}
-			mesh.rotation.y = rot;
+			} else { mesh.rotation.y = rot } // correction AJL
+
 			group.add(mesh);
 			listeMesh.push(mesh);
 			// if (gauche) { x = x - (texte.length - 1) * 7 * cs.hoursTextSize }//else{x=x+7*cs.hoursTextSize}
@@ -870,9 +930,6 @@
 			mesh.position.x = x;
 			mesh.position.y = y;
 			mesh.position.z = z
-
-			//if((cs.typeCadran==RTS)&&(cs.typeForme=="polyedric")) {	mesh.applyQuaternion (meshGnomons[nFace].quaternion);mesh.rotateX(-Math.PI / 2)}
-
 
 			if (SVGtext.length > 0) {
 				x = x + cs.largeur / 2; y = -y + cs.hauteur / 2;
@@ -917,27 +974,27 @@
 			document.body.style.cursor = 'wait'
 			initCSVtext()
 			TracerStyle()
-			switch(cs.typeCadran){
+			switch (cs.typeCadran) {
 				case ANL:
-				   	TracerAnalem();
-				  	break
+					TracerAnalem();
+					break
 				case STP:
 					TracerSTP();
-				  	break
+					break
 				default:
 
-				if (cs.heuresSolaires) { TracerHeuresSolaires() }
-				if (cs.heuresLegalesWinterSpring) { TracerHeuresLegalesWS() }
-				if (cs.heuresLegalesSummerAutums) { TracerHeuresLegalesSA() }
-				if (cs.heuresAntiques) { TracerHeuresAntiques() }
-				if (cs.heuresBabyloniques) { TracerHeuresBabyloniques() }
-				if (cs.heuresItaliques) { TracerHeuresItaliques() }
-				if (cs.heuresSideralesSA) { TracerHeuresSDSA() }
-				if (cs.heuresSideralesWS) { TracerHeuresSDWS() }
-				if (cs.heuresPlanetairesWS) { TracerHeuresHPWS() }
-				if (cs.heuresPlanetairesSA) { TracerHeuresHPSA() }
+					if (cs.heuresSolaires) { TracerHeuresSolaires() }
+					if (cs.heuresLegalesWinterSpring) { TracerHeuresLegalesWS() }
+					if (cs.heuresLegalesSummerAutums) { TracerHeuresLegalesSA() }
+					if (cs.heuresAntiques) { TracerHeuresAntiques() }
+					if (cs.heuresBabyloniques) { TracerHeuresBabyloniques() }
+					if (cs.heuresItaliques) { TracerHeuresItaliques() }
+					if (cs.heuresSideralesSA) { TracerHeuresSDSA() }
+					if (cs.heuresSideralesWS) { TracerHeuresSDWS() }
+					if (cs.heuresPlanetairesWS) { TracerHeuresHPWS() }
+					if (cs.heuresPlanetairesSA) { TracerHeuresHPSA() }
 
-				TracerArcsDiurnes()
+					TracerArcsDiurnes()
 			}
 
 			PlacerLeSoleil()
@@ -1120,7 +1177,7 @@
 		}
 
 
-		const kSTP=0.475 // 0.475 dans source YM ???
+		const kSTP = 0.475 // 0.475 dans source YM ???
 		function TracerSTP() {
 			cs.hoursTextSize = cs.textSizeANL;
 			cs.incli = cs.lati;
@@ -1131,8 +1188,8 @@
 			effacelisteMesh(analemListeMesh, analemGroup);
 
 			// Ligne horaire
-			const nsteps = 100;
-			let a, r =kSTP * cs.largeur, lineH = [];
+			const nsteps = 180;
+			let a, r = kSTP * cs.largeur, lineH = [];
 			for (let index = 0; index <= nsteps; index++) {
 				a = index * Math.PI / nsteps;
 				lineH.push(new THREE.Vector3(r * Math.cos(a), 0, -r * Math.sin(a)));
@@ -1149,25 +1206,25 @@
 			CSVtext += "Graduations\n\n"
 			CSVtext += " X  Y  Z  origin : center of the sundial \n"
 			CSVtext += "\n\n";
-			CSVtext += "Decimal Hour" + cs.separateurCSV + "X"+ cs.separateurCSV+ "Y" + cs.separateurCSV + "Z" + "\n";
+			CSVtext += "Decimal Hour" + cs.separateurCSV + "X" + cs.separateurCSV + "Y" + cs.separateurCSV + "Z" + "\n";
 			for (let hl = 4; hl <= 20; hl += cs.subAnalem) {
-				rt = cs.a - cs.longi + cs.offset_sec/240 - 15*hl;
+				rt = cs.a - cs.longi + cs.offset_sec / 240 - 15 * hl;
 				[x, z] = Rot(0, kSTP * cs.largeur, rt);
 				if (z < 0) {
 					bh = presqueEntier(hl);
-					rp = (bh ? 2*cs.egnomon : 0.5*cs.egnomon);
-					hp = (bh ? 10*cs.egnomon : 5*cs.egnomon);
+					rp = (bh ? 2 * cs.egnomon : 0.5 * cs.egnomon);
+					hp = (bh ? 10 * cs.egnomon : 5 * cs.egnomon);
 					plotGeo = new THREE.CylinderGeometry(rp, rp, hp);
 					plotMesh = new THREE.Mesh(plotGeo, materialAnalem);
 					plotMesh.position.set(x, 0, z);//console.log(x,z)
 					analemListeMesh.push(plotMesh);
 					analemGroup.add(plotMesh);
-					rp = 2.5* hl.toString().length * cs.hoursTextSize / kSTP / cs.largeur;
+					rp = 2.5 * hl.toString().length * cs.hoursTextSize / kSTP / cs.largeur;
 					[x, z] = Rot(x, z, rp * 180 / Math.PI);
 					rp += (rt + 180) * Math.PI / 180;
-					if (bh) EcrireTexte(hl.toString(), x, 0.8*hp, z,
-							materialAnalem, analemGroup, analemListeMesh, false, false, rp);
-					CSVtext += "Hour:"+hl.toFixed(2) + cs.separateurCSV + x.toFixed(3) + cs.separateurCSV+ "0" + cs.separateurCSV + z.toFixed(3) + "\n";
+					if (bh) EcrireTexte(hl.toString(), x, 0.8 * hp, z,
+						materialAnalem, analemGroup, analemListeMesh, false, false, rp);
+					CSVtext += "Hour:" + hl.toFixed(2) + cs.separateurCSV + x.toFixed(3) + cs.separateurCSV + "0" + cs.separateurCSV + z.toFixed(3) + "\n";
 				}
 			}
 
@@ -1268,7 +1325,7 @@
 
 		function TracerStyle() {
 			let v10, v20, v30, v40, xg, yg, zg, xp, yp, zp, alphaSpSs, x10, y10, x20, y20, h1, h2, OK = true;
-			
+
 			function TracerFil(alpha, hfil1, hfil2) {			//points d'intersection de la droite passant par le pied du style droit, et de coef. dir. tan(alpha)
 				let x1, y1, x2, y2, x3, y3, x4, y4				//avec les cotés du cadran rectangulaire -> (x10,y10)   et   (x20,y20)
 				let coordFil = [];
@@ -1531,35 +1588,37 @@
 			}//ANL
 
 			if (cs.typeCadran == STP) {
-				
+				// const materialGnomon = new THREE.MeshStandardMaterial(
+				// 	{ transparent: true, opacity: 1, roughness: 0.5, metalness: 0.5, side: THREE.DoubleSide, color: 0xffffff , map: textureBois /*,clippingPlanes:clipPlanes */ });
 				// Calcul du point du profil pour le jour julien jj
+				const materialGnomon = materialCS
 				function pProfil(jj) {
-					const a = cs.a*Math.PI/180, dc = apparentEquatorial(jj).dec, eq = EQTIME.eSmart(jj);
+					const a = cs.a * Math.PI / 180, dc = apparentEquatorial(jj).dec, eq = EQTIME.eSmart(jj);
 					let r, z;
 					if (cs.appx) {				// Calcul approché
-						z = Math.cos(eq + a)*Math.tan(dc);
+						z = Math.cos(eq + a) * Math.tan(dc);
 						r = Math.abs(Math.sin(eq + a));
 					} else {
 						const eps = 0.1;
-						const xc = Math.cos(eq + a)*Math.cos(dc), yc = -Math.sin(eq + a)*Math.cos(dc), zc = Math.sin(dc);
+						const xc = Math.cos(eq + a) * Math.cos(dc), yc = -Math.sin(eq + a) * Math.cos(dc), zc = Math.sin(dc);
 						const dcm = apparentEquatorial(jj - eps).dec, dcp = apparentEquatorial(jj + eps).dec;
 						const eqm = EQTIME.eSmart(jj - eps), eqp = EQTIME.eSmart(jj + eps);
-						let xcp = Math.cos(eqp + a)*Math.cos(dcp), ycp = -Math.sin(eqp + a)*Math.cos(dcp), zcp = Math.sin(dcp);
-						xcp -= Math.cos(eqm + a)*Math.cos(dcm); ycp -= -Math.sin(eqm + a)*Math.cos(dcm), zcp -= Math.sin(dcm);
-						const T = xcp*zc - xc*zcp;
-						const V = T/(xc*T + yc*(ycp*zc - yc*zcp));
-						z = V*zc;
-						r = Math.sqrt((V*xc - 1)**2 + (V*yc)**2);
+						let xcp = Math.cos(eqp + a) * Math.cos(dcp), ycp = -Math.sin(eqp + a) * Math.cos(dcp), zcp = Math.sin(dcp);
+						xcp -= Math.cos(eqm + a) * Math.cos(dcm); ycp -= -Math.sin(eqm + a) * Math.cos(dcm), zcp -= Math.sin(dcm);
+						const T = xcp * zc - xc * zcp;
+						const V = T / (xc * T + yc * (ycp * zc - yc * zcp));
+						z = V * zc;
+						r = Math.sqrt((V * xc - 1) ** 2 + (V * yc) ** 2);
 					}
-					return {z: z, r: r};
+					return { z: z, r: r };
 				}
 
 				// Calcul du profil avec ou sans le rebroussement
-				const j0 = JULIAN.CalendarGregorianToJD(cs.year, 1, 1.5), profi = [], inc = (cs.sais)? 1: -1;
-				let prof, zp, rp, bl1 = true, bl2 = true, cd = true, njc,Jour=[],j,dateJour;
+				const j0 = JULIAN.CalendarGregorianToJD(cs.year, 1, 1.5), profi = [], inc = (cs.sais) ? 1 : -1;
+				let prof, zp, rp, bl1 = true, bl2 = true, cd = true, njc, Jour = [], j, dateJour;
 				for (let nj = TS.jdecSunMax; cd; nj += inc) {
 					njc = nj; if (nj < 0) njc += TS.ascRights.length;
-					if (inc*Math.cos(TS.ascRights[njc]) < 0) {
+					if (inc * Math.cos(TS.ascRights[njc]) < 0) {
 						prof = pProfil(njc + j0);
 						if (bl1) bl1 = false;				// Première boucle valide, on ne fait rien.
 						else if (cs.reb || prof.z < zp) {
@@ -1569,15 +1628,15 @@
 							}
 							profi.push(new THREE.Vector2(prof.r, prof.z));
 						}
-						zp = prof.z; rp = prof.r;	
-						Jour.push(njc+j0)			
+						zp = prof.z; rp = prof.r;
+						Jour.push(njc + j0)
 					}
-					cd = (cs.sais)? nj <= TS.jdecSunMin: nj + TS.ascRights.length >= TS.jdecSunMin;
-					
+					cd = (cs.sais) ? nj <= TS.jdecSunMin : nj + TS.ascRights.length >= TS.jdecSunMin;
+
 				}
 
 				// Limitation du profil à Rmax
-				const rm = cs.Rmax/100, profil = [];
+				const rm = cs.Rmax / 100, profil = [];
 				let p, pp;
 				for (let i = 0; i < profi.length; i++) {
 					p = profi[i];
@@ -1585,9 +1644,9 @@
 						if (pp.x < rm && p.x < rm) {
 							profil.push(pp);
 						} else if (pp.x < rm && p.x >= rm) {
-							profil.push(pp); profil.push(new THREE.Vector2(rm, pp.y + (p.y - pp.y)*(rm - pp.x)/(p.x - pp.x)));
+							profil.push(pp); profil.push(new THREE.Vector2(rm, pp.y + (p.y - pp.y) * (rm - pp.x) / (p.x - pp.x)));
 						} else if (pp.x >= rm && p.x < rm) {
-							profil.push(new THREE.Vector2(rm, pp.y + (p.y - pp.y)*(rm - pp.x)/(p.x - pp.x)));
+							profil.push(new THREE.Vector2(rm, pp.y + (p.y - pp.y) * (rm - pp.x) / (p.x - pp.x)));
 						}
 					}
 					pp = p;
@@ -1595,65 +1654,67 @@
 				if (pp.x < rm) profil.push(pp);
 
 				//style
-				const geometrySTP = new THREE.LatheGeometry(profil, 64);
+				const geometrySTP = new THREE.LatheGeometry(profil, 128);
 				styleSTP = new THREE.Mesh(geometrySTP, materialGnomon);
-				const rc = kSTP*cs.largeur;			// Rayon interne du cylindre
+				const rc = kSTP * cs.largeur;			// Rayon interne du cylindre
 				styleSTP.scale.x = rc; styleSTP.scale.y = rc; styleSTP.scale.z = rc;
 				styleSTP.rotateY(Math.PI)
 				styleSTP.castShadow = true;
-				cadran.castShadow=true
-				styleSTP.receiveShadow=true
+				cadran.castShadow = true
+				styleSTP.receiveShadow = true
 				cadranSolaireGroup.add(styleSTP);
 
 				//sortie csv
-				CSVtext +="\n\n"
-				CSVtext +="Profile of the style\n"+"\n"
-				CSVtext += "Day:" + cs.separateurCSV+"Radius" + cs.separateurCSV + "y" + "\n";
+				CSVtext += "\n\n"
+				CSVtext += "Profile of the style\n" + "\n"
+				CSVtext += "Day:" + cs.separateurCSV + "Radius" + cs.separateurCSV + "y" + "\n";
 				for (let i = 0; i < profil.length; i++) {
-					const rs=profil[i].x * rc
-					const zs=profil[i].y * rc
-					dateJour=JULIAN.JDToCalendarGregorian(Jour[i])
-					CSVtext +=  Math.floor(dateJour.day)+"/"+dateJour.month+ cs.separateurCSV + rs.toFixed(3) + cs.separateurCSV + zs.toFixed(3) + "\n";
+					const rs = profil[i].x * rc
+					const zs = profil[i].y * rc
+					dateJour = JULIAN.JDToCalendarGregorian(Jour[i])
+					CSVtext += Math.floor(dateJour.day) + "/" + dateJour.month + cs.separateurCSV + rs.toFixed(3) + cs.separateurCSV + zs.toFixed(3) + "\n";
 				}
 
 				//disques haut et bas
-				if(geometryCircle1STP!==undefined){geometryCircle1STP.dispose();cadranSolaireGroup.remove(circle1STP)}
-				geometryCircle1STP = new THREE.CircleGeometry( profil[profil.length-1].x*rc, 32 ); 			
-				circle1STP = new THREE.Mesh( geometryCircle1STP, materialGnomon )
-				circle1STP.rotateX(Math.PI/2)
-				circle1STP.position.y=profil[profil.length-1].y*rc
+				if (geometryCircle1STP !== undefined) { geometryCircle1STP.dispose(); cadranSolaireGroup.remove(circle1STP) }
+				geometryCircle1STP = new THREE.CircleGeometry(profil[profil.length - 1].x * rc, 32);
+				circle1STP = new THREE.Mesh(geometryCircle1STP, materialGnomon)
+				circle1STP.rotateX(Math.PI / 2)
+				circle1STP.position.y = profil[profil.length - 1].y * rc
 				cadranSolaireGroup.add(circle1STP);
-				if(geometryCircle2STP!==undefined){geometryCircle2STP.dispose();cadranSolaireGroup.remove(circle2STP)}
-				geometryCircle2STP = new THREE.CircleGeometry( profil[0].x*rc, 32 ); 			
-				circle2STP = new THREE.Mesh( geometryCircle2STP, materialGnomon )
-				circle2STP.rotateX(Math.PI/2)
-				circle2STP.position.y=profil[0].y*rc
+				if (geometryCircle2STP !== undefined) { geometryCircle2STP.dispose(); cadranSolaireGroup.remove(circle2STP) }
+				geometryCircle2STP = new THREE.CircleGeometry(profil[0].x * rc, 32);
+				circle2STP = new THREE.Mesh(geometryCircle2STP, materialGnomon)
+				circle2STP.rotateX(Math.PI / 2)
+				circle2STP.position.y = profil[0].y * rc
 				cadranSolaireGroup.add(circle2STP);
 				//supports
-				if (axeSTP!==undefined){
-					cadranSolaireGroup.remove(supportSTPsup);cadranSolaireGroup.remove(supportSTPinf);cadranSolaireGroup.remove(axeSTP)}			
-				if(cs.support){
-					if(geometrySupportSTP!==undefined){geometrySupportSTP.dispose()}
-					geometrySupportSTP= new THREE.BoxGeometry(cs.largeur+0.2*rc/2,0.025*rc,0.025*rc) 		
-					supportSTPsup=new THREE.Mesh( geometrySupportSTP, materialCS )
-					supportSTPsup.position.y=cs.hauteur/2//-0.025*rc
-					supportSTPinf=supportSTPsup.clone()
-					supportSTPinf.position.y=-supportSTPsup.position.y					
-					supportSTPsup.castShadow=true
-					supportSTPinf.castShadow=true
-					if(geometryAxeSTP!==undefined){geometryAxeSTP.dispose()}
-					geometryAxeSTP=new THREE.CylinderGeometry(0.01*rc,0.01*rc,cs.hauteur-0.025*rc)
-					axeSTP=new THREE.Mesh( geometryAxeSTP, materialCS )					
-					axeSTP.castShadow=true					
+				if (axeSTP !== undefined) {
+					cadranSolaireGroup.remove(supportSTPsup); cadranSolaireGroup.remove(supportSTPinf); cadranSolaireGroup.remove(axeSTP)
+				}
+				if (cs.support) {
+					if (geometrySupportSTP !== undefined) { geometrySupportSTP.dispose() }
+					geometrySupportSTP = new THREE.BoxGeometry(cs.largeur + 0.2 * rc / 2, 0.025 * rc, 0.025 * rc)
+					supportSTPsup = new THREE.Mesh(geometrySupportSTP, materialCS)
+					supportSTPsup.position.y = cs.hauteur / 2//-0.025*rc
+					supportSTPinf = supportSTPsup.clone()
+					supportSTPinf.position.y = -supportSTPsup.position.y
+					supportSTPsup.castShadow = true
+					supportSTPinf.castShadow = true
+					if (geometryAxeSTP !== undefined) { geometryAxeSTP.dispose() }
+					geometryAxeSTP = new THREE.CylinderGeometry(0.01 * rc, 0.01 * rc, cs.hauteur - 0.025 * rc)
+					axeSTP = new THREE.Mesh(geometryAxeSTP, materialCS)
+					axeSTP.castShadow = true
 					cadranSolaireGroup.add(supportSTPsup)
 					cadranSolaireGroup.add(supportSTPinf)
-				    cadranSolaireGroup.add(axeSTP)}
-			
+					cadranSolaireGroup.add(axeSTP)
+				}
+
 			}//STP
 
 		}  //Tracer Style
 
-		
+
 
 		//------------------------------------------------------------------------------------------------------
 		function ExtrudeSetting(c, spline, nsteps) {
@@ -1911,7 +1972,7 @@
 			let tubeGeometry, mesh, xp, yp, zp, lm, pipeSpline, pipeSplineCRC, xs, ys;
 			//console.log(cs.datesArcsDiurnes)
 			//if(typeof(cs.datesArcsDiurnes==undefined)){return}
-			if (typeof(cs.datesArcsDiurnes)=="undefined"){return}
+			if (typeof (cs.datesArcsDiurnes) == "undefined") { return }
 			effacelisteMesh(arcsDiurnesListeMesh, arcsDiurnesGroup)
 
 			const sunDial = arcsDiurnes
@@ -2452,8 +2513,10 @@
 				.onChange(function () {
 					PlacerLeSoleil();
 					if (cs.typeCadran == ANL) TracerStyle()
-					if (cs.typeCadran == STP) {cs.sais=((cs.dayofYear>= TS.jdecSunMax)&&(cs.dayofYear< TS.jdecSunMin))  //True en été et automne
-											   TracerStyle()}
+					if (cs.typeCadran == STP) {
+						cs.sais = ((cs.dayofYear >= TS.jdecSunMax) && (cs.dayofYear < TS.jdecSunMin))  //True en été et automne
+						TracerStyle()
+					}
 				});
 			helpGui(guiTimeday, 'Day of the year')
 
@@ -2488,13 +2551,13 @@
 				"20 min /sec": 1200,
 				"30 min /sec": 1800,
 				"1 hour /sec": 3600
-			//	"1 day  /sec": 3600*24
+				//	"1 day  /sec": 3600*24
 			}
 			function myTimerSun() {
 				cs.hsol += cs.vrotSun / 360000;
 				//cs.hsol = Math.round(cs.hsol * 1000000) / 1000000
-				if (cs.hsol > 24) { cs.hsol = 0;cs.dayofYear +=1 };
-				if(cs.dayofYear>nbJoursAnnee){cs.dayofYear=1}
+				if (cs.hsol > 24) { cs.hsol = 0; cs.dayofYear += 1 };
+				if (cs.dayofYear > nbJoursAnnee) { cs.dayofYear = 1 }
 				PlacerLeSoleil()
 			}
 			let temporisation = null;
@@ -2562,7 +2625,7 @@
 				}
 
 				function TracerCadranScaphe() {
-					materialCS.side = THREE.DoubleSide
+					//materialCS.side = THREE.doubleSide
 					cadranSolaireGroup.add(cadran);
 					if (NouveauCadran == true) {
 						cs.epaisseur = 300; cs.hauteur = 300; cs.largeur = 300
@@ -2622,7 +2685,7 @@
 				}
 
 				function TracerCadranParam() {
-					materialCS.side = THREE.DoubleSide
+					//materialCS.side = THREE.DoubleSide
 					gParam.show()
 					if (NouveauCadran == true) {
 						cs.epaisseur = 10; cs.hauteur = 300; cs.largeur = 300
@@ -2686,7 +2749,7 @@
 					cadranSolaireGroup.add(cadran);
 					eulerCsGroup()
 					TracerHeuresEtArcs()
-					textureCS(choixTextures[cs.nameTexture])
+					
 
 					gTypeCadran.hide()
 					gtypeForme.hide()
@@ -2735,13 +2798,13 @@
 				cadranSolaireGroup.add(axeX)
 				cadranSolaireGroup.add(axeY)
 				cadranSolaireGroup.add(axeZ)
-				materialCS.side = THREE.FrontSide
+				//materialCS.side = THREE.FrontSide
 				folderDevise.show()
 				folderGnomon.show()
 				folderDimensionsSundial.show()
 				voirSectionPoly(false)
-				materialCS.map = null
-				materialCS.emissiveMap = null
+				//materialCS.map = null
+				//materialCS.emissiveMap = null
 				//	materialCS.wrapS = materialCS.wrapT = THREE.RepeatWrapping;
 				//	materialCS.colorSpace = THREE.SRGBColorSpace;
 				materialCS.needsUpdate = true
@@ -2796,8 +2859,9 @@
 					cs.positionDevisex = -280,
 						cs.positionDevisey = -180
 					cs.deviseSize = 1
-					if (cs.typeCadran==ANL){cs.incli=0;cs.ygnomon=-40}
-					
+					if (cs.typeCadran == ANL) { cs.incli = 0; cs.ygnomon = -40 }
+					if (cs.typeCadran == STP) { cs.devise = "" }//;textureCS("")}
+
 					//cs.typeCadran=SP
 					//folderAnalem.hide();
 				}
@@ -2868,7 +2932,7 @@
 					cs.typeCadran = BFG;
 					folderGnomonBifilaireGen.show();
 					folderHours.show();
-					folderArcs.show();				
+					folderArcs.show();
 					TracerHeuresEtArcs()
 					EcrireDevise(cs.devise, cs.positionDevisex, cs.positionDevisey);
 				}
@@ -2883,7 +2947,7 @@
 					ctlIncli.enable();
 					//cs.incli=0;
 					eulerCsGroup();
-					folderAnalem.show();		
+					folderAnalem.show();
 					TracerHeuresEtArcs();
 					EcrireDevise(cs.devise, cs.positionDevisex, cs.positionDevisey);
 				}
@@ -2902,7 +2966,7 @@
 
 					folderSTP.show();
 					TracerHeuresEtArcs();
-					//EcrireDevise(cs.devise, cs.positionDevisex, cs.positionDevisey);
+					EcrireDevise(cs.devise, cs.positionDevisex, cs.positionDevisey);
 				}
 
 				if (e == RTS) {
@@ -3186,7 +3250,7 @@
 				})
 				.onFinishChange(function () { TracerHeuresEtArcs(); if (RTSpolyhedre()) { tracerTouteslesfaces() } })
 				.listen()
-			const ctlEpais=folderDimensionsSundial.add(cs, "epaisseur", 1, 1000, 0.1)
+			const ctlEpais = folderDimensionsSundial.add(cs, "epaisseur", 1, 1000, 0.1)
 				.name("Depth")
 				.onChange(function (v) {
 					cs.epaisseur = v;
@@ -3472,10 +3536,9 @@
 				cs.emissiveCS = materialCS.emissive.getStyle();
 			});
 			folderColorsSundial.add(materialCS, 'metalness', 0, 1, 0.01)
-				.onChange(function (e) { cs.metalness = materialCS.metalness })
-
+				.onChange(function (e) { cs.metalness = e; materialCS.needsUpdate = true })
 			folderColorsSundial.add(materialCS, 'roughness', 0, 1, 0.01)
-				.onChange(function (e) { cs.roughness = materialCS.metalness })
+				.onChange(function (e) { cs.roughness = e; materialCS.needsUpdate = true })
 			folderColorsSundial.add(cs, 'opaciteCS', 0, 1, 0.01)
 				.name('opacity').onChange(function (e) {
 					materialCS.transparent = true;
@@ -3492,10 +3555,19 @@
 					materialHeuresLegalesWS.wireframe = v;
 					materialArcsDiurnes.wireframe = v
 				});
-
-
-			folderColorsSundial.add(cs, 'nameTexture', choixTextures).name('Texture')
-				.onChange(function (t) { textureCS(t) });
+			folderColorsSundial.add(cs, 'nameTexture', choixTextures)
+				.name('Texture')
+				.onFinishChange(function (t) { 
+					switch (t) {
+					   	case 'JPG-PNG':lireFichierTexture();break					
+						//case 'SVG':LireFichierSVG();break
+						default:textureCS=t
+					            materialCS.map = textureCS
+								materialCS.emissiveMap = textureCS
+								materialCS.needsUpdate = true
+						}
+					})
+				.listen()
 
 
 			const folderHours = gui.addFolder(sp + 'Hours');
@@ -4063,17 +4135,17 @@
 			scene.add(axeMondeGroup);
 			scene.add(earthGroup);
 
-//			MiseEnPlaceCadranEtGnomon()  // YM: les 5 lignes commentées sont déjà dans initMenu() appelé plus bas
+			//			MiseEnPlaceCadranEtGnomon()  // YM: les 5 lignes commentées sont déjà dans initMenu() appelé plus bas
 
-//			cadranSolaireGroup.add(cadran);
+			//			cadranSolaireGroup.add(cadran);
 
 			orienterAxedumonde()
-//			PlacerLaTerre()
+			//			PlacerLaTerre()
 			//eulerCsGroup();
 			//eulerEarthGroup() 
 
-//			PlacerLeSoleil();
-//			PlacerLaTerre();
+			//			PlacerLeSoleil();
+			//			PlacerLaTerre();
 			sphereEarth.rotation.y = -Math.PI * 0.5;
 
 			cs.autoCloseMenu = true
@@ -4106,12 +4178,21 @@
 			materialCS.opacity = cs.opaciteCS
 			materialCS.metalness = cs.metalness
 			materialCS.wireframe = cs.wireframe
-			materialCS.map = choixTextures[cs.nameTexture]
-			materialCS.emissiveMap = choixTextures[cs.nameTexture]
+			if (cs.dataURLtexture==""){textureCS=choixTextures[cs.nameTexture]}
+			else{
+				textureLoader.load(cs.dataURLtexture,
+							    function (texture) {
+								//textureFile = texture; textureFile.name = 'file'
+								materialCS.map = texture
+								materialCS.emissiveMap = texture
+								materialCS.needsUpdate = true
+							})
+				}
+			materialCS.map =  textureCS
+			materialCS.emissiveMap = textureCS
 			materialCS.wrapT = THREE.RepeatWrapping;
 			materialCS.wrapS = THREE.RepeatWrapping;
 			materialCS.colorSpace = THREE.SRGBColorSpace;
-			materialCS.needsUpdate = true
 			materialCS.needsUpdate = true
 
 			EcrireDevise(cs.devise, cs.positionDevisex, cs.positionDevisey)
@@ -4334,7 +4415,7 @@
 			axeMondeGroup.add(axeArmilaire)
 			axeArmilaire.rotation.x = base.toRad(cs.lati + 90);
 		}
-materialEclip
+		materialEclip
 		function tracerEcliptique(h) {
 			tracerEquateurCeleste()
 			let k = Dst, alpha = 0, asd
@@ -4428,7 +4509,7 @@ materialEclip
 			sphereSun.getWorldPosition(v3);
 			light.position.set(v3.x, v3.y, v3.z).normalize();
 			light.castShadow = (v3.y > 0)  // le soleil doit être au dessus de l'horizon		
-			if (v3.y > 0){materialCS.color.setStyle(cs.colorCS)}else{materialCS.color.setStyle("rgb(0,0,0)")};// la nuit tous les chats sont gris!
+			if (v3.y > 0) { materialCS.color.setStyle(cs.colorCS) } else { materialCS.color.setStyle("rgb(0,0,0)") };// la nuit tous les chats sont gris!
 
 			labeltime.innerHTML = h + ":" + min + ':' + sec + "  " + sdate + " dec:" + dec.toFixed(3) + "°  asc:" + asc.toFixed(3) + "°  eqt:" + eqt.toFixed(0) + 's'
 
@@ -4581,7 +4662,7 @@ materialEclip
 				r = cs.hauteur / 6; materialCS.wireframe = true; cs.wireframe = true
 				if (RTSpolyhedre()) { r = cs.rayonPolyedre / 2 }
 			} else {
-				r = cs.hauteur*0.9;
+				r = cs.hauteur * 0.9;
 				materialCS.wireframe = false; cs.wireframe = false
 				if (RTSpolyhedre()) { r = 2 * cs.rayonPolyedre }
 			}
@@ -4641,7 +4722,7 @@ materialEclip
 		let meshFacesGroup = new THREE.Group()
 		let meshFaces = [], meshGnomons = [], normalsFaces = [], hauteursGnomons = [], centersFaces = [], rayonFace = []
 		let nfaceActive = 0, aFace = 0, nFaceMax = -1, nFaceBase = -1
-		let numFace = "",Lmax
+		let numFace = "", Lmax
 
 		let
 			polyheuresSolairesListeMesh = [],
@@ -4725,7 +4806,7 @@ materialEclip
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////
 		function displayFaces(Pol) {
-			Info("");Info("Busy...")
+			Info(""); Info("Busy...")
 			if (polyhedre == undefined) { return }
 			let nSommetsParFace = 0, v, h, hmaxPoly
 			let a = new THREE.Vector3(), b = new THREE.Vector3(), c = new THREE.Vector3()
@@ -4838,7 +4919,7 @@ materialEclip
 			BoutStyle = styleToriquePoly.clone()
 
 			guichoixPoly.close()
-		    Info("")
+			Info("")
 		}
 
 		function tracerTouteslesDevises() {
@@ -5156,7 +5237,7 @@ materialEclip
 					nfaceActive = f - 1
 					if (nfaceActive >= nbFaces) { nfaceActive = nbFaces - 1 }
 					tracerFaceActive()
-					if(cs.uniform){
+					if (cs.uniform) {
 						guixgnomon.max(rayonFace[nfaceActive])
 						guixgnomon.min(-rayonFace[nfaceActive])
 						guixgnomon.updateDisplay()
@@ -5167,7 +5248,8 @@ materialEclip
 						guixFaceDevise.min(-rayonFace[nfaceActive])
 						guixFaceDevise.updateDisplay()
 						guiyFaceDevise.max(rayonFace[nfaceActive])
-						guiyFaceDevise.min(-rayonFace[nfaceActive])}
+						guiyFaceDevise.min(-rayonFace[nfaceActive])
+					}
 					guiyFaceDevise.updateDisplay()
 					scene.remove(lineSommetsFace)
 					//console.log(rmaxFace[nfaceActive])
@@ -5468,7 +5550,7 @@ materialEclip
 			cadranSolaireGroup.add(groupAxes)
 
 			Rpol = cs.rayonPolyedre
-			Lmax = 3*Math.max(cs.largeur, cs.hauteur, cs.epaisseur)
+			Lmax = 3 * Math.max(cs.largeur, cs.hauteur, cs.epaisseur)
 			cs.xgnomon = 0; cs.ygnomon = 0
 
 			nfaceActive = 0

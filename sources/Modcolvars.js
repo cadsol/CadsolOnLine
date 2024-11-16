@@ -98,8 +98,10 @@ export let cs = {
 	opaciteCS: 1,
 	wireframe:false,
 	nameTexture:"steel",
-	dataURL:"",
-	typedataURL:'',
+	dataURL:"",  //fichier 3D du cadran
+	typedataURL:"", // obj, ply, gltf
+	dataURLtexture:"",  // image : fond du cadran en jpg ou png
+	dataSVG:"", // fond du cadran en svg
 
 	//geolocation
 	lati: 43.6,
