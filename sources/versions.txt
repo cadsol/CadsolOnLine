@@ -54,4 +54,6 @@ voie lactée en fond d'écran (sur option)
 - correction bugs mineurs (éclairage des cadrans...)
 071024
 - support de style profilé
+151124-> publié
+- choix du fond de cadran (jpg, png)
 
