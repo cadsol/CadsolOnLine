@@ -25,6 +25,13 @@
             "name": "Launch colmod241115.html Chrome against localhost",
             "url": "http://192.168.1.14/SauvegardeCOL/CadsolOnLine/sources/colmod241115.html",
             "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "codePen",
+            "url": "http://192.168.1.14/SauvegardeCOL/CadsolOnLine/sources/codePen.html",
+            "webRoot": "${workspaceFolder}"
         }
 
     ]

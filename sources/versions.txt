@@ -1,3 +1,28 @@
+2022/09  Mse en ligne
+
+Mise à jour du 2022/09/13  :  Choix de la précision des tracés (donc du nombre de pointsdans les fichiers CSV et SVG)
+
+ Mise à jour du 2022/10/04  :   Subdivision des heures, codage par modules
+
+ Mise à jour du 2022/10/23  :    Cadrans analemmatiques
+
+ Mise à jour du 2022/11/07  :    Cadrans d'exemple
+
+ Mise à jour du 2022/11/30  :    Interface, exports CSV et HTML
+
+ Mise à jour du 2023/03/15  :    Cadrans calculés par Ray-tracing
+
+ Mise à jour du 2023/04/16:      Cadrans définis par une surface paramérée du type z=f(x,y)
+
+ Mise à jour du 2023/04/25:      Menus auto, style triangulaire ou trapezoïdal
+
+ Mise à jour du 2023/08/13:      Correction bug cadrans polaires
+
+Mise à jour du 2023/09/08:      Heures planétaires
+
+Mise à jour du 2024/02/05:      Cadrans polyédriques - Cadrans analemmatiques à projection centrale
+
+
 070224 -> publié
 menu "Sundial time"
 gestion des portions de tracés en dehors du cadran
@@ -10,7 +35,7 @@ Arcs zodiacaux
 Cercles polaires
 Correction bug style polaire: 
     toujours appeller TracerHeuresEtArcs AVANT TracerStyle 
-    (calcul de cs.xPole et cs.yPole)
+    (pour le calcul de cs.xPole et cs.yPole)
 
 210224
 memorisation de;
@@ -56,4 +81,7 @@ voie lactée en fond d'écran (sur option)
 - support de style profilé
 151124-> publié
 - choix du fond de cadran (jpg, png)
+181224
+-correction bug numérotation des heures dans les sorties csv 
+-bouton paramètres
 
