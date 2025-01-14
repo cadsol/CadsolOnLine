@@ -7,12 +7,18 @@
 	<link rel="icon" type="image/x-icon" href="./favicon.ico">
 
 	<meta charset="utf-8">
-	<meta name="viewport"
-		content="width=device-width,   initial-scale=1.0">
+	<meta name="viewport" content="width=device-width,   initial-scale=1.0">
 
 	<!--  FICHIER CSS----------------------------------------user-scalable=no,minimum-scale=1.0, maximum-scale=1.0,------------------------------------------------------------------ -->
 	<link type="text/css" rel="stylesheet" href="./main030624.css">
 	<!--  FICHIER CSS----------------------------------------------------------------------------------------------------------- -->
+	
+	<link rel="icon" href="images/logo.svg">
+  <!-- STYLESHEETS (others loaded dynamically) -->
+  <style id="styleoverrides" media="screen"></style>
+  <link href="./svgedit.css" rel="stylesheet" media="all">
+  </link>
+ 
 
 </head>
 
@@ -24,8 +30,9 @@
 			<div id="ver">" " </div>
 			<!-- Calculation of sundials on line</br> -->
 			by JL.Astre and Y.Massé<br>
-			Help: <a href="https://cadsolonline.web-pages.fr" target="_blank" rel="noopener" >cadsolonline.web-pages.fr </a> <br>
-			Library 3D: <a href="https://threejs.org" target="_blank" rel="noopener" >Three.js</a> <br>
+			Help: <a href="https://cadsolonline.web-pages.fr" target="_blank" rel="noopener">cadsolonline.web-pages.fr
+			</a> <br>
+			Library 3D: <a href="https://threejs.org" target="_blank" rel="noopener">Three.js</a> <br>
 			Astronomical library:
 			<a href="https://en.wikipedia.org/wiki/Jean_Meeus" target="_blank" rel="noopener">Jean Meeus & </a>
 			<a href="https://en.wikipedia.org/wiki/Sonia_Keys" target="_blank" rel="noopener">Sonia Keys</a> <br>
@@ -64,8 +71,11 @@
 
 	<script src="./parser.js"></script>
 
-	<script type="module">
+	 <!-- Lacking browser support -->
+	 <!-- <script type="module" src="./editor/browser-not-supported.js"></script> -->
 
+	<script type="module">
+ 		
 		import * as EQTIME from 'astronomia/eqtime.js';
 		import * as JULIAN from 'astronomia/julian.js';
 		import * as base from 'astronomia/base.js';
@@ -93,12 +103,14 @@
 
 		import { ParametricGeometry } from 'three/addons/geometries/ParametricGeometry.js';
 		import { ConvexGeometry } from 'three/addons/geometries/ConvexGeometry.js';
-		
+
 
 		// -----------------------------------Modules---------------------------------------------------------------------------------------
 		import { SP, BF, BFG, ANL, RTS, STP, cs, TableSol, Dst, oe, RechercheParAdresse, getLocation, HTLM } from './Modcolvars.js';
 		import { eclair, Rot, EtoC, ddrte, segm } from './ModAnalem.js'
 		import { POLYHEDRA } from './ModPolyhedra.js';
+		//import Editor from './editor/Editor.js'
+		//import { svgText } from './editor/svgtext.js'
 		//import {tracerEcliptique,effacerEcliptique,tracerSphereArmilaire,effacerSphereArmilaire} from './ModSphereArmilaire.js'
 		// ---------------------------------------------------------------------------------------------------------------------------------	
 
@@ -187,7 +199,7 @@
 
 		renderer = new THREE.WebGLRenderer({ antialias: true });
 		renderer.gammaFactor = 2.2;
-        renderer.outputEncoding = THREE.sRGBEncoding;
+		renderer.outputEncoding = THREE.sRGBEncoding;
 		renderer.setPixelRatio(window.devicePixelRatio);
 		renderer.setSize(window.innerWidth, window.innerHeight);
 		//renderer.outputEncoding = THREE.RGBEncoding;
@@ -319,15 +331,16 @@
 		textureBois.name = 'wood'
 		const textureEau = new THREE.TextureLoader().load('./textures/waternormals.jpg');
 		textureEau.name = 'water'
-		var textureCS 
+		var textureCS
 
 
 
 		const choixTextures = {
 			'none': null, 'steel': textureAcier, 'copper': textureCuivre, 'water': textureEau,
-			'asphalt': textureAsphalt, 'wood': textureBois, 'fruits': textureFruits, 'greenstone': texturePierreVerte, 
-			'file (.JPG, .PNG)': 'JPG-PNG'/*, 'file (.SVG)':'SVG'*/}
-			
+			'asphalt': textureAsphalt, 'wood': textureBois, 'fruits': textureFruits, 'greenstone': texturePierreVerte,
+			'file (.JPG, .PNG)': 'JPG-PNG'/*, 'file (.SVG)':'SVG'*/
+		}
+
 
 
 
@@ -355,22 +368,22 @@
 		const materialCS = new THREE.MeshStandardMaterial(
 			{ transparent: true, opacity: 1, metalness: 0.5, roughness: 0.5, side: THREE.DoubleSide });
 
-		
+
 
 		function lireFichierTexture() {
 			const fileInput = document.createElement('input')
 			fileInput.type = 'file';
 			fileInput.multiple = false;
 			fileInput.accept = ".png,.jpg"
-			fileInput.addEventListener('change', 
+			fileInput.addEventListener('change',
 				function () {
 					const reader = new FileReader();
 					const selectedFile = fileInput.files[0]
 					const NF = selectedFile.name.toLowerCase()
 					reader.readAsDataURL(selectedFile)
 					reader.addEventListener("load", () => {
-						cs.dataURLtexture = reader.result	
-						cs.nameTexture=NF					
+						cs.dataURLtexture = reader.result
+						cs.nameTexture = NF
 						textureLoader.load(cs.dataURLtexture,
 							function (texture) {
 								materialCS.map = texture
@@ -379,10 +392,10 @@
 							},
 							undefined,
 							function (err) { console.error('LoadTexture: An error happened.') }
-						)									
-						})
-					
-				}, 
+						)
+					})
+
+				},
 				false);
 
 			document.body.appendChild(fileInput);
@@ -394,24 +407,24 @@
 			fileInput.type = 'file';
 			fileInput.multiple = false;
 			fileInput.accept = ".svg"
-			fileInput.addEventListener('change', 
+			fileInput.addEventListener('change',
 				function () {
 					const reader = new FileReader();
 					const selectedFile = fileInput.files[0]
 					const NF = selectedFile.name.toLowerCase()
 					reader.readAsText(selectedFile);
-					reader.addEventListener("load", () => {						
-							cs.dataSVG = reader.result	
-							cs.nameTexture=NF	
-							console.log(cs.nameTexture,cs.dataSVG),
+					reader.addEventListener("load", () => {
+						cs.dataSVG = reader.result
+						cs.nameTexture = NF
+						console.log(cs.nameTexture, cs.dataSVG),
 							undefined,
 							function (err) { console.error('SVG: An error happened.') }
-							})
-					}, 
+					})
+				},
 				false);
 
 			document.body.appendChild(fileInput);
-			fileInput.click();		
+			fileInput.click();
 		}
 
 
@@ -750,7 +763,7 @@
    fill="${cs.colorCS}" stroke="black" stroke-width="1px" />
 
   <image
-    xlink:href="${cs.dataURLtexture}"
+    href="${cs.dataURLtexture}"
     x="0"
     y="0"
     height="${cs.hauteur.toString()}" 
@@ -776,10 +789,7 @@
 
 		function construireFichierSVG() {
 
-			if (RTSpolyhedre()) {
-
-				VoirPoly2D = true
-			}
+			if (RTSpolyhedre()) { VoirPoly2D = true }
 			else {
 				initSVGtext(cs.unitSVG);
 				EcrireDevise(cs.devise, cs.positionDevisex, cs.positionDevisey);
@@ -787,9 +797,6 @@
 				TracerHeuresEtArcs()
 			}
 
-
-			//xg = xg + cs.largeur / 2; yg = -yg + cs.hauteur / 2
-			//croixSVG(cs.xgnomon, cs.ygnomon)
 			if (VoirPoly2D) {
 				const sommets = SommetsFace(nfaceActive, polyhedre)
 				displayFaces(polyhedre)
@@ -2215,7 +2222,7 @@
 							H = (i - 12) * 15 / 180 * Math.PI - RA
 							if ((i - 12) < 0) { chiffreH = i + 12 } else { chiffreH = i - 12 }
 						}
-						if ((TypeHeure == HPSA)&&(i<=12)) { // il faut prendre le supplémentaire de RE quand RE et LE ne sont pas dans le même cadran.
+						if ((TypeHeure == HPSA) && (i <= 12) ) { // il faut prendre le supplémentaire de RE quand RE et LE ne sont pas dans le même cadran.
 							const RA = Math.PI - Math.asin(tδ / tan23p44)
 							const LS = Math.PI - Math.asin(sδ / sin23p44)
 							const LE = LS + i * 15 * Math.PI / 180; chiffreH = i
@@ -2225,9 +2232,9 @@
 							const T = Math.acos(-Math.tan(φ) * Math.tan(DE))
 							H = -T - RA + RE
 							//if (i==6){console.log(TS.decSuns[j]*180/Math.PI,"RA ° = ",RA*180/Math.PI,"  LE ° = ",LE*180/Math.PI, "   RE ° = ",RE*180/Math.PI)}
-							//if (i > 12) { H = 2 * H0 }
+							if (i >= 12) { H = 2 * H0 }
 						}
-						if ((TypeHeure == HPWS)&&(i<=12)) { // il faut prendre le supplémentaire de RE quand RE et LE ne sont pas dans le même cadran.
+						if ((TypeHeure == HPWS) && (i <= 12) ) { // il faut prendre le supplémentaire de RE quand RE et LE ne sont pas dans le même cadran.
 							const RA = Math.asin(tδ / tan23p44)
 							const LS = Math.asin(sδ / sin23p44)
 							let LE = LS + i * 15 / 180 * Math.PI; chiffreH = i
@@ -2237,7 +2244,7 @@
 							const T = Math.acos(-Math.tan(φ) * Math.tan(DE))
 							H = -T - RA + RE
 							//if (i==6){console.log(TS.decSuns[j]*180/Math.PI,"RA ° = ",RA*180/Math.PI,"  LE ° = ",LE*180/Math.PI, "   RE ° = ",RE*180/Math.PI)}
-							//if (i > 12) { H = 2 * H0 }
+							if (i > 12) { H = 2 * H0 }
 						}
 						const aH = Math.abs(H)
 						const [sH, cH] = base.sincos(H)
@@ -2262,7 +2269,7 @@
 				}
 				if (presqueEntier(chiffreH)) { sHeure = Math.round(chiffreH).toString() } else { sHeure = "" };
 				if (l.points.length > 0) {
-				    l.hour=chiffreH    /// correction bug des fichiers csv
+					l.hour = chiffreH    /// correction bug des fichiers csv
 					lines.push(l);
 					// ((xp + cs.xgnomon)<0)?gauche=false:gauche=true
 					// RTSpolyhedre()?gauche=false:
@@ -2750,7 +2757,7 @@
 					cadranSolaireGroup.add(cadran);
 					eulerCsGroup()
 					TracerHeuresEtArcs()
-					
+
 
 					gTypeCadran.hide()
 					gtypeForme.hide()
@@ -3058,7 +3065,7 @@
 			const guiButtonParam = gui.add(ButtonParam, 'functionParam').name('Parameters');
 			helpGui(guiButtonParam, 'Parameters')
 
-			
+
 
 			// const nameW = "List params"
 			// const ButtonFiche = {
@@ -3175,7 +3182,7 @@
 				.name("postal adress")
 				.onFinishChange(() => {
 					if (cs.adresse.length > 0) {
-						
+
 						window.open(cs.urlOpenStreet, "OSM", "toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=100,width=400,height=400")
 						RechercheParAdresse(cs.adresse);
 						TracerHeuresEtArcs();
@@ -3575,16 +3582,16 @@
 				});
 			folderColorsSundial.add(cs, 'nameTexture', choixTextures)
 				.name('Texture')
-				.onFinishChange(function (t) { 
+				.onFinishChange(function (t) {
 					switch (t) {
-					   	case 'JPG-PNG':lireFichierTexture();break					
+						case 'JPG-PNG': lireFichierTexture(); break
 						//case 'SVG':LireFichierSVG();break
-						default:textureCS=t
-					            materialCS.map = textureCS
-								materialCS.emissiveMap = textureCS
-								materialCS.needsUpdate = true
-						}
-					})
+						default: textureCS = t
+							materialCS.map = textureCS
+							materialCS.emissiveMap = textureCS
+							materialCS.needsUpdate = true
+					}
+				})
 				.listen()
 
 
@@ -4180,8 +4187,37 @@
 					})
 				}
 			}
+			// Data URI
+			//location.href += '?source=' + encodeURIComponent('data:image/svg+xml;utf8,' + svgText)
+			// Data URI (base 64):
+			//location.href += '?source=' + encodeURIComponent('data:image/svg+xml;base64,' + svgTextAsBase64) 
+			// function editionSVGtext() {
+			// 	construireFichierSVG()
+			// 	const svgEditor = new Editor(container)
+			// 	svgEditor.setConfig({
+			// 		allowInitialUserOverride: true,
+			// 		extensions: [],
+			// 		noDefaultExtensions: false,
+			// 		userExtensions: [/* { pathName: '/packages/react-test/dist/react-test.js' } */]
+			// 	})
+				// console.log(svgText.text)
+				// svgEditor.loadFromString(svgText.text)
+				//svgEditor.init()
+				// let urlEditor = window.location.href
+				// urlEditor = urlEditor.substring(0, urlEditor.indexOf("/sources")+8)
+				// svgText.text=SVGtext
+				// console.log(svgText.text)
+				//urlEditor +="/editor/index.html"
+				//urlEditor += '?source=' + encodeURIComponent('data:image/svg+xml;base64,' + btoa(SVGtext))
 
-			const btnEditSVG = { EditSVG() { window.open("https://svgedit.netlify.app/editor/index.html") } }
+				//window.open(urlEditor)
+				//console.log(urlEditor)
+			//}
+
+
+			//const btnEditSVG = { EditSVG() { editionSVGtext() } }
+			//const btnEditSVG = { EditSVG() { window.open("https://svgedit.netlify.app/editor/index.html") } }
+			const btnEditSVG = { EditSVG() { window.open("./editor/index.html") } }
 			gui.add(btnEditSVG, "EditSVG").name("Editor svg")
 
 			CadPolairesEx.close()
@@ -4196,17 +4232,17 @@
 			materialCS.opacity = cs.opaciteCS
 			materialCS.metalness = cs.metalness
 			materialCS.wireframe = cs.wireframe
-			if (cs.dataURLtexture==""){textureCS=choixTextures[cs.nameTexture]}
-			else{
+			if (cs.dataURLtexture == "") { textureCS = choixTextures[cs.nameTexture] }
+			else {
 				textureLoader.load(cs.dataURLtexture,
-							    function (texture) {
-								//textureFile = texture; textureFile.name = 'file'
-								materialCS.map = texture
-								materialCS.emissiveMap = texture
-								materialCS.needsUpdate = true
-							})
-				}
-			materialCS.map =  textureCS
+					function (texture) {
+						//textureFile = texture; textureFile.name = 'file'
+						materialCS.map = texture
+						materialCS.emissiveMap = texture
+						materialCS.needsUpdate = true
+					})
+			}
+			materialCS.map = textureCS
 			materialCS.emissiveMap = textureCS
 			materialCS.wrapT = THREE.RepeatWrapping;
 			materialCS.wrapS = THREE.RepeatWrapping;

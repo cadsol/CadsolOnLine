@@ -8,8 +8,7 @@
             "name": "Launch Chrome",
             "request": "launch",
             "type": "chrome",
-            "url": "http://localhost:8080/sources/241220colmod.html",
-            "webRoot": "${workspaceFolder}"
+            "url": "http://localhost:8080/sources/colmod.html"
         },
         
 
