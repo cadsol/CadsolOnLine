@@ -84,4 +84,11 @@ voie lactée en fond d'écran (sur option)
 181224
 -correction bug numérotation des heures dans les sorties csv 
 -bouton paramètres
+141224
+-sources de l'éditeur svg
+250126 
+-maj des ephemerides
+-maj du menu download
+250203
+-maj ephemerides (VSOP87)
 

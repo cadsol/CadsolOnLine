@@ -1,20 +1,25 @@
-import * as EQTIME from '../astronomia-master/src/eqtime.js';
-import * as JULIAN from '../astronomia-master/src/julian.js';
-import { apparentEquatorial } from '../astronomia-master/src/solar.js';
+import * as EQTIME from 'astronomia/eqtime.js';
+import * as JULIAN from 'astronomia/julian.js';
+import * as SEXA from 'astronomia/sexagesimal.js';
+import { apparentEquatorial,apparentEquatorialVSOP87,apparentLongitude } from 'astronomia/solar.js';
 import {
-	march,
-	june,
-	september,
-	december
-} from '../astronomia-master/src/solstice.js';
+	march2,
+	june2,
+	september2,
+	december2,
+} from 'astronomia/solstice.js';
+import { base, planetposition} from "../astronomia-master/src/index.js"
+import data from '../astronomia-master/data/index.js'
 
-//import {Scene} from  'three';
 
-export const SP = "Polar or straight style", BF = "Bifilar (vertical)", BFG = 'Bifilar generalised', ANL = 'Analemmatic', RTS='Ray tracing sundial';///+++
+
+export const SP = "Polar or straight style", BF = "Bifilar (vertical)", BFG = 'Bifilar generalised', 
+             ANL = 'Analemmatic', RTS='Ray tracing sundial',STP = "Profiled style";
+			
 
 export const Dst=1500 // distance terre soleil
 export const oe=23.4392911  // obliquite de l'Ecliptique, equinoxe de reference 2000.0
-
+let CSVephemerid = ""
 
 export let cs = {
 	version: "",
@@ -31,6 +36,9 @@ export let cs = {
 	decli: 0,
 	incli: 90,
 	rot: 0,
+
+	//cadran à style profilé
+	a: 5, Rmax: 20, sais: true, appx: false, reb: false,support:false,//saisSA:true,saisWS:false,
 
 	//Cadran parametrique
 	zfxy:"",
@@ -93,8 +101,10 @@ export let cs = {
 	opaciteCS: 1,
 	wireframe:false,
 	nameTexture:"steel",
-	dataURL:"",
-	typedataURL:'',
+	dataURL:"",  //fichier 3D du cadran
+	typedataURL:"", // obj, ply, gltf
+	dataURLtexture:"",  // image : fond du cadran en jpg ou png
+	dataSVG:"", // fond du cadran en svg
 
 	//geolocation
 	lati: 43.6,
@@ -181,6 +191,7 @@ export let cs = {
 	typePolyedre:"Dodecahedron", // par defaut
 	rayonPolyedre:200,
 	conicity:2,
+	uniform:true,
 	
 	polyGx:[],
 	polyGy:[],
@@ -242,12 +253,17 @@ export function HTLM(cs) {
 
 	if (cs.typeCadran == SP) {
 		htmlText += `
-	diameter of the style : ${cs.egnomon}  (arbitrary unit)<br>
-	length of the straight style : ${cs.hgnomon}  (arbitrary unit)<br>
-	coordinates of the foot of the straight style  : (${cs.xgnomon.toFixed(2)} , ${cs.ygnomon.toFixed(2)})  (origin: center of the rectangle)<br>
-	coordinates of the pole of the sundial : (${cs.xPole.toFixed(2)} , ${cs.yPole.toFixed(2)})  (origin: center of the rectangle)<br>
-	angle between style and substyle : ${cs.angleStyleSousstylaire.toFixed(1)}° (decimal degrees)<br>
-	`
+		diameter of the style : ${cs.egnomon}  (arbitrary unit)<br>
+		length of the straight style : ${cs.hgnomon}  (arbitrary unit)<br>
+
+		coordinates of the foot of the straight style  : (${cs.xgnomon.toFixed(2)} , ${cs.ygnomon.toFixed(2)})  (origin: center of the rectangle)<br>
+		coordinates of the pole of the sundial : (${cs.xPole.toFixed(2)} , ${cs.yPole.toFixed(2)})  (origin: center of the rectangle)<br>
+		angle between style and substyle : ${cs.angleStyleSousstylaire.toFixed(1)}° (decimal degrees)<br>
+		`
+		if (cs.hgnomonBord>0){
+		htmlText += `length of the style on the border : ${cs.hgnomonBord.toFixed(2)}  (arbitrary unit)<br>
+		`
+		}
 	}
 	if (cs.typeCadran == BF) {
 		htmlText += `
@@ -303,40 +319,24 @@ End
 
 }
 
-//TableSol------------------------
-export function TableSol(year) {
-	let jde, ae, dec,ra, eqt, jdes, eqts, decs,rasc;
-	let decSunMin = 0, decSunMax = 0, jdecSunMin = 0, jdecSunMax = 0, j = 0;
-	jdes = []; eqts = []; decs = [] ;rasc=[]
-	jde = JULIAN.CalendarGregorianToJD(year, 1, 1.5);  //Premier Janvier à 12h
-	while (jde <= JULIAN.CalendarGregorianToJD(year, 12, 31.5))//31 decembre à 12h
-	{
-		ae = apparentEquatorial(jde);
-		dec = ae.dec;ra=ae.ra
-		if (dec > decSunMax) { decSunMax = dec; jdecSunMax = j };
-		if (dec < decSunMin) { decSunMin = dec; jdecSunMin = j };
-		eqt = EQTIME.eSmart(jde);
-		jdes.push(jde); eqts.push(eqt); decs.push(dec);rasc.push(ra)
-		jde += 1; j += 1
-	};
-	// console.log(jdecSunMin,jdecSunMax);
-	return {//Tableaux à 365 ou 366 elements, valeurs calculées à 12h, index: 0...364 ou 0...365
-		decSuns: decs,  //radians
-		ascRights: rasc,
-		eqtimes: eqts,  //equation of time as an hour angle in radians.
-		jdates: jdes,    //jourjulien
-		//jours des solstices
-		jdecSunMin,
-		jdecSunMax,
-		eqMars: march(cs.year),
-		eqSeptembre: september(cs.year),
-		solDecembre: december(cs.year),
-		solJuin: june(cs.year)
-	}
-
-}
 
 //--------------------------------------------------------------------------------------------------------
+/**
+ * RechercheParAdresse - Fetches address details from the OpenCageData API and updates the `cs` object with the results.
+ *
+ * @param {string} v - The address to search for.
+ *
+ * This function sends a GET request to the OpenCageData API with the provided address.
+ * On successful response, it parses the JSON data and updates the `cs` object with the address details,
+ * including formatted address, latitude, longitude, OpenStreetMap URL, timezone information, and DST status.
+ *
+ * If no results are found, it alerts the user with a message.
+ * In case of a network error, it alerts the user with a "Network Error" message.
+ *
+ * The function also includes a progress event handler to monitor the download progress.
+ *
+ * @throws Will alert 'no connection' if there is an error sending the request.
+ */
 export function RechercheParAdresse(v) {
 	//  adrAPIOpenStreet :=
 	//       'http://api.opencagedata.com/geocode/v1/json?key=a110b502b29f4de9a47d95bc3b6c5e98&q='
@@ -401,9 +401,145 @@ export function getLocation() {
 
 
 // --------------------------------------------------------------------------------------------------------
+//TableSol------------------------
+/**
+ * Calculates various solar parameters for each day of a given year.
+ *
+ * @param {number} year - The year for which to calculate the solar parameters.
+ * @param {boolean} [ephemerid=false] - If true, use VSOP87 for calculations
+ * @returns {Object} An object containing arrays of calculated values and solstice days:
+ * @returns {number[]} decSuns - Array of solar declinations in radians.
+ * @returns {number[]} ascRights - Array of right ascensions in radians.
+ * @returns {number[]} eqtimes - Array of equation of time values as hour angles in radians.
+ * @returns {number[]} apLongs - Array of apparent longitudes of the sun if ephemerid=true
+ * @returns {number[]} jdates - Array of Julian dates.
+ * @returns {number} jdecSunMin - Julian date of the minimum solar declination (winter solstice).
+ * @returns {number} jdecSunMax - Julian date of the maximum solar declination (summer solstice).
+ */
+export function TableSol(year,ephemerid=false) {
+	let jde, ae, dec,ra, eqt, jdes, eqts, decs,rasc,apLong,apLongs;
+	let decSunMin = 0, decSunMax = 0, jdecSunMin = 0, jdecSunMax = 0, j = 0;
+	jdes = []; eqts = []; decs = [] ;rasc=[];apLong=[];
+	jde = JULIAN.CalendarGregorianToJD(year, 1, 1.5);  //Premier Janvier à 12h
+	const planet = new planetposition.Planet(data.vsop87Dearth)
+	while (jde <= JULIAN.CalendarGregorianToJD(year, 12, 31.5))//31 decembre à 12h
+	{	if (ephemerid){                           //ephemerid = true pour calculs avec VSOP87
+			const T = base.J2000Century(jde)		
+			ae = apparentEquatorialVSOP87(planet, jde);
+			eqt = EQTIME.e(jde,planet)
+			const res = apparentLongitude(T)
+			apLong.push(res)
+			}
+		else{			//ephemerid = false pour calculs avec eSmart
+			ae = apparentEquatorial(jde)
+			eqt = EQTIME.eSmart(jde)		
+			}
+		dec = ae.dec;ra=ae.ra
+		if (dec > decSunMax) { decSunMax = dec; jdecSunMax = j };
+		if (dec < decSunMin) { decSunMin = dec; jdecSunMin = j };
+
+		jdes.push(jde); eqts.push(eqt); decs.push(dec);rasc.push(ra)
+		jde += 1; j += 1
+	};
+	
+	return {//Tableaux à 365 ou 366 elements, valeurs calculées à 12h, index: 0...364 ou 0...365
+		decSuns: decs,  //radians
+		ascRights: rasc, //radians
+		eqtimes: eqts,  //equation of time as an hour angle in radians.
+		apLongs: apLong,  //apparent longitude of the sun
+		jdates: jdes,    //jourjulien
+		//jours des solstices
+		jdecSunMin,
+		jdecSunMax
+		// eqMars: march2(cs.year,planet),
+		// eqSeptembre: september2(cs.year,planet),
+		// solDecembre: december2(cs.year,planet),
+		// solJuin: june2(cs.year,planet)
+	}
+
+}
+
+/**
+ * Formats a number to a specified number of decimal places and pads it with spaces to a specified length.
+ *
+ * @param {number} x - The number to format.
+ * @param {number} nd - The number of decimal places to format the number to. If 0, the number is floored.
+ * @param {number} nb - The total length of the resulting string, padded with spaces if necessary.
+ * @returns {string} The formatted number as a string.
+ */
+function Formater (x,nd,nb){
+	if(nd==0){x=Math.round(x)}
+	let s = x.toFixed(nd)	
+	while (s.length <nb) { s = " " + s }
+	return s
+}
 
 
 
 
 
+//-----------------------------------------------------------------------------------------------------
+//Système de coordonnées (ICRS) : Héliocentre – Équateur – Apparent de la date – Sphériques
+//https://ssp.imcce.fr/forms/ephemeris
 
+
+/**
+ * Generates the ephemerides of the sun for a given year in CSV format.
+ *
+ * @param {number} year - The year for which to generate the ephemerides.
+ * @returns {string} The ephemerides of the sun in CSV format.
+ */
+export function Ephemerid(year) {
+	let d, s,sp;
+
+	function EcrireDegMin(s){
+		//while(s>180){s-=360}
+		const T = SEXA.degToDMS(s)
+		if (T[0]==true){CSVephemerid +='  -'}else{CSVephemerid +='   '}
+		CSVephemerid += Formater(T[1],0,3) + "° " + Formater(T[2],0,2) + "'  (" +Formater( s,3,7) + "°)" + '                 ' + cs.separateurCSV;
+		// +Formater( Math.round(T[3]),0,2) + "'' "     
+	}
+
+	CSVephemerid = " DATE" + cs.separateurCSV + "TIME EQUATION (s) " + cs.separateurCSV + "SUN DECLINATION (°) " + cs.separateurCSV + "RIGHT ASCENSION (°) "
+				  + cs.separateurCSV + "ECLIPTIC LONGITUDE" + cs.separateurCSV + "JULIAN DAY"  + "\n"
+	CSVephemerid += " \n";
+	CSVephemerid += "Ephemerids of the sun \n" + "year  :  " + year + "   (12h TU) \n\n";
+	CSVephemerid += "CadsolOnLine  Version:" + cs.version + "\n\n";
+	CSVephemerid += "Planetary Theory VSOP87 D\n"
+	CSVephemerid += "(c) Jean Meeus \n* Chapter 28 Equation of time \n* Chapter 25  Solar Coordinates ...\n\n";
+	CSVephemerid += " \n";
+	const TS=TableSol(year,true);
+	//console.log ("Ephemerides ", year )
+	for (let i = 0; i < TS.decSuns.length; i++) {
+		d = JULIAN.JDToCalendarGregorian(TS.jdates[i]);
+		CSVephemerid += Formater(d.day,1,5) + " / " + Formater(d.month,0,2) + " / " + Formater(d.year,0,4) + cs.separateurCSV;  //date JJ/MM/YYYY
+
+		s = Math.round(SEXA.secFromHourAngle(TS.eqtimes[i]));	// equation du temps en secondes
+		if (s < 0) { CSVephemerid += " - "; sp=Math.abs(s)} else { CSVephemerid += "   " ; sp=s }
+		CSVephemerid +=Formater(Math.floor(sp/60),0,2)+" min  "+ Formater(sp%60,0,2)+" sec " + cs.separateurCSV;
+
+		EcrireDegMin(base.toDeg(TS.decSuns[i]));    //dec soleil en degres	
+		EcrireDegMin(base.toDeg(TS.ascRights[i]));  //asc. droite soleil en degres	
+		EcrireDegMin(base.toDeg(TS.apLongs[i]));    //longitude ecliptique soleil en degres
+		CSVephemerid += TS.jdates[i]          //jpur julien
+		CSVephemerid += cs.separateurCSV
+
+		if (i == TS.jdecSunMin) { CSVephemerid += "  Winter Solstice " }
+		if (i == TS.jdecSunMax) { CSVephemerid += "  Summer Solstice " }
+			
+		CSVephemerid += "\n"	
+	}
+	CSVephemerid += "\n"	
+	CSVephemerid += "\n"	
+	CSVephemerid += "\n"	
+	CSVephemerid += "Système de coordonnées (ICRS) \n Héliocentre – Équateur – Apparent de la date – Sphériques" + "\n"
+	CSVephemerid += "Site de référence             \n  https://ssp.imcce.fr/forms/ephemeris" + "\n"
+	CSVephemerid += "\n"
+	
+	// let hsec = Math.round((juin.day-Math.trunc(juin.day))*3600*24)
+	// const h= de(hsec,3600).q;const rs = de(hsec,3600).r;
+	// const min= de(rs,60).q;const sec= de(rs,60).r;
+	// CSVephemerid += "  Summer Solstice " + Math.trunc(juin.day) + " / " + juin.month + " / " + juin.year + "   "+h+"h"+min+"min"+sec+"s  TU \n"
+
+	return CSVephemerid
+}

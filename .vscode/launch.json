@@ -5,22 +5,22 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch Chrome",
+            "name": "ColModEdge",
+            "request": "launch",
+            "type": "msedge",
+            "url": "http://localhost:8080/sources/colmod.html",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "name": "250203Chrome",
             "request": "launch",
             "type": "chrome",
-            "url": "http://localhost:8080/sources/colmod.html"
+            "url": "http://localhost:8080/sources/250203colmod.html"
         },
         
-
+    
 
       
-        {
-            "type": "chrome",
-            "request": "launch",
-            "name": "colmod290624.html",
-            "url": "http://192.168.1.14/SauvegardeCOL/CadsolOnLine/sources/colmod290624.html"
-           
-        },
         
         {
             "type": "chrome",
